@@ -12,6 +12,7 @@
         urls: {
           'assemble': /*[[@{/projects/{id}/settings/assemble(id=${project.getId()})}]]*/ '/projects/1/settings/assemble',
           'sistr': /*[[@{/projects/{id}/settings/sistr(id=${project.getId()})}]]*/ '/projects/1/settings/sistr',
+          'phantastic': /*[[@{/projects/{id}/settings/phantastic(id=${project.getId()})}]]*/ '/projects/1/settings/phantastic',
           'coverage': /*[[@{/projects/{id}/settings/coverage(id=${project.getId()})}]]*/ '/projects/1/settings/coverage'
         }
       };
@@ -22,29 +23,21 @@
     <div class="row">
         <div class="col-md-12">
             <h2 class="h2-muted" th:text="#{project.settings.automated-pipelines}">_Automated Pipelines_</h2>
-            <div class="checkbox">
-                <label>
-                    <input id="assemble" type="checkbox" value="assemble" th:checked="${project.assembleUploads}"
-                           th:disabled="not ${manageMembers}"/>
-                    <span th:text="#{project.settings.assemble.control}">_Automatically assemble uploads_</span>
-                </label>
-            </div>
-
             <div class="form-group">
                 <div class="checkbox">
-                    <label for="sistrTypingUploads">
-                        <input type="checkbox" class="js-sistr-checkbox" id="sistrTypingUploads"
-                               th:checked="${#strings.contains(project.sistrTypingUploads, 'AUTO')}"
-                               name="sistrTypingUploads" value="OFF" th:disabled="not ${manageMembers}">
-                        <span th:text="#{projects.create.settings.sistr}">_RUN_SISTR_</span>
+                    <label for="phantasticTypingUploads">
+                        <input type="checkbox" class="js-phantastic-checkbox" id="phantasticTypingUploads"
+                               th:checked="${#strings.contains(project.phantasticTypingUploads, 'AUTO')}"
+                               name="phantasticTypingUploads" value="OFF" th:disabled="not ${manageMembers}">
+                        <span th:text="#{projects.create.settings.phantastic}">_RUN_PHANTASTIC_</span>
                     </label>
                 </div>
                 <div class="checkbox">
-                    <label style="margin-left: 20px;" for="sistrWrites">
-                        <input type="checkbox" class="js-sistr-writes" id="sistrWrites"
-                               th:checked="${#strings.equals(project.sistrTypingUploads, 'AUTO_METADATA')}"
-                               th:disabled="not ${#strings.contains(project.sistrTypingUploads, 'AUTO')}">
-                        <span th:text="#{projects.create.settings.sistr.AUTO_METADATA}">_WRITE_BACK_TO_SAMPLE_METADATA_</span>
+                    <label style="margin-left: 20px;" for="phantasticWrites">
+                        <input type="checkbox" class="js-phantastic-writes" id="phantasticWrites"
+                               th:checked="${#strings.equals(project.phantasticTypingUploads, 'AUTO_METADATA')}"
+                               th:disabled="not ${#strings.contains(project.phantasticTypingUploads, 'AUTO')}">
+                        <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA}">_WRITE_BACK_TO_SAMPLE_METADATA_</span>
                     </label>
                 </div>
             </div>
