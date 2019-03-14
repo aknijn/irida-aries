@@ -122,7 +122,7 @@ public class AnalysisSubmissionRepositoryImpl implements AnalysisSubmissionRepos
 			+ "WHERE\n"
 			+ "  p.id = :projectId\n"
 			+ "  AND asub.workflow_id IN (:workflowIds)\n"
-			+ "  AND (seqobj.sistr_typing = asub.id OR seqobj.automated_assembly = asub.id)";
+			+ "  AND (seqobj.sistr_typing = asub.id OR seqobj.phantastic_typing OR seqobj.automated_assembly = asub.id)";
 		// @formatter:on
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("projectId", projectId);

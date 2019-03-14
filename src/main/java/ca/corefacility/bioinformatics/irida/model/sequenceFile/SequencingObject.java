@@ -61,6 +61,11 @@ public abstract class SequencingObject extends IridaResourceSupport implements M
 	private AnalysisSubmission sistrTyping;
 
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "phantastic_typing", unique = true, nullable = true)
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	private AnalysisSubmission phantasticTyping;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "remote_status")
 	private RemoteStatus remoteStatus;
 
@@ -165,6 +170,15 @@ public abstract class SequencingObject extends IridaResourceSupport implements M
 
 	public void setSistrTyping(AnalysisSubmission sistrTyping) {
 		this.sistrTyping = sistrTyping;
+	}
+
+	@JsonIgnore
+	public AnalysisSubmission getPhantasticTyping() {
+		return phantasticTyping;
+	}
+
+	public void setPhantasticTyping(AnalysisSubmission phantasticTyping) {
+		this.phantasticTyping = phantasticTyping;
 	}
 
 	@Override

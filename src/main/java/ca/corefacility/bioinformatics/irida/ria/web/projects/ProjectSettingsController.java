@@ -324,6 +324,39 @@ public class ProjectSettingsController {
 	}
 
 	/**
+	 * Update the project phantastic setting for the {@link Project}
+	 *
+	 * @param projectId the ID of a {@link Project}
+	 * @param phantastic     Whether or not to do automated phantastic typing.
+	 * @param model     Model for the view
+	 * @param locale    Locale of the logged in user
+	 * @return success message if successful
+	 */
+	@RequestMapping(value = "/phantastic", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> updatePhantasticSetting(@PathVariable Long projectId, @RequestParam
+			Project.AutomatedPHANTASTICSetting phantastic,
+			final Model model, Locale locale) {
+		Project read = projectService.read(projectId);
+
+		Map<String, Object> updates = new HashMap<>();
+		updates.put("phantasticTypingUploads", phantastic);
+
+		projectService.updateProjectSettings(read, updates);
+
+		String message = null;
+		if (phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO) || phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA)) {
+			message = messageSource.getMessage("project.settings.notifications.phantastic.enabled",
+					new Object[] { read.getLabel() }, locale);
+		} else {
+			message = messageSource.getMessage("project.settings.notifications.phantastic.disabled",
+					new Object[] { read.getLabel() }, locale);
+		}
+
+		return ImmutableMap.of("result", message);
+	}
+
+	/**
 	 * Update the coverage QC setting of a {@link Project}
 	 *
 	 * @param projectId

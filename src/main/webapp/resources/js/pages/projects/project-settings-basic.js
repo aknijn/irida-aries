@@ -68,6 +68,54 @@ const projectSettings = (function(page, notifications) {
     });
   }
 
+  // Phantastic settings
+  const PHANTASTIC_TYPES = {
+    off: "OFF",
+    auto: "AUTO",
+    autoMetadata: "AUTO_METADATA"
+  };
+
+  $(".js-phantastic-checkbox").on("change", function(e) {
+    const selected = $(e.target).prop("checked");
+    if (selected) {
+      $(".js-phantastic-writes").removeAttr("disabled");
+      updatePhantasticSettings(PHANTASTIC_TYPES.auto);
+    } else {
+      $(".js-phantastic-writes")
+        .removeAttr("checked")
+        .attr("disabled", true);
+      updatePhantasticSettings(PHANTASTIC_TYPES.off);
+    }
+  });
+
+  $(".js-phantastic-writes").on("change", function(e) {
+    const selected = $(e.target).prop("checked");
+    if (selected) {
+      updatePhantasticSettings(PHANTASTIC_TYPES.autoMetadata);
+    } else {
+      updatePhantasticSettings(PHANTASTIC_TYPES.auto);
+    }
+  });
+
+  function updatePhantasticSettings(phantastic) {
+    $(".js-phantastic-checkbox").val(phantastic);
+    $.ajax({
+      url: page.urls.phantastic,
+      type: "POST",
+      data: {
+        phantastic
+      },
+      statusCode: {
+        200: function(response) {
+          notifications.show({ text: response.result });
+        }
+      },
+      fail: function() {
+        notifications.show({ text: page.i18n.error, type: "error" });
+      }
+    });
+  }
+
   $("#coverage-save").on("click", function() {
     const genomeSize = $("#genome-size").val();
     const minimumCoverage = $("#minimum-coverage").val();

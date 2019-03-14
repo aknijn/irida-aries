@@ -112,7 +112,7 @@ public class ReadAnalysisSubmissionPermission extends BasePermission<AnalysisSub
 
 		/*
 		 * If the user isn't set it might be an automated submission. Check if
-		 * this analysis is the auto assembly or sistr for a file and if they
+		 * this analysis is the auto assembly or sistr or phantastic for a file and if they
 		 * can read the file
 		 */
 		Set<SequencingObject> pairedInputFiles = sequencingObjectRepository
@@ -121,6 +121,7 @@ public class ReadAnalysisSubmissionPermission extends BasePermission<AnalysisSub
 		boolean anyMatch = pairedInputFiles.stream().filter(o -> {
 			AnalysisSubmission a = o.getAutomatedAssembly();
 			AnalysisSubmission s = o.getSistrTyping();
+			AnalysisSubmission p = o.getPhantasticTyping();
 
 			// check auto assembly
 			boolean allowed = false;
@@ -131,6 +132,11 @@ public class ReadAnalysisSubmissionPermission extends BasePermission<AnalysisSub
 			// if not check sistr
 			if (!allowed && s != null) {
 				allowed = s.equals(analysisSubmission);
+			}
+
+			// if not check phantastic
+			if (!allowed && p != null) {
+				allowed = p.equals(analysisSubmission);
 			}
 
 			return allowed;

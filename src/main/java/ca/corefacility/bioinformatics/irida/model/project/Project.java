@@ -86,6 +86,11 @@ public class Project extends IridaResourceSupport
 	@Enumerated(EnumType.STRING)
 	private AutomatedSISTRSetting sistrTypingUploads;
 
+	@NotNull
+	@Column(name="phantastic_typing_uploads")
+	@Enumerated(EnumType.STRING)
+	private AutomatedPHANTASTICSetting phantasticTypingUploads;
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "project")
 	private List<ProjectUserJoin> users;
 	
@@ -142,6 +147,7 @@ public class Project extends IridaResourceSupport
 	public Project() {
 		assembleUploads = false;
 		sistrTypingUploads = AutomatedSISTRSetting.OFF;
+		phantasticTypingUploads = AutomatedPHANTASTICSetting.OFF;
 		createdDate = new Date();
 	}
 
@@ -299,6 +305,16 @@ public class Project extends IridaResourceSupport
 		this.sistrTypingUploads = sistrTypingUploads;
 	}
 
+	@JsonIgnore
+	public AutomatedPHANTASTICSetting getPhantasticTypingUploads() {
+		return phantasticTypingUploads;
+	}
+
+	@JsonIgnore
+	public void setPhantasticTypingUploads(AutomatedPHANTASTICSetting phantasticTypingUploads) {
+		this.phantasticTypingUploads = phantasticTypingUploads;
+	}
+
 	/**
 	 * Setting for how to run automated SISTR analyses.
 	 * OFF - Do not run
@@ -306,6 +322,11 @@ public class Project extends IridaResourceSupport
 	 * AUTO_METADATA - Run and save results to metadata
 	 */
 	public enum AutomatedSISTRSetting {
+		OFF,
+		AUTO,
+		AUTO_METADATA
+	}
+	public enum AutomatedPHANTASTICSetting {
 		OFF,
 		AUTO,
 		AUTO_METADATA

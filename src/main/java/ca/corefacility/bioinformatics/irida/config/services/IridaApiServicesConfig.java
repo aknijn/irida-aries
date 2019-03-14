@@ -75,6 +75,7 @@ import ca.corefacility.bioinformatics.irida.processing.impl.DefaultFileProcessin
 import ca.corefacility.bioinformatics.irida.processing.impl.FastqcFileProcessor;
 import ca.corefacility.bioinformatics.irida.processing.impl.GzipFileProcessor;
 import ca.corefacility.bioinformatics.irida.processing.impl.SistrTypingFileProcessor;
+import ca.corefacility.bioinformatics.irida.processing.impl.PhantasticTypingFileProcessor;
 import ca.corefacility.bioinformatics.irida.repositories.analysis.submission.AnalysisSubmissionRepository;
 import ca.corefacility.bioinformatics.irida.repositories.sample.QCEntryRepository;
 import ca.corefacility.bioinformatics.irida.repositories.sequencefile.SequencingObjectRepository;
@@ -292,12 +293,14 @@ public class IridaApiServicesConfig {
 			QCEntryRepository qcRepository, GzipFileProcessor gzipFileProcessor,
 			FastqcFileProcessor fastQcFileProcessor, AssemblyFileProcessor assemblyFileProcessor,
 			ChecksumFileProcessor checksumProcessor, CoverageFileProcessor coverageProcessor,
-			SistrTypingFileProcessor sistrTypingFileProcessor) {
+			SistrTypingFileProcessor sistrTypingFileProcessor,
+			PhantasticTypingFileProcessor phantasticTypingFileProcessor) {
 
 		gzipFileProcessor.setRemoveCompressedFiles(removeCompressedFiles);
 
 		final List<FileProcessor> fileProcessors = Lists.newArrayList(checksumProcessor, gzipFileProcessor,
-				fastQcFileProcessor, coverageProcessor, assemblyFileProcessor, sistrTypingFileProcessor);
+				fastQcFileProcessor, coverageProcessor, assemblyFileProcessor, sistrTypingFileProcessor,
+				phantasticTypingFileProcessor);
 
 		if (!decompressFiles) {
 			logger.info("File decompression is disabled [file.processing.decompress=false]");

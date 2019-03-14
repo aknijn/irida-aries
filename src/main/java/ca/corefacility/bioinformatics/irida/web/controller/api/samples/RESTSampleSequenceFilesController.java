@@ -107,6 +107,7 @@ public class RESTSampleSequenceFilesController {
 	 */
 	public static final String REL_AUTOMATED_ASSEMBLY = "analysis/assembly";
 	public static final String REL_SISTR_TYPING = "analysis/sistr";
+	public static final String REL_PHANTASTIC_TYPING = "analysis/phantastic";
 
 	/**
 	 * The key used in the request to add an existing {@link SequenceFile} to a
@@ -654,6 +655,13 @@ public class RESTSampleSequenceFilesController {
 			sequencingObject
 					.add(linkTo(methodOn(RESTAnalysisSubmissionController.class).getResource(sistrTyping.getId()))
 							.withRel(REL_SISTR_TYPING));
+		}
+
+		AnalysisSubmission phantasticTyping = sequencingObject.getPhantasticTyping();
+		if (phantasticTyping != null) {
+			sequencingObject
+					.add(linkTo(methodOn(RESTAnalysisSubmissionController.class).getResource(phantasticTyping.getId()))
+							.withRel(REL_PHANTASTIC_TYPING));
 		}
 		
 		// if it's a pair, add forward/reverse links
