@@ -6,13 +6,13 @@
 <head>
   <title th:text="#{project.samples.new.title(${project.label})}">__NEW_SAMPLE__</title>
   <link rel="stylesheet" th:href="@{/resources/dist/css/project-add-sample.bundle.css}">
-  <link rel="stylesheet" th:href="@{/resources/bower_components/select2/select2.css}">
-  <link rel="stylesheet" th:href="@{/resources/bower_components/select2/select2-bootstrap.css}">
+<!--   <link rel="stylesheet" th:href="@{/resources/bower_components/select2/select2.css}">
+  <link rel="stylesheet" th:href="@{/resources/bower_components/select2/select2-bootstrap.css}"> -->
   <script th:inline="javascript">
     var PAGE = {
       urls: {
         validateName: /*[[@{/projects/{projectId}/validate-sample-name(projectId=${project.getId()})}]]*/ "/project/1/validate-sample-name",
-        taxonomy: /*[[@{/projects/ajax/taxonomy/search}]]*/ "/projects/ajax/taxonomy/search"
+        <!-- taxonomy: /*[[@{/projects/ajax/taxonomy/search}]]*/ "/projects/ajax/taxonomy/search" -->
       }
     };
   </script>
@@ -44,8 +44,13 @@
                 </div>
                 <div class="form-group">
                   <label for="organism" th:text="#{samples.details.organism}">ORGANISM_</label>
-                  <small class="text-muted pull-right">(Optional)</small>
-                  <input id="organism" name="organism" class="form-control" th:field="*{organism}" />
+                  <small class="text-muted pull-right">(Obbligatorio)</small>
+                  <!-- <input id="organism" name="organism" class="form-control" th:field="*{organism}" /> -->
+                  </br><input id="organism" name="organism" list="selorganisms" class="form-control" />
+                  <datalist id="selorganisms">
+                    <option value="Listeria monocytogenes">
+                    <option value="Shiga toxin-producing Escherichia coli">
+                  </datalist>
                 </div>
                 <button id="save-btn" class="btn btn-primary pull-right" type="submit" disabled="disabled"
                         th:text="#{project.samples.new.submit.form}">
@@ -59,7 +64,7 @@
   </div>
 
 <th:block layout:fragment="scripts">
-  <script th:src="@{/resources/bower_components/select2/select2.min.js}"></script>
+  <!-- <script th:src="@{/resources/bower_components/select2/select2.min.js}"></script> -->
   <script th:src="@{/resources/dist/js/project-add-sample.bundle.js}"></script>
 </th:block>
 </body>
