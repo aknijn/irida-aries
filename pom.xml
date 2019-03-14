@@ -2,24 +2,24 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.corefacility.bioinformatics</groupId>
-	<artifactId>irida</artifactId>
+	<artifactId>irida-aries</artifactId>
 	<packaging>war</packaging>
 	<version>19.01.1</version>
-	<name>irida</name>
+	<name>irida-aries</name>
 	<url>http://www.irida.ca</url>
 
 	<issueManagement>
-		<system>GitLab</system>
-		<url>https://github.com/phac-nml/irida/issues</url>
+		<system>GitHub</system>
+		<url>https://github.com/aknijn/irida-aries/issues</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/phac-nml/irida.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:phac-nml/irida.git</developerConnection>
-		<url>https://github.com/phac-nml/irida</url>
+		<connection>scm:git:https://github.com/aknijn/irida-aries.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:aknijn/irida-aries.git</developerConnection>
+		<url>https://github.com/aknijn/irida-aries</url>
 	</scm>
 
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2019</inceptionYear>
 
 	<developers>
 		<developer>
@@ -177,6 +177,11 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.connector.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>${mssql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -1042,6 +1047,7 @@
 		<spring.ws.test.version>2.2.0.RELEASE</spring.ws.test.version>
 		<mockito.version>1.10.19</mockito.version>
 		<mysql.connector.version>5.1.31</mysql.connector.version>
+		<mssql.version>7.2.0.jre8</mssql.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
 		<jsr250.api.version>1.0</jsr250.api.version>
 		<spring.test.dbunit.version>1.1.0</spring.test.dbunit.version>
