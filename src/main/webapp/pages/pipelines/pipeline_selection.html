@@ -18,7 +18,7 @@
             <div class="panel-body">
                 <p th:text="${flow.description}"></p>
             </div>
-            <div class="panel-footer text-right" th:if="${counts.projects>0}">
+            <div class="panel-footer text-right" th:if="${counts.samples} >= ${flow.minSamples}">
                 <a th:id="${flow.name + '_btn'}" th:href="@{'/pipelines/' + ${flow.id}}"
                    class="btn btn-default btn-sm" th:text="#{form.btn.select}">Select
                 </a>
