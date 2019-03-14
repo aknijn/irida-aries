@@ -117,7 +117,7 @@
 							</div>
 						</td>
 					</tr>
-					<tr class="paired_end paired_end__reverse sequence-file-row"  th:unless="${pair.getReverseSequenceFile().getLabel()=='dummy.fastq'}"
+					<tr class="paired_end paired_end__reverse sequence-file-row" th:unless="${pair.getReverseSequenceFile().getLabel()=='dummy.fastq'}"
 						th:with="file=${pair.getReverseSequenceFile()}">
 						<td
 							th:replace="templates/_sequenceFile :: sequenceFileTableLayout (object=${pair},file=${file},icon='reverse',relative='true')"></td>

@@ -256,7 +256,7 @@
                                                         </td>
                                                         <td th:replace="templates/_sequenceFile :: sequenceFileTableLayout (object=${pair},file=${pair.getForwardSequenceFile()},icon='forward',relative='false')"></td>
                                                     </tr>
-                                                    <tr class="paired_end paired_end__reverse">
+                                                    <tr class="paired_end paired_end__reverse" th:unless="${pair.getReverseSequenceFile().getLabel()=='dummy.fastq'}">
                                                         <td th:replace="templates/_sequenceFile :: sequenceFileTableLayout (object=${pair},file=${pair.getReverseSequenceFile()},icon='reverse',relative='false')"></td>
                                                     </tr>
                                                 </th:block>

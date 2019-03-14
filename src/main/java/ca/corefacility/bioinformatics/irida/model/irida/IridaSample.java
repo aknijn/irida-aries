@@ -120,6 +120,14 @@ public interface IridaSample {
 	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
 	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
 	public String getGeographicLocationName();
+	@NotNull(message = "{sample.geographic.location.name.notnull}", groups = NCBISubmission.class)
+	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
+	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
+	public String getGeographicLocationName2();
+	@NotNull(message = "{sample.geographic.location.name.notnull}", groups = NCBISubmission.class)
+	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
+	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
+	public String getGeographicLocationName3();
 
 	/**
 	 * Describes the physical, environmental and/or local geographical source of

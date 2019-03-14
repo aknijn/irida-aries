@@ -177,7 +177,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="btn-group btn-group-sm">
+                <div class="btn-group btn-group-sm" th:if="${canReadProjectSettings}">
                     <div class="dropdown">
                         <button class="btn btn-default btn-sm t-export-samples-btn" data-toggle="dropdown">
                             <th:block th:text="#{project.samples.export.label}"/>

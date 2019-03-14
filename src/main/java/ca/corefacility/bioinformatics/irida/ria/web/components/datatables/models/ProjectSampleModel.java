@@ -30,6 +30,8 @@ public class ProjectSampleModel extends AbstractExportModel {
 			"collectedBy",
 			"collectionDate",
 			"geographicLocationName",
+			"geographicLocationName2",
+			"geographicLocationName3",
 			"isolationSource",
 			"latitude",
 			"longitude",
@@ -93,6 +95,14 @@ public class ProjectSampleModel extends AbstractExportModel {
 
 	public String getGeographicLocationName() {
 		return checkNullStrings(sample.getGeographicLocationName());
+	}
+
+	public String getGeographicLocationName2() {
+		return checkNullStrings(sample.getGeographicLocationName2());
+	}
+
+	public String getGeographicLocationName3() {
+		return checkNullStrings(sample.getGeographicLocationName3());
 	}
 
 	public String getIsolationSource() {

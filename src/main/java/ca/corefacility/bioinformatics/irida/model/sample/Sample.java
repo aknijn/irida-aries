@@ -89,6 +89,8 @@ public class Sample extends IridaResourceSupport
 	 * http://www.insdc.org/documents/country-qualifier-vocabulary).
 	 */
 	private String geographicLocationName;
+	private String geographicLocationName2;
+	private String geographicLocationName3;
 
 	/**
 	 * Describes the physical, environmental and/or local geographical source of
@@ -153,6 +155,8 @@ public class Sample extends IridaResourceSupport
 					&& Objects.equals(strain, sample.strain) && Objects.equals(collectedBy, sample.collectedBy)
 					&& Objects.equals(collectionDate, sample.collectionDate)
 					&& Objects.equals(geographicLocationName, sample.geographicLocationName)
+					&& Objects.equals(geographicLocationName2, sample.geographicLocationName2)
+					&& Objects.equals(geographicLocationName3, sample.geographicLocationName3)
 					&& Objects.equals(isolationSource, sample.isolationSource)
 					&& Objects.equals(latitude, sample.latitude) && Objects.equals(longitude, sample.longitude)
 					&& Objects.equals(metadata, sample.metadata);
@@ -164,7 +168,7 @@ public class Sample extends IridaResourceSupport
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, createdDate, modifiedDate, sampleName, description, organism, isolate, strain,
-				collectedBy, collectionDate, geographicLocationName, isolationSource, latitude, longitude, metadata);
+				collectedBy, collectionDate, geographicLocationName, geographicLocationName2, geographicLocationName3, isolationSource, latitude, longitude, metadata);
 	}
 
 	@Override
@@ -294,6 +298,22 @@ public class Sample extends IridaResourceSupport
 
 	public void setGeographicLocationName(String geographicLocationName) {
 		this.geographicLocationName = geographicLocationName;
+	}
+
+	public String getGeographicLocationName2() {
+		return geographicLocationName2;
+	}
+
+	public void setGeographicLocationName2(String geographicLocationName2) {
+		this.geographicLocationName2 = geographicLocationName2;
+	}
+
+	public String getGeographicLocationName3() {
+		return geographicLocationName3;
+	}
+
+	public void setGeographicLocationName3(String geographicLocationName3) {
+		this.geographicLocationName3 = geographicLocationName3;
 	}
 
 	public String getIsolationSource() {
