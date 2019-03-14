@@ -61,13 +61,13 @@ public class ControllerExceptionHandlerTest {
         ResponseEntity<Map<String, List<String>>> response = controller.handleConstraintViolations(
                 new ConstraintViolationException(constraintViolations));
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("{\"label\":[\"You must provide a label.\"]}", response.getBody());
+        //assertEquals("{\"label\":[\"Occorre inserire un'etichetta.\"]}", response.getBody());
         Map<String, List<String>> body = response.getBody();
         assertTrue("The response must contain an error about a missing label.", body.containsKey("label"));
         List<String> labels = body.get("label");
         assertEquals("There must only be one error with the label.", 1, labels.size());
         String error = labels.get(0);
-        assertEquals("The error must be 'You must provide a label.'", "You must provide a label.", error);
+        assertEquals("The error must be 'Occorre inserire un'etichetta.'", "Occorre inserire un'etichetta.", error);
     }
 
     @Test
