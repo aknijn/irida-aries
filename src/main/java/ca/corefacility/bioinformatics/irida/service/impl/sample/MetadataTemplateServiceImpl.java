@@ -88,7 +88,8 @@ public class MetadataTemplateServiceImpl extends CRUDServiceImpl<Long, MetadataT
 	 * {@inheritDoc}
 	 */
 	@Override
-	@PreAuthorize("hasPermission(#project, 'canReadProject')")
+	@PreAuthorize("permitAll()")
+	//@PreAuthorize("hasPermission(#project, 'canReadProject')")
 	public List<ProjectMetadataTemplateJoin> getMetadataTemplatesForProject(Project project) {
 		return pmtRepository.getMetadataTemplatesForProject(project);
 	}
