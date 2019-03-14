@@ -66,6 +66,16 @@ function AnalysisService($http) {
       return result.data;
     });
   };
+
+  /**
+   * Get the results from a PHANtAsTiC analysis to preview in the browser.
+   */
+  svc.getPhantasticResults = function() {
+    return $http.get(window.PAGE.URLS.phantastic).then(function(result) {
+      return result.data;
+    });
+  };
+
   /**
    * Get Galaxy JobError info from server
    * @param vm JobErrorsController object for reporting progress of getting JobError info
@@ -225,6 +235,7 @@ function StateController(AnalysisService) {
 
 function PreviewController(analysisService) {
   this.newick = window.PAGE.NEWICK;
+  this.branch = window.PAGE.BRANCH;
   const vm = this;
   const $tablesContainer = $("#js-file-preview-container");
   const tabExtSet = new Set(["tab", "tsv", "tabular", "csv"]);
@@ -277,6 +288,28 @@ function SistrController(analysisService) {
       vm.sample_information = sample_information;
       vm.cgMLST_predictions = cgMLST_predictions;
       vm.mash_predictions = mash_predictions;
+      vm.parse_results_error = result["parse_results_error"];
+    }
+  });
+}
+
+function PhantasticController(analysisService) {
+  const vm = this;
+
+  analysisService.getPhantasticResults().then(function(result) {
+    if (result["parse_results_error"]) {
+      vm.parse_results_error = true;
+    } else {
+      const sample_information = {};
+      sample_information["name"] = result["sample_name"];
+      sample_information["qc_status"] = result["qc_status"];
+      sample_information["qc_messages"] = result["qc_messages"].split("|");
+      sample_information["qc_pass"] = result["qc_status"] == "Passed";
+      sample_information["qc_warning"] = result["qc_status"] == "Warning";
+      sample_information["qc_fail"] = result["qc_status"] == "Failed";
+
+      vm.result = result;
+      vm.sample_information = sample_information;
       vm.parse_results_error = result["parse_results_error"];
     }
   });
@@ -396,6 +429,12 @@ const iridaAnalysis = angular
           templateUrl: "sistr.html",
           controllerAs: "sistrCtrl",
           controller: ["AnalysisService", SistrController]
+        })
+        .state("phantastic", {
+          url: "/phantastic",
+          templateUrl: "phantastic.html",
+          controllerAs: "phantasticCtrl",
+          controller: ["AnalysisService", PhantasticController]
         })
         .state("bio_hansel", {
           url: "/bio_hansel",
