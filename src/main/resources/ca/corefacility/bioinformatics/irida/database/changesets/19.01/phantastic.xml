@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="phantastic" author="knijn">
+
+		<addColumn tableName="sequencing_object">
+			<column name="phantastic_typing" type="bigint(20)" />
+		</addColumn>
+
+		<addColumn tableName="sequencing_object_AUD">
+			<column name="phantastic_typing" type="bigint(20)" />
+		</addColumn>
+
+		<addColumn tableName="project">
+			<column name="phantastic_typing_uploads" type="varchar(255)" >
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+		<addColumn tableName="project_AUD">
+			<column name="phantastic_typing_uploads" type="varchar(255)" />
+		</addColumn>
+
+		<addColumn tableName="sample">
+			<column name="geographicLocationName2" type="varchar(255)" />
+		</addColumn>
+
+		<addColumn tableName="sample_AUD">
+			<column name="geographicLocationName2" type="varchar(255)" />
+		</addColumn>
+
+		<addColumn tableName="sample">
+			<column name="geographicLocationName3" type="varchar(255)" />
+		</addColumn>
+
+		<addColumn tableName="sample_AUD">
+			<column name="geographicLocationName3" type="varchar(255)" />
+		</addColumn>
+
+	</changeSet>
+
+</databaseChangeLog>
