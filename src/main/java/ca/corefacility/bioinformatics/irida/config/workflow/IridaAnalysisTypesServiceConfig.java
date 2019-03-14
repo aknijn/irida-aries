@@ -36,7 +36,10 @@ public class IridaAnalysisTypesServiceConfig {
 	public AnalysisTypesService analysisTypesService() {
 		// defines AnalysisTypes built into IRIDA
 		Set<AnalysisType> runnableAnalysisTypes = Sets.newHashSet(BuiltInAnalysisTypes.PHYLOGENOMICS,
-				BuiltInAnalysisTypes.SISTR_TYPING, BuiltInAnalysisTypes.ASSEMBLY_ANNOTATION,
+				BuiltInAnalysisTypes.SISTR_TYPING, 
+				BuiltInAnalysisTypes.PHANTASTIC_TYPING,
+                BuiltInAnalysisTypes.ALLELE_OBSERVER, BuiltInAnalysisTypes.SNP_OBSERVER, BuiltInAnalysisTypes.VIRULOTYPER,
+                BuiltInAnalysisTypes.ASSEMBLY_ANNOTATION,
 				BuiltInAnalysisTypes.BIO_HANSEL, BuiltInAnalysisTypes.ASSEMBLY_ANNOTATION_COLLECTION,
 				BuiltInAnalysisTypes.REFSEQ_MASHER, BuiltInAnalysisTypes.MLST_MENTALIST);
 		Set<AnalysisType> otherAnalysisTypes = Sets.newHashSet(BuiltInAnalysisTypes.DEFAULT,
