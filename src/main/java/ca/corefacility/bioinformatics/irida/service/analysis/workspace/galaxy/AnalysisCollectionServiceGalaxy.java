@@ -25,6 +25,12 @@ import com.github.jmchilton.blend4j.galaxy.beans.collection.request.CollectionEl
 import com.github.jmchilton.blend4j.galaxy.beans.collection.request.HistoryDatasetElement;
 import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionResponse;
 
+//ISS
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.io.IOException;
+
 /**
  * A service for constructing dataset collections of input files for workflows
  * in galaxy.
@@ -125,55 +131,103 @@ public class AnalysisCollectionServiceGalaxy {
 		CollectionDescription description = new CollectionDescription();
 		description.setCollectionType(DatasetCollectionType.LIST_PAIRED.toString());
 		description.setName(COLLECTION_NAME_PAIRED);
-
-		Map<Sample, Path> samplesMapPairForward = new HashMap<>();
-		Map<Sample, Path> samplesMapPairReverse = new HashMap<>();
-		Set<Path> pathsToUpload = new HashSet<>();
-		for (Sample sample : sampleSequenceFilesPaired.keySet()) {
-			IridaSequenceFilePair sequenceFilePair = sampleSequenceFilesPaired.get(sample);
-			IridaSequenceFile fileForward = sequenceFilePair.getForwardSequenceFile();
-			IridaSequenceFile fileReverse = sequenceFilePair.getReverseSequenceFile();
-
-			samplesMapPairForward.put(sample, fileForward.getFile());
-			samplesMapPairReverse.put(sample, fileReverse.getFile());
-			pathsToUpload.add(fileForward.getFile());
-			pathsToUpload.add(fileReverse.getFile());
-		}
-
-		// upload files to library and then to a history
-		Map<Path, String> pathHistoryDatasetId = galaxyHistoriesService.filesToLibraryToHistory(pathsToUpload,
-				InputFileType.FASTQ_SANGER, workflowHistory, workflowLibrary, DataStorage.LOCAL);
-
-		for (Sample sample : sampleSequenceFilesPaired.keySet()) {
-			Path fileForward = samplesMapPairForward.get(sample);
-			Path fileReverse = samplesMapPairReverse.get(sample);
-
-			if (!pathHistoryDatasetId.containsKey(fileForward)) {
-				throw new UploadException("Error, no corresponding history item found for " + fileForward);
-			} else if (!pathHistoryDatasetId.containsKey(fileReverse)) {
-				throw new UploadException("Error, no corresponding history item found for " + fileReverse);
+        try{
+			Path fileForwardList = Files.createTempFile("fileForwardList", ".fastq");
+			Path fileReverseList = Files.createTempFile("fileReverseList", ".fastq");
+			Map<Sample, Path> samplesMapPairForward = new HashMap<>();
+			Map<Sample, Path> samplesMapPairReverse = new HashMap<>();
+			Set<Path> pathsToUpload = new HashSet<>();
+			if (sampleSequenceFilesPaired.size() == 1) {
+				for (Sample sample : sampleSequenceFilesPaired.keySet()) {
+					IridaSequenceFilePair sequenceFilePair = sampleSequenceFilesPaired.get(sample);
+					IridaSequenceFile fileForward = sequenceFilePair.getForwardSequenceFile();
+					IridaSequenceFile fileReverse = sequenceFilePair.getReverseSequenceFile();
+		
+					samplesMapPairForward.put(sample, fileForward.getFile());
+					samplesMapPairReverse.put(sample, fileReverse.getFile());
+					pathsToUpload.add(fileForward.getFile());
+					pathsToUpload.add(fileReverse.getFile());
+				}
 			} else {
-				String datasetHistoryIdForward = pathHistoryDatasetId.get(fileForward);
-				String datasetHistoryIdReverse = pathHistoryDatasetId.get(fileReverse);
-
-				CollectionElement pairedElement = new CollectionElement();
-				pairedElement.setName(sample.getSampleName());
-				pairedElement.setCollectionType(DatasetCollectionType.PAIRED.toString());
-
-				HistoryDatasetElement datasetElementForward = new HistoryDatasetElement();
-				datasetElementForward.setId(datasetHistoryIdForward);
-				datasetElementForward.setName(FORWARD_NAME);
-				pairedElement.addCollectionElement(datasetElementForward);
-
-				HistoryDatasetElement datasetElementReverse = new HistoryDatasetElement();
-				datasetElementReverse.setId(datasetHistoryIdReverse);
-				datasetElementReverse.setName(REVERSE_NAME);
-				pairedElement.addCollectionElement(datasetElementReverse);
-
-				description.addDatasetElement(pairedElement);
+				BufferedWriter writer_1 = new BufferedWriter(new FileWriter(fileForwardList.toFile()));
+				BufferedWriter writer_2 = new BufferedWriter(new FileWriter(fileReverseList.toFile()));
+				for (Sample sample : sampleSequenceFilesPaired.keySet()) {
+					IridaSequenceFilePair sequenceFilePair = sampleSequenceFilesPaired.get(sample);
+					IridaSequenceFile fileForward = sequenceFilePair.getForwardSequenceFile();
+					IridaSequenceFile fileReverse = sequenceFilePair.getReverseSequenceFile();
+					writer_1.append(fileForward.getFile().toString()).append("\n");
+					writer_2.append(fileReverse.getFile().toString()).append("\n");
+				};
+				writer_1.close();
+				writer_2.close();
+				pathsToUpload.add(fileForwardList);
+				pathsToUpload.add(fileReverseList);
 			}
+	
+			// upload files to library and then to a history
+			Map<Path, String> pathHistoryDatasetId = galaxyHistoriesService.filesToLibraryToHistory(pathsToUpload,
+					InputFileType.FASTQ_SANGER, workflowHistory, workflowLibrary, DataStorage.LOCAL);
+	
+			if (sampleSequenceFilesPaired.size() == 1) {
+				for (Sample sample : sampleSequenceFilesPaired.keySet()) {
+					Path fileForward = samplesMapPairForward.get(sample);
+					Path fileReverse = samplesMapPairReverse.get(sample);
+		
+					if (!pathHistoryDatasetId.containsKey(fileForward)) {
+						throw new UploadException("Error, no corresponding history item found for " + fileForward);
+					} else if (!pathHistoryDatasetId.containsKey(fileReverse)) {
+						throw new UploadException("Error, no corresponding history item found for " + fileReverse);
+					} else {
+						String datasetHistoryIdForward = pathHistoryDatasetId.get(fileForward);
+						String datasetHistoryIdReverse = pathHistoryDatasetId.get(fileReverse);
+		
+						CollectionElement pairedElement = new CollectionElement();
+						pairedElement.setName(sample.getSampleName());
+						pairedElement.setCollectionType(DatasetCollectionType.PAIRED.toString());
+		
+						HistoryDatasetElement datasetElementForward = new HistoryDatasetElement();
+						datasetElementForward.setId(datasetHistoryIdForward);
+						datasetElementForward.setName(FORWARD_NAME);
+						pairedElement.addCollectionElement(datasetElementForward);
+		
+						HistoryDatasetElement datasetElementReverse = new HistoryDatasetElement();
+						datasetElementReverse.setId(datasetHistoryIdReverse);
+						datasetElementReverse.setName(REVERSE_NAME);
+						pairedElement.addCollectionElement(datasetElementReverse);
+		
+						description.addDatasetElement(pairedElement);
+					}
+				}
+			} else {
+				if (!pathHistoryDatasetId.containsKey(fileForwardList)) {
+					throw new UploadException("Error, no corresponding history item found for " + fileForwardList);
+				} else if (!pathHistoryDatasetId.containsKey(fileReverseList)) {
+					throw new UploadException("Error, no corresponding history item found for " + fileReverseList);
+				} else {
+					String datasetHistoryIdForward = pathHistoryDatasetId.get(fileForwardList);
+					String datasetHistoryIdReverse = pathHistoryDatasetId.get(fileReverseList);
+	
+					CollectionElement pairedElement = new CollectionElement();
+					pairedElement.setName("sampleSequenceFiles");
+					pairedElement.setCollectionType(DatasetCollectionType.PAIRED.toString());
+	
+					HistoryDatasetElement datasetElementForward = new HistoryDatasetElement();
+					datasetElementForward.setId(datasetHistoryIdForward);
+					datasetElementForward.setName(FORWARD_NAME);
+					pairedElement.addCollectionElement(datasetElementForward);
+	
+					HistoryDatasetElement datasetElementReverse = new HistoryDatasetElement();
+					datasetElementReverse.setId(datasetHistoryIdReverse);
+					datasetElementReverse.setName(REVERSE_NAME);
+					pairedElement.addCollectionElement(datasetElementReverse);
+	
+					description.addDatasetElement(pairedElement);
+				}
+			}
+		} catch (IOException e){
+			System.out.println("IOException!");
 		}
-
 		return galaxyHistoriesService.constructCollection(description, workflowHistory);
 	}
+
 }
