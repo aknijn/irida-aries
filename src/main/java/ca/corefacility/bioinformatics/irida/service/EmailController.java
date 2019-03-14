@@ -43,6 +43,15 @@ public interface EmailController {
 	public void sendSubscriptionUpdateEmail(User user, List<ProjectEvent> events) throws MailSendException;
 
 	/**
+	 * Send a notification email to the given {@link User} for the given analysis {@link String}
+	 *
+	 * @param user   The user to email
+	 * @param analysisName the name of the analysis
+	 * @throws MailSendException if the email failed to send
+	 */
+	public void sendEndOfAnalysisEmail(String recipientEmailAddresses, String analysisName, String sampleCode, String sampleSpecies, String clusters) throws MailSendException;
+
+	/**
 	 * Send an e-mail to the administrative user with an exception when there's
 	 * a serious storage related exception.
 	 *

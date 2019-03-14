@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class EmailControllerImpl implements EmailController {
 	public static final String WELCOME_TEMPLATE = "welcome-email";
 	public static final String RESET_TEMPLATE = "password-reset-link";
 	public static final String SUBSCRIPTION_TEMPLATE = "subscription-email";
+	public static final String ANALYSIS_TEMPLATE = "endofanalysis-email";
 
 	private @Value("${mail.server.email}") String serverEmail;
 
@@ -244,6 +246,62 @@ public class EmailControllerImpl implements EmailController {
 		} catch (final MessagingException e) {
 			logger.error("Error trying to send exception email.", e);
 			throw new MailSendException("Failed to send e-mail for NCBI SRA related-exception.", e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusters) throws MailSendException {
+		logger.debug("Sending end-of-analysis email to " + recipients);
+		logger.debug("sampleCode: " + sampleCode);
+		logger.debug("clusters: " + clusters.length());
+
+		Locale locale = LocaleContextHolder.getLocale();
+        int msgpriority;
+        String header;
+
+		String sampleSpeciesShort = sampleSpecies;
+		switch (sampleSpecies) {
+			case "Shiga toxin-producing Escherichia coli": 
+				 sampleSpeciesShort = "STEC";
+				 break;
+			case "Listeria monocytogenes": 
+				 sampleSpeciesShort = "Listeria";
+				 break;
+		}
+
+		final Context ctx = new Context(locale);
+		ctx.setVariable("ngsEmail", serverEmail);
+		ctx.setVariable("serverURL", serverURL);
+		ctx.setVariable("analysisName", analysisName);
+        if (clusters.length() > 0) {
+            msgpriority = 1;
+            header = sampleSpeciesShort + ": Cluster!";
+       		ctx.setVariable("header", header);
+            ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte di un cluster con i seguenti campioni: " + clusters + ".");
+        }
+		else {
+            msgpriority = 3;
+            header = sampleSpeciesShort + ": No cluster";
+       		ctx.setVariable("header", header);
+            ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster.");
+        }
+		try {
+			final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+			final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+			message.setSubject(messageSource.getMessage("email.analysis.subject", null, locale) + " " + header);
+			message.setFrom(serverEmail);
+			message.setTo(InternetAddress.parse(recipients));
+            message.setPriority(msgpriority);
+
+			final String htmlContent = templateEngine.process(ANALYSIS_TEMPLATE, ctx);
+			message.setText(htmlContent, true);
+			javaMailSender.send(mimeMessage);
+		} catch (final Exception e) {
+			logger.error("End-of-analysis email failed to send", e);
+			throw new MailSendException("Failed to send e-mail.", e);
 		}
 	}
 }
