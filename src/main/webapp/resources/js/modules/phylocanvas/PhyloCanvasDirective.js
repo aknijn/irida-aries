@@ -5,7 +5,7 @@
  * This Directive is a wrapper for the PhyloCanvas Library.
  *
  * Expected use:
- * <phylocanvas shape="circular" config="{}" newick="[newickString]">
+ * <phylocanvas shape="circular" config="{}" newick="[newickString]" branch="[sample_id]">
  *   <phylocanvas-controls>
  *     <phylocanvas-control shape="rectangular" text="Rectangular"></phylocanvas-control>
  *     <phylocanvas-control shape="circular" text="Circular"></phylocanvas-control>
@@ -46,6 +46,9 @@
           phylo.setTreeType(scope.shape);
           phylo.contextMenu = false;
           phylo.load(attrs.newick);
+          phylo.draw();
+          phylo.backColour = true;
+          phylo.setNodeColourAndShape(attrs.branch, 'red'); 
         },
         controller: [
           "$scope",
