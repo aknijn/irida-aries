@@ -10,6 +10,14 @@ public class BuiltInAnalysisTypes {
 
 	public static final AnalysisType SISTR_TYPING = new AnalysisType("SISTR_TYPING");
 
+	public static final AnalysisType PHANTASTIC_TYPING = new AnalysisType("PHANTASTIC_TYPING");
+
+	public static final AnalysisType ALLELE_OBSERVER = new AnalysisType("ALLELE_OBSERVER");
+
+	public static final AnalysisType SNP_OBSERVER = new AnalysisType("SNP_OBSERVER");
+
+	public static final AnalysisType VIRULOTYPER = new AnalysisType("VIRULOTYPER");
+
 	public static final AnalysisType ASSEMBLY_ANNOTATION = new AnalysisType("ASSEMBLY_ANNOTATION");
 
 	public static final AnalysisType BIO_HANSEL = new AnalysisType("BIO_HANSEL");
