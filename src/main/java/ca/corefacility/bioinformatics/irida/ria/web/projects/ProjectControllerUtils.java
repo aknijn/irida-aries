@@ -7,6 +7,7 @@ import ca.corefacility.bioinformatics.irida.model.user.Role;
 import ca.corefacility.bioinformatics.irida.model.user.User;
 import ca.corefacility.bioinformatics.irida.security.permissions.project.ManageLocalProjectSettingsPermission;
 import ca.corefacility.bioinformatics.irida.security.permissions.project.ProjectOwnerPermission;
+import ca.corefacility.bioinformatics.irida.security.permissions.project.ReadProjectSettingsPermission;
 import ca.corefacility.bioinformatics.irida.service.sample.MetadataTemplateService;
 import ca.corefacility.bioinformatics.irida.service.user.UserService;
 import com.google.common.collect.ImmutableMap;
@@ -33,6 +34,7 @@ public class ProjectControllerUtils {
 	private final UserService userService;
 	
 	private final ProjectOwnerPermission projectOwnerPermission;
+	private final ReadProjectSettingsPermission readProjectSettingsPermission;
 	private final ManageLocalProjectSettingsPermission projectMembersPermission;
 	private final MetadataTemplateService metadataTemplateService;
 
@@ -40,10 +42,12 @@ public class ProjectControllerUtils {
 	public ProjectControllerUtils(final UserService userService,
 			MetadataTemplateService metadataTemplateService,
 			final ProjectOwnerPermission projectOwnerPermission,
+			final ReadProjectSettingsPermission readProjectSettingsPermission,
 			final ManageLocalProjectSettingsPermission projectMembersPermission) {
 		this.userService = userService;
 		this.metadataTemplateService = metadataTemplateService;
 		this.projectOwnerPermission = projectOwnerPermission;
+		this.readProjectSettingsPermission = readProjectSettingsPermission;
 		this.projectMembersPermission = projectMembersPermission;
 	}
 
@@ -71,6 +75,9 @@ public class ProjectControllerUtils {
 		boolean isOwner = projectOwnerPermission.isAllowed(authentication, project);
 		model.addAttribute("isOwner", isOwner);
 		
+		boolean canReadProjectSettings = readProjectSettingsPermission.isAllowed(authentication, project);
+		model.addAttribute("canReadProjectSettings", canReadProjectSettings);
+
 		boolean isOwnerAllowRemote = projectMembersPermission.isAllowed(authentication, project);
 		model.addAttribute("isOwnerAllowRemote", isOwnerAllowRemote);
 

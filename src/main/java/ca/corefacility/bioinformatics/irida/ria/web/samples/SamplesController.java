@@ -42,6 +42,7 @@ import ca.corefacility.bioinformatics.irida.model.sequenceFile.SingleEndSequence
 import ca.corefacility.bioinformatics.irida.model.user.User;
 import ca.corefacility.bioinformatics.irida.ria.web.BaseController;
 import ca.corefacility.bioinformatics.irida.security.permissions.sample.UpdateSamplePermission;
+import ca.corefacility.bioinformatics.irida.security.permissions.sample.ReadSampleCollectionPermission;
 import ca.corefacility.bioinformatics.irida.service.ProjectService;
 import ca.corefacility.bioinformatics.irida.service.SequencingObjectService;
 import ca.corefacility.bioinformatics.irida.service.sample.MetadataTemplateService;
@@ -74,6 +75,7 @@ public class SamplesController extends BaseController {
 	// Model attributes
 	private static final String MODEL_ATTR_SAMPLE = "sample";
 	public static final String MODEL_ATTR_CAN_MANAGE_SAMPLE = "canManageSample";
+	public static final String MODEL_ATTR_CAN_READ_SAMPLE_COLLECTION = "canReadSampleCollection";
 
 	// Page Names
 	private static final String SAMPLES_DIR = "samples/";
@@ -92,10 +94,12 @@ public class SamplesController extends BaseController {
 	public static final String COLLECTION_DATE = "collectionDate";
 	public static final String ISOLATION_SOURCE = "isolationSource";
 	public static final String GEOGRAPHIC_LOCATION_NAME = "geographicLocationName";
+	public static final String GEOGRAPHIC_LOCATION_NAME2 = "geographicLocationName2";
+	public static final String GEOGRAPHIC_LOCATION_NAME3 = "geographicLocationName3";
 	public static final String LATITUDE = "latitude";
 	public static final String LONGITUDE = "longitude";
 	private static final ImmutableList<String> FIELDS = ImmutableList.of(SAMPLE_NAME, DESCRIPTION, ORGANISM, ISOLATE,
-			STRAIN, COLLECTED_BY, ISOLATION_SOURCE, GEOGRAPHIC_LOCATION_NAME, LATITUDE, LONGITUDE);
+			STRAIN, COLLECTED_BY, ISOLATION_SOURCE, GEOGRAPHIC_LOCATION_NAME, GEOGRAPHIC_LOCATION_NAME2, GEOGRAPHIC_LOCATION_NAME3, LATITUDE, LONGITUDE);
 
 	// Services
 	private final SampleService sampleService;
@@ -106,17 +110,20 @@ public class SamplesController extends BaseController {
 	private final MetadataTemplateService metadataTemplateService;
 
 	private final UpdateSamplePermission updateSamplePermission;
+	private final ReadSampleCollectionPermission readSampleCollectionPermission;
 
 	private final MessageSource messageSource;
 
 	@Autowired
 	public SamplesController(SampleService sampleService, ProjectService projectService,
 			SequencingObjectService sequencingObjectService, UpdateSamplePermission updateSamplePermission,
+            ReadSampleCollectionPermission readSampleCollectionPermission,
 			MetadataTemplateService metadataTemplateService, MessageSource messageSource) {
 		this.sampleService = sampleService;
 		this.projectService = projectService;
 		this.sequencingObjectService = sequencingObjectService;
 		this.updateSamplePermission = updateSamplePermission;
+        this.readSampleCollectionPermission = readSampleCollectionPermission;
 		this.metadataTemplateService = metadataTemplateService;
 		this.messageSource = messageSource;
 	}
@@ -141,6 +148,7 @@ public class SamplesController extends BaseController {
 		model.addAttribute(MODEL_ATTR_SAMPLE, sample);
 		model.addAttribute(MODEL_ATTR_ACTIVE_NAV, ACTIVE_NAV_DETAILS);
 		model.addAttribute(MODEL_ATTR_CAN_MANAGE_SAMPLE, isProjectManagerForSample(sample));
+		model.addAttribute(MODEL_ATTR_CAN_READ_SAMPLE_COLLECTION, isProjectManagerCollaboratorForSample(sample));
 		return SAMPLE_PAGE;
 	}
 
@@ -607,10 +615,17 @@ public class SamplesController extends BaseController {
 	 * @throws IOException
 	 */
 	private void createSequenceFileInSample(MultipartFile file, Sample sample) throws IOException {
+/* 		SequenceFile sequenceFile = createSequenceFile(file);
+		sequencingObjectService.createSequencingObjectInSample(new SingleEndSequenceFile(sequenceFile), sample); */
 		SequenceFile sequenceFile = createSequenceFile(file);
-		sequencingObjectService.createSequencingObjectInSample(new SingleEndSequenceFile(sequenceFile), sample);
+		Path temp2 = Files.createTempDirectory(null);
+		Path target2 = temp2.resolve("dummy.fastq");
+        Files.createFile(target2);
+        Files.write(target2, "dummy".getBytes());
+		SequenceFile dummyFile = new SequenceFile(target2);
+        dummyFile.addOptionalProperty("dummy","true");
+		sequencingObjectService.createSequencingObjectInSample(new SequenceFilePair(sequenceFile, dummyFile), sample);
 	}
-
 	/**
 	 * Create {@link SequenceFile}'s then add them as {@link SequenceFilePair}
 	 * to a {@link Sample}
@@ -657,5 +672,19 @@ public class SamplesController extends BaseController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		return updateSamplePermission.isAllowed(authentication, sample);
+	}
+
+	/**
+	 * Test if the {@link User} is a {@link ProjectRole#PROJECT_OWNER/PROJECT_USER} for the
+	 * given {@link Sample}
+	 *
+	 * @param sample
+	 *            The sample to test
+	 * @return true/false if they have view all permissions for the sample
+	 */
+	private boolean isProjectManagerCollaboratorForSample(Sample sample) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		return readSampleCollectionPermission.isAllowed(authentication, sample);
 	}
 }

@@ -173,7 +173,6 @@
                                     </a>
                                 </li>
                                 <li role="seperator" class="divider"></li>
-                            </th:block>
 
                             <li>
                                 <a th:href="@{/groups}" th:text="#{nav.main.groups-list}">
@@ -191,6 +190,7 @@
                                 <a th:href="@{/remote_api}" th:text="#{nav.main.remoteapis}">_Remote IRIDA
                                     Connections_</a>
                             </li>
+                            </th:block>
 
                             <th:block sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TECHNICIAN')">
                                 <li role="seperator" class="divider"></li>

@@ -49,7 +49,7 @@ public class ProjectMembersController {
 	private final MessageSource messageSource;
 	private final UserGroupService userGroupService;
 
-	private static final List<ProjectRole> projectRoles = ImmutableList.of(ProjectRole.PROJECT_USER,
+	private static final List<ProjectRole> projectRoles = ImmutableList.of(ProjectRole.PROJECT_USER, ProjectRole.PROJECT_VIEWER,
 			ProjectRole.PROJECT_OWNER);
 
 	@Autowired
