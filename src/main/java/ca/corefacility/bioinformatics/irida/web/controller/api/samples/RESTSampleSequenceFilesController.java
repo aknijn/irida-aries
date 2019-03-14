@@ -393,76 +393,61 @@ public class RESTSampleSequenceFilesController {
 		logger.trace("Read sample " + sampleId);
 		// prepare a new sequence file using the multipart file supplied by the
 		// caller
-		Path temp = Files.createTempDirectory(null);
-		Path target = temp.resolve(file.getOriginalFilename());
+		Path temp1 = Files.createTempDirectory(null);
+		Path target1 = temp1.resolve(file.getOriginalFilename());
+		Path temp2 = Files.createTempDirectory(null);
+		Path target2 = temp2.resolve("dummy.fastq");
 		// Changed to MultipartFile.transerTo(File) because it was truncating
 		// large files to 1039956336 bytes
 		// target = Files.write(target, file.getBytes());
-		file.transferTo(target.toFile());
-		logger.trace("Wrote temp file to " + target);
+		file.transferTo(target1.toFile());
+        Files.createFile(target2);
+        Files.write(target2, "dummy".getBytes());
+		logger.trace("Wrote temp file to " + target1);
 
-		SequenceFile sf;
-		SequencingRun miseqRun = null;
-		if (fileResource != null) {
-			sf = fileResource.getResource();
+		SequenceFile sf1 = fileResource.getResource();
+        SequenceFileResource fileResource2 = new SequenceFileResource();
+		SequenceFile sf2 = fileResource2.getResource();
+		sf1.setFile(target1);
+		sf2.setFile(target2);
+        sf2.addOptionalProperty("dummy","true");
+		// get the sequencing run
+		SequencingRun sequencingRun = null;
 
-			Long miseqRunId = fileResource.getMiseqRunId();
-			if (miseqRunId != null) {
-				miseqRun = miseqRunService.read(miseqRunId);
-				logger.trace("Read miseq run " + miseqRunId);
-			}
-		} else {
-			sf = new SequenceFile();
+		Long runId = fileResource.getMiseqRunId();
+
+		SequenceFilePair sequenceFilePair = new SequenceFilePair(sf1, sf2);
+
+		if (runId != null) {
+			sequencingRun = miseqRunService.read(runId);
+			sequenceFilePair.setSequencingRun(sequencingRun);
+			logger.trace("Added sequencing run to files" + runId);
 		}
 
-		sf.setFile(target);
-
-		SingleEndSequenceFile singleEndSequenceFile = new SingleEndSequenceFile(sf);
-		if (miseqRun != null) {
-			singleEndSequenceFile.setSequencingRun(miseqRun);
-			logger.trace("Added seqfile to miseqrun");
-		}
-
-		// save the seqobject and sample
+		// add the files and join
 		SampleSequencingObjectJoin createSequencingObjectInSample = sequencingObjectService
-				.createSequencingObjectInSample(singleEndSequenceFile, sample);
+				.createSequencingObjectInSample(sequenceFilePair, sample);
 
-		singleEndSequenceFile = (SingleEndSequenceFile) createSequencingObjectInSample.getObject();
-
-		logger.trace("Created seqfile in sample " + createSequencingObjectInSample.getObject().getId());
 		// clean up the temporary files.
-		Files.deleteIfExists(target);
-		Files.deleteIfExists(temp);
-		logger.trace("Deleted temp file");
-		// prepare a link to the sequence file itself (on the sequence file
-		// controller)
-		String objectType = objectLabels.get(SingleEndSequenceFile.class);
-		Long sequenceFileId = singleEndSequenceFile.getSequenceFile().getId();
-		Link selfRel = linkTo(
-				methodOn(RESTSampleSequenceFilesController.class).readSequenceFileForSequencingObject(sampleId,
-						objectType, singleEndSequenceFile.getId(), sequenceFileId)).withSelfRel();
+		Files.deleteIfExists(target1);
+		Files.deleteIfExists(temp1);
+		Files.deleteIfExists(target2);
+		Files.deleteIfExists(temp2);
+		logger.trace("Deleted temp files");
 
-		// Changed, because sfr.setResource(sf)
-		// and sfr.setResource(sampleSequenceFileRelationship.getObject())
-		// both will not pass a GET-POST comparison integration test.
-		singleEndSequenceFile = (SingleEndSequenceFile) sequencingObjectService.read(singleEndSequenceFile.getId());
-		SequenceFile sequenceFile = singleEndSequenceFile.getFileWithId(sequenceFileId);
+		SequencingObject sequencingObject = createSequencingObjectInSample.getObject();
 
-		// add links to the resource
-		sequenceFile.add(linkTo(methodOn(RESTSampleSequenceFilesController.class).getSampleSequenceFiles(sampleId))
+		sequencingObject = addSequencingObjectLinks(sequencingObject, sampleId);
+
+		sequencingObject.add(linkTo(methodOn(RESTSampleSequenceFilesController.class).getSampleSequenceFiles(sampleId))
 				.withRel(REL_SAMPLE_SEQUENCE_FILES));
-		sequenceFile.add(selfRel);
-		sequenceFile.add(linkTo(methodOn(RESTProjectSamplesController.class).getSample(sampleId)).withRel(REL_SAMPLE));
-		sequenceFile.add(linkTo(
-				methodOn(RESTSampleSequenceFilesController.class).readSequencingObject(sampleId, objectType,
-						singleEndSequenceFile.getId())).withRel(REL_SEQ_OBJECT));
-		
-		modelMap.addAttribute(RESTGenericController.RESOURCE_NAME, sequenceFile);
-		// add a location header.
-		response.addHeader(HttpHeaders.LOCATION, selfRel.getHref());
+
+		// add location header
+		response.addHeader(HttpHeaders.LOCATION, sequencingObject.getLink("self").getHref());
+
 		// set the response status.
 		response.setStatus(HttpStatus.CREATED.value());
-
+		modelMap.addAttribute(RESTGenericController.RESOURCE_NAME, sequencingObject);
 		// respond to the client
 		return modelMap;
 	}

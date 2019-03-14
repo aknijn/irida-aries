@@ -52,7 +52,12 @@ public class CoverageFileProcessor implements FileProcessor {
 		// count the total bases
 		long totalBases = sequencingObject.getFiles().stream().mapToLong(f -> {
 			AnalysisFastQC fastqc = analysisRepository.findFastqcAnalysisForSequenceFile(f);
-			return fastqc.getTotalBases();
+            if (fastqc == null) {
+			    return 0;
+            }
+            else {
+			   return fastqc.getTotalBases();
+            }
 		}).sum();
 
 		// save the entry

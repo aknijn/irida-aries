@@ -97,6 +97,8 @@ public class SequenceFilePair extends SequencingObject implements IridaSequenceF
 			return (SequenceFile) pair[0];
 		} else if (Stream.of(forwardMatches).anyMatch(x -> String.valueOf(filenames[1].charAt(index)).equals(x))) {
 			return (SequenceFile) pair[1];
+		} else if (String.valueOf(filenames[1]).equals("dummy.fastq")) {
+			return (SequenceFile) pair[0];
 		} else {
 			throw new NoSuchElementException();
 		}
@@ -117,6 +119,8 @@ public class SequenceFilePair extends SequencingObject implements IridaSequenceF
 		if (Stream.of(reverseMatches).anyMatch(x -> String.valueOf(filenames[0].charAt(index)).equals(x))) {
 			return (SequenceFile) pair[0];
 		} else if (Stream.of(reverseMatches).anyMatch(x -> String.valueOf(filenames[1].charAt(index)).equals(x))) {
+			return (SequenceFile) pair[1];
+		} else if (String.valueOf(filenames[1]).equals("dummy.fastq")) {
 			return (SequenceFile) pair[1];
 		} else {
 			throw new NoSuchElementException();
