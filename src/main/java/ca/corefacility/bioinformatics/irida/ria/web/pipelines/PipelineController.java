@@ -170,10 +170,13 @@ public class PipelineController extends BaseController {
 				flow = workflowsService.getDefaultWorkflowByType(type);
 				IridaWorkflowDescription description = flow.getWorkflowDescription();
 				String name = type.getType();
+                String minSamples = "1";
+                if (name.substring(name.indexOf(" ")+1).equals("Observer Pipeline")) {minSamples = "3";}
 				String key = "workflow." + name;
 				flows.add(ImmutableMap.of(
 						"name", name,
 						"id", description.getId().toString(),
+                        "minSamples", minSamples,
 						"title",
 						messageSource
 								.getMessage(key + ".title", null, locale),
@@ -210,6 +213,7 @@ public class PipelineController extends BaseController {
 	public String getSpecifiedPipelinePage(final Model model, Principal principal, Locale locale, @PathVariable UUID pipelineId) {
 		String response = URL_EMPTY_CART_REDIRECT;
 		boolean canUpdateAllSamples;
+        String sampleOrganism = "";
 
 		Map<Project, Set<Sample>> cartMap = cartController.getSelected();
 		// Cannot run a pipeline on an empty cart!
@@ -262,6 +266,8 @@ public class PipelineController extends BaseController {
 				Map<String, Object> projectMap = new HashMap<>();
 				List<Map<String, Object>> sampleList = new ArrayList<>();
 				for (Sample sample : samples) {
+                    sampleOrganism = sample.getOrganism();
+					if (sampleOrganism != null && sampleOrganism.equals("Shiga toxin-producing Escherichia coli")) { sampleOrganism = "Escherichia coli"; }
 					Map<String, Object> sampleMap = new HashMap<>();
 					sampleMap.put("name", sample.getLabel());
 					sampleMap.put("id", sample.getId().toString());
@@ -278,8 +284,7 @@ public class PipelineController extends BaseController {
 					if (description.acceptsSingleSequenceFiles()) {
 						Collection<SampleSequencingObjectJoin> singles = sequencingObjectService.getSequencesForSampleOfType(sample, SingleEndSequenceFile.class);
 						files.put("single_end",
-								singles.stream().map(SampleSequencingObjectJoin::getObject)
-										.collect(Collectors.toList()));
+								singles.stream().map(SampleSequencingObjectJoin::getObject).collect(Collectors.toList()));
 					}
 
 					sampleMap.put("files", files);
@@ -303,10 +308,27 @@ public class PipelineController extends BaseController {
 					if (p.isRequired()) {
 						continue;
 					}
+                    String pMyValue = p.getDefaultValue();
+					switch (p.getName()) {
+						case "phantvpre_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
+								 break;
+						case "phantv_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
+								 break;
+						case "phantv_species":  pMyValue = sampleOrganism;
+								 break;
+						case "phantwpre_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
+								 break;
+						case "phantw_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
+								 break;
+						case "phantt_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
+								 break;
+						case "phantt_species":  pMyValue = sampleOrganism;
+								 break;
+					}
 					defaultParameters.add(ImmutableMap.of(
 							"label",
 							messageSource.getMessage("pipeline.parameters." + workflowName + "." + p.getName(), null, locale),
-							"value", p.getDefaultValue(),
+							"value", pMyValue,
 							"name", p.getName()
 					));
 				}
