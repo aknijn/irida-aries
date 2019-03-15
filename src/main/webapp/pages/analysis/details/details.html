@@ -367,7 +367,7 @@
                  th:text="${forward.label}"></a></span>
                      				<span th:text="${forward.getFileSize()}"></span>
                      			</div>
-                     			<div  th:unless="${pair.getReverseSequenceFile().getLabel()=='dummy.fastq'}" th:with="reverse=${pair.sequenceFilePair.getReverseSequenceFile()}" class="sequence-file">
+                     			<div  th:unless="${pair.sequenceFilePair.getReverseSequenceFile().getLabel()=='dummy.fastq'}" th:with="reverse=${pair.sequenceFilePair.getReverseSequenceFile()}" class="sequence-file">
                      				<i class="fas fa-arrow-left sequence-file__icon"></i> <span class="sequence-file__name"><a
                  th:href="@{/sequenceFiles/{id}/file/{fileId}/summary(id=${pair.id}, fileId=${reverse.id})}"
                  th:text="${reverse.label}"></a></span> <span th:text="${reverse.getFileSize()}"></span>
