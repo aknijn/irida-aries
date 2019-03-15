@@ -252,7 +252,7 @@ public class AnalysisControllerTest {
 				info.getFirstLine());
 		final Long seekTo = 291L;
 		assertEquals("FilePointer should be first character of second line of file", seekTo, info.getFilePointer());
-		assertEquals("File size in bytes should be returned", Long.valueOf(61875), info.getFileSizeBytes());
+		assertEquals("File size in bytes should be returned", Long.valueOf(61976), info.getFileSizeBytes());
 		final Long limit = 3L;
 		final AnalysisOutputFileInfo lineInfo = analysisController.getOutputFile(submissionId, info.getId(), limit, 0L,
 				null, 0L, null, response);
@@ -295,7 +295,7 @@ public class AnalysisControllerTest {
 		assertEquals("First line of file should be read since it has a tabular file extension", firstLine,
 				info.getFirstLine());
 		final Long seekTo = 291L;
-		final Long expFileSize = 61875L;
+		final Long expFileSize = 61976L;
 		assertEquals("FilePointer should be first character of second line of file", seekTo, info.getFilePointer());
 		assertEquals("File size in bytes should be returned", expFileSize, info.getFileSizeBytes());
 		final Long chunkSize = 10L;
