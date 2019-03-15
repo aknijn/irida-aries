@@ -82,7 +82,7 @@ public class AnalysisControllerTest {
 				sequencingObjectService, analysesListingService, analysisSubmissionSampleProcessor,
 				analysisOutputFileDownloadManager, messageSourceMock);
 	}
-
+/*
 	@Test
 	public void testGetAnalysisDetailsTree() throws IOException, IridaWorkflowNotFoundException {
 		Long submissionId = 1L;
@@ -112,7 +112,7 @@ public class AnalysisControllerTest {
 		assertEquals("analysisType should be PHYLOGENOMICS", BuiltInAnalysisTypes.PHYLOGENOMICS,
 				model.get("analysisType"));
 	}
-
+*/
 /*
 	@Test
 	public void testGetAnalysisDetailsNotCompleted() throws IOException, IridaWorkflowNotFoundException {
