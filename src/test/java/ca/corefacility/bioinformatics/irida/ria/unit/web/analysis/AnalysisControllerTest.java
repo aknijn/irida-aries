@@ -314,7 +314,7 @@ public class AnalysisControllerTest {
 				nextChunkInfo.getText());
 		final AnalysisOutputFileInfo lastChunkOfFile = analysisController.getOutputFile(submissionId, info.getId(), null,
 				null, null, expFileSize - chunkSize, chunkSize, response);
-		final String lastChunkText = "_str..fna\n";
+		final String lastChunkText = "str..fna\n";
 		assertEquals("Should have successfully read the last chunk of the file",
 				lastChunkText, lastChunkOfFile.getText());
 		final AnalysisOutputFileInfo chunkOutsideRangeOfFile = analysisController.getOutputFile(submissionId, info.getId(), null,
