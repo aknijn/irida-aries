@@ -31,7 +31,7 @@
                         <dd id="dd-organism"
                             th:text="${sample.getOrganism()} ?: #{organism.unknown}"></dd>
                     </dl>
-                    <dl>
+                    <dl th:unless="${canReadSampleCollection}">
                         <dt th:text="#{samples.details.isolate}"></dt>
                         <dd id="dd-isolate"
                             th:text="${sample.getIsolate()} ?: #{isolate.unknown}"></dd>
@@ -56,9 +56,14 @@
                         <dt th:text="#{samples.collection-date.title}"></dt>
                         <dd th:text="${sample.collectionDate} ? ${#dates.format(sample.getCollectionDate(), df)} : #{samples.collection-date.unknown}"></dd>
                     </dl>
-                    <dl th:if="${canReadSampleCollection}">
+<!--                     <dl th:if="${canReadSampleCollection}">
                         <dt th:text="#{samples.isolation-source.title}" ></dt>
                         <dd id="dd-isolation-source" th:text="${sample.getIsolationSource()} ?: #{isolation.source.unknown}"></dd>
+                    </dl> -->
+                    <dl th:if="${canReadSampleCollection}">
+                        <dt th:text="#{samples.details.isolate}"></dt>
+                        <dd id="dd-isolate"
+                            th:text="${sample.getIsolate()} ?: #{isolate.unknown}"></dd>
                     </dl>
                     <dl>
                         <dt th:text="#{location.geographic.title}"></dt>
