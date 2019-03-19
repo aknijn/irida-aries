@@ -366,6 +366,22 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 			throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
 					+ "' already exists in project " + project.getId());
 		}
+		// Check to ensure a sample with this sequencer id doesn't exist in its
+		// master project already
+		if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")){
+			Project masterProject = projectService.read(48L);
+			if (sampleRepository.getSampleBySampleName(masterProject, sample.getSampleName()) != null) {
+				throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
+						+ "' already exists in master project " + masterProject.getId());
+			}
+		}
+		if(sample.getOrganism().equals("Listeria monocytogenes")){
+			Project masterProject = projectService.read(49L);
+			if (sampleRepository.getSampleBySampleName(masterProject, sample.getSampleName()) != null) {
+				throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
+						+ "' already exists in master project " + masterProject.getId());
+			}
+		}
 
 		// the sample hasn't been persisted before, persist it before calling
 		// the relationshipRepository.
