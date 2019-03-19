@@ -180,27 +180,26 @@ public class ProjectSamplesController {
 			sample.setOrganism(null);
 		}
 
-        //ISS collegamento con SEU
-		try {
-			if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				SEU seu = new SEU();
-				Map<String, String> SEUmap = seu.getData(sample.getSampleName());
-				if (SEUmap.get("DataEsordio") != null) { sample.setCollectionDate(sdf.parse(SEUmap.get("DataEsordio"))); }
-				if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); }
-				if (SEUmap.get("Regione") != null) { sample.setGeographicLocationName(SEUmap.get("Regione")); }
-				if (SEUmap.get("Provincia") != null) { sample.setGeographicLocationName2(SEUmap.get("Provincia")); }
-				if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }
-				else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
-			}
-		} catch (SQLException ex) {
-			logger.warn("Attempt to connect to SQL database failed", ex);
-		} catch (ParseException ex) {
-			logger.warn("Attempt to parse DataEsordio failed", ex);
-		}
-
 		try {
 			Join<Project, Sample> join = projectService.addSampleToProject(project, sample, true);
+			//ISS collegamento con SEU
+			try {
+				if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SEU seu = new SEU();
+					Map<String, String> SEUmap = seu.getData(sample.getSampleName());
+					if (SEUmap.get("DataEsordio") != null) { sample.setCollectionDate(sdf.parse(SEUmap.get("DataEsordio"))); }
+					if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); }
+					if (SEUmap.get("Regione") != null) { sample.setGeographicLocationName(SEUmap.get("Regione")); }
+					if (SEUmap.get("Provincia") != null) { sample.setGeographicLocationName2(SEUmap.get("Provincia")); }
+					if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }
+					else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
+				}
+			} catch (SQLException ex) {
+				logger.warn("Attempt to connect to SQL database failed", ex);
+			} catch (ParseException ex) {
+				logger.warn("Attempt to parse DataEsordio failed", ex);
+			}
 			return "redirect:/projects/" + projectId + "/samples/" + join.getObject().getId();
 		} catch (EntityExistsException e) {
 			// This will be thrown if a sample already exists in the project with this name.
