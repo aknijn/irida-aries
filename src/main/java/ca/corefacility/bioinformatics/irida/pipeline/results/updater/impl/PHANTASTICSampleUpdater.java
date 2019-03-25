@@ -154,7 +154,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 							clusters.add(value);
 						}
                         else {
-							stringEntries.put(e.getValue() + " (v"+workflowVersion+")", metadataEntry);
+							stringEntries.put(e.getValue(), metadataEntry);
                         }
 					}
 				});

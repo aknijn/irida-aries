@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 /**
  * Impl of custom methods for {@link SampleRepository}.  This class can be used for speed improvements for sample
  * listing methods.
@@ -58,6 +60,34 @@ public class SampleRepositoryImpl implements SampleRepositoryCustom {
 				s.setCollectionDate(rs.getDate("s.collectionDate"));
 
 				return s;
+			}
+		});
+
+		return results;
+	}
+
+	/**ISS
+	 * {@inheritDoc}
+	 */
+ 	public List<Long> getSampleIdsByCodeInProject(Project project, List<String> sampleCodes) {
+		NamedParameterJdbcTemplate tmpl = new NamedParameterJdbcTemplate(dataSource);
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+		//query to read samples for a project
+		String queryString = "select s.id FROM sample s INNER JOIN project_sample p ON p.sample_id=s.id INNER JOIN sample_metadata_entry AS sm ON s.id=sm.sample_id INNER JOIN metadata_field AS mf ON sm.metadata_KEY =mf.id INNER JOIN metadata_entry AS me ON sm.metadata_id =me.id WHERE p.project_id=:project AND mf.label='Sample_Code' AND me.value in (:sampleCodes)";
+
+		parameters.addValue("project", project.getId());
+		parameters.addValue("sampleCodes", sampleCodes);
+
+		List<Long> results = tmpl.query(queryString, parameters, new RowMapper<Long>() {
+
+			@Override
+			public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+				//Sample s = new Sample();
+				//s.setId(rs.getLong("s.id"));
+				//Sample s = getSampleBySampleId(project, id);
+                Long id = rs.getLong("s.id");
+				return id;
 			}
 		});
 

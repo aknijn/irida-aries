@@ -18,4 +18,7 @@ public interface SampleRepositoryCustom {
 	 * @return a list of {@link Sample}
 	 */
 	public List<Sample> getSamplesForProjectShallow(Project project);
+
+    //ISS
+	public List<Long> getSampleIdsByCodeInProject(Project project, List<String> sampleCodes);
 }
