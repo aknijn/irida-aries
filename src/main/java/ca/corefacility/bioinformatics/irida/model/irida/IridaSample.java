@@ -117,15 +117,15 @@ public interface IridaSample {
 	 * @return the geographic location name of the sample.
 	 */
 	@NotNull(message = "{sample.geographic.location.name.notnull}", groups = NCBISubmission.class)
-	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
+	//@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
 	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
 	public String getGeographicLocationName();
 	@NotNull(message = "{sample.geographic.location.name.notnull}", groups = NCBISubmission.class)
-	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
+	//@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
 	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
 	public String getGeographicLocationName2();
 	@NotNull(message = "{sample.geographic.location.name.notnull}", groups = NCBISubmission.class)
-	@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
+	//@Pattern(regexp = "\\w+(:\\w+(:\\w+)?)?", message = "{sample.geographic.location.name.pattern}")
 	@Size(min = 3, message = "{sample.geographic.location.name.too.short}")
 	public String getGeographicLocationName3();
 
