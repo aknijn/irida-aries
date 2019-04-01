@@ -38,6 +38,8 @@ import ca.corefacility.bioinformatics.irida.repositories.joins.project.ProjectUs
 import ca.corefacility.bioinformatics.irida.model.joins.Join;
 import ca.corefacility.bioinformatics.irida.model.project.Project;
 import ca.corefacility.bioinformatics.irida.model.enums.ProjectRole;
+import ca.corefacility.bioinformatics.irida.repositories.sample.SampleRepository;
+import java.io.FileNotFoundException;
 
 /**
  * {@link AnalysisSampleUpdater} that adds a number of results from a PHANTASTIC run to the metadata of a {@link Sample}
@@ -57,6 +59,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
     private UserRepository userRepository;
 	private final ProjectSampleJoinRepository psjRepository;
 	private final ProjectUserJoinRepository pujRepository;
+	private final SampleRepository sampleRepository;
 
 
 	// @formatter:off
@@ -90,13 +93,15 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 	@Autowired
 	public PHANTASTICSampleUpdater(MetadataTemplateService metadataTemplateService, SampleService sampleService,
 							  IridaWorkflowsService iridaWorkflowsService, EmailController emailController,
-                              ProjectSampleJoinRepository psjRepository, ProjectUserJoinRepository pujRepository) {
+                              ProjectSampleJoinRepository psjRepository, ProjectUserJoinRepository pujRepository,
+							  SampleRepository sampleRepository) {
 		this.metadataTemplateService = metadataTemplateService;
 		this.sampleService = sampleService;
 		this.iridaWorkflowsService = iridaWorkflowsService;
 
 		this.psjRepository = psjRepository;
 		this.pujRepository = pujRepository;
+		this.sampleRepository = sampleRepository;
         this.emailController = emailController;
 	}
 
@@ -110,14 +115,15 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 	@Override
 	public void update(Collection<Sample> samples, AnalysisSubmission analysis) throws PostProcessingException {
 		AnalysisOutputFile phantasticFile = analysis.getAnalysis().getAnalysisOutputFile(PHANTASTIC_FILE);
-		AnalysisOutputFile phantasticDM = analysis.getAnalysis().getAnalysisOutputFile(PHANTASTIC_DM);
 		String analysisName = analysis.getName();
         ArrayList<String> sampleSpecies = new ArrayList<String>();
 
 		Path filePath = phantasticFile.getFile();
-		Path dmPath = phantasticDM.getFile();
+
         ArrayList<String> recipients = new ArrayList<String>();
         ArrayList<String> clusters = new ArrayList<String>();
+		ArrayList<String> sampleCodes = new ArrayList<String>();
+		String clusterId;
 
 		Map<String, MetadataEntry> stringEntries = new HashMap<>();
 		try {
@@ -140,8 +146,10 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 
 				//loop through each of the requested fields and save the entries
                 Map<String, String> PHANTASTIC_FIELDS = PHANTASTIC_EC_FIELDS;
+				Integer clusterCriterium = 7;
                 if (result.containsKey("serotype_serogroup")) {
                     PHANTASTIC_FIELDS = PHANTASTIC_LM_FIELDS;
+					clusterCriterium = 10;
                 }
 				PHANTASTIC_FIELDS.entrySet().forEach(e -> {
 					if (result.containsKey(e.getKey()) && result.get(e.getKey()) != null) {
@@ -151,7 +159,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
                         //sample_code
                         if (e.getValue().equals("Sample_code")) { 
 							stringEntries.put(e.getValue(), metadataEntry);
-							clusters.add(value);
+							sampleCodes.add(value);
 						}
                         else {
 							stringEntries.put(e.getValue(), metadataEntry);
@@ -159,9 +167,14 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					}
 				});
 
+				clusters = getCluster(sampleCodes.get(0), clusterCriterium, analysis);
+				clusterId = clusters.get(0);
+				clusters.remove(0);
+				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(clusterId, "text", analysis);
+				stringEntries.put("Cluster_Id", metadataEntry);
+
 				// convert string map into metadata fields
-				Map<MetadataTemplateField, MetadataEntry> metadataMap = metadataTemplateService
-						.getMetadataMap(stringEntries);
+				Map<MetadataTemplateField, MetadataEntry> metadataMap = metadataTemplateService.getMetadataMap(stringEntries);
 
 				//save metadata back to sample
 				samples.forEach(s -> {
@@ -178,33 +191,6 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
                         }
                     }
 				});
-
-                //check for clusters
-				Scanner dm_input = new Scanner(new BufferedReader(new FileReader(dmPath.toFile())));
-				String firstLine = dm_input.nextLine();
-				Integer i = 0;
-				List<String> dm_header = new ArrayList<>(Arrays.asList(firstLine.split("\t")));
-
-				while(dm_input.hasNextLine())
-				{
-					Scanner dm_colReader = new Scanner(dm_input.nextLine());
-                    String firstCol = dm_colReader.next();
-					if (firstCol.equals(clusters.get(0))) {
-						while(dm_colReader.hasNextInt())
-						{
-							i++;
-						    switch (sampleSpecies.get(0)) {
-								case "Shiga toxin-producing Escherichia coli": if (dm_colReader.nextInt() <= 10 && !clusters.contains(dm_header.get(i))) { clusters.add(dm_header.get(i)); }
-										 break;
-								case "Listeria monocytogenes": if (dm_colReader.nextInt() <= 7 && !clusters.contains(dm_header.get(i))) { clusters.add(dm_header.get(i)); }
-										 break;
-								default: break;
-							}
-						}
-					}
-				}
-
-
 			} else {
 				throw new PostProcessingException("PHANTASTIC results for file are not correctly formatted");
 			}
@@ -215,10 +201,77 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 			throw new PostProcessingException("Workflow is not found", e);
 		}
 		if (emailController.isMailConfigured()) {
-			String sampleCode = clusters.get(0);
-			clusters.remove(0);
-		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), analysisName, sampleCode, sampleSpecies.get(0), String.join(", ", clusters));
+		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), analysisName, sampleCodes.get(0), sampleSpecies.get(0), clusterId, String.join(", ", clusters));
         }
+	}
+
+	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, AnalysisSubmission analysis ) throws FileNotFoundException {
+		AnalysisOutputFile phantasticDM = analysis.getAnalysis().getAnalysisOutputFile(PHANTASTIC_DM);
+		Path dmPath = phantasticDM.getFile();
+		ArrayList<String> clusterNodes = new ArrayList<String>();
+		ArrayList<String> clusterExtendedNodes = new ArrayList<String>();
+		ArrayList<String> clusters = new ArrayList<String>();
+		//check for clusters
+		Scanner dm_input = new Scanner(new BufferedReader(new FileReader(dmPath.toFile())));
+		String firstLine = dm_input.nextLine();
+		Integer i = 0;
+		List<String> dm_header = new ArrayList<>(Arrays.asList(firstLine.split("\t")));
+
+		while(dm_input.hasNextLine())
+		{
+			Scanner dm_colReader = new Scanner(dm_input.nextLine());
+			String firstCol = dm_colReader.next();
+			if (sampleCode.equals(firstCol)) {
+				while(dm_colReader.hasNextInt())
+				{
+					i++;
+					int colNextInt = dm_colReader.nextInt();
+					if (colNextInt <= clusterCriterium && !sampleCode.equals(dm_header.get(i))) { clusterNodes.add(dm_header.get(i)); }
+					else { if (colNextInt <= 15 && !sampleCode.equals(dm_header.get(i))) { clusterExtendedNodes.add(dm_header.get(i)); } }
+				}
+			}
+		}
+
+		Integer clusterNodesSize = clusterNodes.size();
+		Integer clusterExtendedNodesSize = clusterExtendedNodes.size();
+		logger.debug("clusterNodes.size: " + clusterNodesSize.toString());
+		logger.debug("clusterExtendedNodes.size: " + clusterExtendedNodesSize.toString());
+		if (clusterNodes.size() == 0) {
+			if (clusterExtendedNodes.size() == 0) {
+				//no cluster
+				clusters.add("-");
+				logger.debug("no cluster");
+			} else {
+				//sample is extended of an existing cluster (or extended of extended => no cluster)
+				String clusterId = sampleRepository.getClusterIdByCodes(clusterExtendedNodes);
+				logger.debug("sample is extended of an existing cluster: " + clusterId);
+				if (clusterId.contains("_ext")) { clusterId = "-"; } else { clusterId = clusterId + "_ext"; }
+				clusters.add(clusterId);
+			}
+		} else {
+			String clusterId = sampleRepository.getClusterIdByCodes(clusterNodes);
+			if (clusterId.equals("-")) {
+				//new cluster
+				String newClusterId = sampleRepository.getNextClusterId();
+				clusters.add(newClusterId);
+				sampleRepository.setClusterIdByCode(clusterNodes, newClusterId);
+				logger.debug("new cluster: " + newClusterId);
+			} else {
+				if (clusterId.contains("_ext")) {
+					//other samples are at most extended of an existing cluster => new cluster
+					String newClusterId = sampleRepository.getNextClusterId();
+					clusters.add(newClusterId);
+					logger.debug("other samples are at most extended of an existing cluster => new cluster: " + newClusterId);
+				} else {
+					//other samples are part of an existing cluster
+					clusters.add(clusterId);
+					sampleRepository.setClusterIdByCode(clusterNodes, clusterId);
+					logger.debug("other samples are part of an existing cluster: " + clusterId);
+				}
+			}
+		}
+		clusters.addAll(clusterNodes);
+		return clusters;
 	}
 
 	@Override

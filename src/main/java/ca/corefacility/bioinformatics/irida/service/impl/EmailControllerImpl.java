@@ -253,10 +253,8 @@ public class EmailControllerImpl implements EmailController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusters) throws MailSendException {
-		logger.debug("Sending end-of-analysis email to " + recipients);
-		logger.debug("sampleCode: " + sampleCode);
-		logger.debug("clusters: " + clusters.length());
+	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException {
+		logger.debug("Sending end-of-analysis email for " + sampleCode + " to " + recipients);
 
 		Locale locale = LocaleContextHolder.getLocale();
         int msgpriority;
@@ -280,7 +278,7 @@ public class EmailControllerImpl implements EmailController {
             msgpriority = 1;
             header = sampleSpeciesShort + ": Cluster!";
        		ctx.setVariable("header", header);
-            ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte di un cluster con i seguenti campioni: " + clusters + ".");
+            ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
         }
 		else {
             msgpriority = 3;
