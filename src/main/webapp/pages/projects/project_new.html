@@ -109,6 +109,12 @@
                                     <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA}">_WRITE_BACK_TO_SAMPLE_METADATA_</span>
                                 </label>
                             </div>
+                            <div class="checkbox">
+                                <label style="margin-left: 20px;" for="phantasticShares">
+                                    <input type="checkbox" class="js-phantastic-shares" id="phantasticShares" disabled>
+                                    <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA_MASTER}">_SHARE_SAMPLE_WITH_MASTER_</span>
+                                </label>
+                            </div>
                         </div>                        
                         </div>
                 </div>
@@ -183,7 +189,8 @@
         var PHANTASTIC_TYPES = {
           off: "OFF",
           auto: "AUTO",
-          autoMetadata: "AUTO_METADATA"
+          autoMetadata: "AUTO_METADATA",
+          autoMetadataMaster: "AUTO_METADATA_MASTER"
         };
         $(".js-phantastic-checkbox").on("change", function(e) {
           var selected = $(e.target).prop("checked");
@@ -192,6 +199,7 @@
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.auto);
           } else {
             $(".js-phantastic-writes").removeAttr("checked").attr("disabled", true);
+            $(".js-phantastic-shares").removeAttr("checked").attr("disabled", true);
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.off);
           }
         });
@@ -199,9 +207,20 @@
         $(".js-phantastic-writes").on("change", function(e) {
           var selected = $(e.target).prop("checked");
           if (selected) {
+            $(".js-phantastic-shares").removeAttr("disabled");
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.autoMetadata);
           } else {
+            $(".js-phantastic-shares").removeAttr("checked").attr("disabled", true);
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.auto);
+          }
+        });
+
+        $(".js-phantastic-shares").on("change", function(e) {
+          var selected = $(e.target).prop("checked");
+          if (selected) {
+            $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.autoMetadataMaster);
+          } else {
+            $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.autoMetadata);
           }
         });
 

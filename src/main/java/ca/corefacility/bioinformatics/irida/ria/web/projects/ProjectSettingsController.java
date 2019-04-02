@@ -345,7 +345,7 @@ public class ProjectSettingsController {
 		projectService.updateProjectSettings(read, updates);
 
 		String message = null;
-		if (phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO) || phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA)) {
+		if (phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO) || phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA) || phantastic.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER)) {
 			message = messageSource.getMessage("project.settings.notifications.phantastic.enabled",
 					new Object[] { read.getLabel() }, locale);
 		} else {

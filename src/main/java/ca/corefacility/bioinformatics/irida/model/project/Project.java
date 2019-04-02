@@ -329,6 +329,7 @@ public class Project extends IridaResourceSupport
 	public enum AutomatedPHANTASTICSetting {
 		OFF,
 		AUTO,
-		AUTO_METADATA
+		AUTO_METADATA,
+		AUTO_METADATA_MASTER
 	}
 }

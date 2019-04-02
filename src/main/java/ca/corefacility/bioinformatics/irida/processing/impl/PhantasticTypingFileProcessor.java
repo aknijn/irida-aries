@@ -101,7 +101,7 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 			// build an AnalysisSubmission
 			Builder builder = new AnalysisSubmission.Builder(pipelineUUID);
 
-			if(automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA)){
+			if(automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA) || automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER)){
 				builder.updateSamples(true);
 			}
 			else if(automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO)){
@@ -167,8 +167,10 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 			submission = submissionRepository.save(submission);
 
             // Share samples with the master project
-            Project masterProject = projectService.read(masterProjectId);
-            projectService.addSampleToProject(masterProject, sampleForSequencingObject, false);
+			if (automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER)) {
+				Project masterProject = projectService.read(masterProjectId);
+				projectService.addSampleToProject(masterProject, sampleForSequencingObject, false);
+			}
             // Share analysis results with the required projects
             List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
 			for (Join<Project, Sample> projectForSample : projectsForSample) {
@@ -230,7 +232,9 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 			Set<Project.AutomatedPHANTASTICSetting> phantasticOptions = projectForSample.stream()
 					.map(j -> j.getSubject().getPhantasticTypingUploads()).collect(Collectors.toSet());
 
-			if (phantasticOptions.contains(Project.AutomatedPHANTASTICSetting.AUTO_METADATA)) {
+			if (phantasticOptions.contains(Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER)) {
+				return Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER;
+			} else if (phantasticOptions.contains(Project.AutomatedPHANTASTICSetting.AUTO_METADATA)) {
 				return Project.AutomatedPHANTASTICSetting.AUTO_METADATA;
 			} else if (phantasticOptions.contains(Project.AutomatedPHANTASTICSetting.AUTO))
 				return Project.AutomatedPHANTASTICSetting.AUTO;

@@ -40,6 +40,14 @@
                         <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA}">_WRITE_BACK_TO_SAMPLE_METADATA_</span>
                     </label>
                 </div>
+                <div class="checkbox">
+                    <label style="margin-left: 20px;" for="phantasticShares">
+                        <input type="checkbox" class="js-phantastic-shares" id="phantasticShares"
+                               th:checked="${#strings.equals(project.phantasticTypingUploads, 'AUTO_METADATA_MASTER')}"
+                               th:disabled="not ${#strings.contains(project.phantasticTypingUploads, 'AUTO')}">
+                        <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA_MASTER}">_WRITE_BACK_TO_SAMPLE_METADATA_MASTER_</span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>

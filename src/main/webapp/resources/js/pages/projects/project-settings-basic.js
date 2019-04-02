@@ -72,7 +72,8 @@ const projectSettings = (function(page, notifications) {
   const PHANTASTIC_TYPES = {
     off: "OFF",
     auto: "AUTO",
-    autoMetadata: "AUTO_METADATA"
+    autoMetadata: "AUTO_METADATA",
+    autoMetadataMaster: "AUTO_METADATA_MASTER"
   };
 
   $(".js-phantastic-checkbox").on("change", function(e) {
@@ -81,6 +82,9 @@ const projectSettings = (function(page, notifications) {
       $(".js-phantastic-writes").removeAttr("disabled");
       updatePhantasticSettings(PHANTASTIC_TYPES.auto);
     } else {
+      $(".js-phantastic-shares")
+        .removeAttr("checked")
+        .attr("disabled", true);
       $(".js-phantastic-writes")
         .removeAttr("checked")
         .attr("disabled", true);
@@ -89,11 +93,22 @@ const projectSettings = (function(page, notifications) {
   });
 
   $(".js-phantastic-writes").on("change", function(e) {
-    const selected = $(e.target).prop("checked");
+    var selected = $(e.target).prop("checked");
     if (selected) {
+  	  $(".js-phantastic-shares").removeAttr("disabled");
       updatePhantasticSettings(PHANTASTIC_TYPES.autoMetadata);
     } else {
+  	  $(".js-phantastic-shares").removeAttr("checked").attr("disabled", true);
       updatePhantasticSettings(PHANTASTIC_TYPES.auto);
+    }
+  });
+  
+  $(".js-phantastic-shares").on("change", function(e) {
+    var selected = $(e.target).prop("checked");
+    if (selected) {
+      updatePhantasticSettings(PHANTASTIC_TYPES.autoMetadataMaster);
+    } else {
+      updatePhantasticSettings(PHANTASTIC_TYPES.autoMetadata);
     }
   });
 
