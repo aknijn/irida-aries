@@ -325,6 +325,8 @@ public class LineListController {
 				.sorted((f1, f2) -> f1.getHeaderName()
 						.compareToIgnoreCase(f2.getHeaderName()))
 				.collect(Collectors.toList());
+		//ISS filter active on every column
+		fields.forEach(field -> field.setFilter(true));
 
 		fields.add(0, new UIMetadataFieldDefault(messages.getMessage("linelist.field.created", new Object[] {}, locale),
 				UISampleMetadata.CREATED_DATE, "date"));
