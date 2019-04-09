@@ -38,7 +38,7 @@ import ca.corefacility.bioinformatics.irida.repositories.joins.project.ProjectUs
 import ca.corefacility.bioinformatics.irida.model.joins.Join;
 import ca.corefacility.bioinformatics.irida.model.project.Project;
 import ca.corefacility.bioinformatics.irida.model.enums.ProjectRole;
-import ca.corefacility.bioinformatics.irida.repositories.sample.SampleRepository;
+import ca.corefacility.bioinformatics.irida.service.ProjectService;
 import java.io.FileNotFoundException;
 
 /**
@@ -59,7 +59,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
     private UserRepository userRepository;
 	private final ProjectSampleJoinRepository psjRepository;
 	private final ProjectUserJoinRepository pujRepository;
-	private final SampleRepository sampleRepository;
+	private final ProjectService projectService;
 
 
 	// @formatter:off
@@ -94,14 +94,14 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 	public PHANTASTICSampleUpdater(MetadataTemplateService metadataTemplateService, SampleService sampleService,
 							  IridaWorkflowsService iridaWorkflowsService, EmailController emailController,
                               ProjectSampleJoinRepository psjRepository, ProjectUserJoinRepository pujRepository,
-							  SampleRepository sampleRepository) {
+							  ProjectService projectService) {
 		this.metadataTemplateService = metadataTemplateService;
 		this.sampleService = sampleService;
 		this.iridaWorkflowsService = iridaWorkflowsService;
 
 		this.psjRepository = psjRepository;
 		this.pujRepository = pujRepository;
-		this.sampleRepository = sampleRepository;
+		this.projectService = projectService;
         this.emailController = emailController;
 	}
 
@@ -146,10 +146,12 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 
 				//loop through each of the requested fields and save the entries
                 Map<String, String> PHANTASTIC_FIELDS = PHANTASTIC_EC_FIELDS;
-				Integer clusterCriterium = 7;
+				Integer clusterCriterium = 10;
+				Long masterProjectId = 48L;
                 if (result.containsKey("serotype_serogroup")) {
                     PHANTASTIC_FIELDS = PHANTASTIC_LM_FIELDS;
-					clusterCriterium = 10;
+					clusterCriterium = 7;
+					masterProjectId = 49L;
                 }
 				PHANTASTIC_FIELDS.entrySet().forEach(e -> {
 					if (result.containsKey(e.getKey()) && result.get(e.getKey()) != null) {
@@ -167,7 +169,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					}
 				});
 
-				clusters = getCluster(sampleCodes.get(0), clusterCriterium, analysis);
+				clusters = getCluster(sampleCodes.get(0), clusterCriterium, masterProjectId, analysis);
 				clusterId = clusters.get(0);
 				clusters.remove(0);
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(clusterId, "text", analysis);
@@ -205,12 +207,13 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
         }
 	}
 
-	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, AnalysisSubmission analysis ) throws FileNotFoundException {
+	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, Long masterProjectId, AnalysisSubmission analysis ) throws FileNotFoundException {
 		AnalysisOutputFile phantasticDM = analysis.getAnalysis().getAnalysisOutputFile(PHANTASTIC_DM);
 		Path dmPath = phantasticDM.getFile();
 		ArrayList<String> clusterNodes = new ArrayList<String>();
 		ArrayList<String> clusterExtendedNodes = new ArrayList<String>();
 		ArrayList<String> clusters = new ArrayList<String>();
+		Project masterProject = projectService.read(masterProjectId);
 		//check for clusters
 		Scanner dm_input = new Scanner(new BufferedReader(new FileReader(dmPath.toFile())));
 		String firstLine = dm_input.nextLine();
@@ -243,29 +246,29 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				logger.debug("no cluster");
 			} else {
 				//sample is extended of an existing cluster (or extended of extended => no cluster)
-				String clusterId = sampleRepository.getClusterIdByCodes(clusterExtendedNodes);
+				String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterExtendedNodes);
 				logger.debug("sample is extended of an existing cluster: " + clusterId);
 				if (clusterId.contains("_ext")) { clusterId = "-"; } else { clusterId = clusterId + "_ext"; }
 				clusters.add(clusterId);
 			}
 		} else {
-			String clusterId = sampleRepository.getClusterIdByCodes(clusterNodes);
+			String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterNodes);
 			if (clusterId.equals("-")) {
 				//new cluster
-				String newClusterId = sampleRepository.getNextClusterId();
+				String newClusterId = sampleService.getNextClusterId(masterProject);
 				clusters.add(newClusterId);
-				sampleRepository.setClusterIdByCode(clusterNodes, newClusterId);
+				sampleService.setClusterIdByCode(masterProject, clusterNodes, newClusterId);
 				logger.debug("new cluster: " + newClusterId);
 			} else {
 				if (clusterId.contains("_ext")) {
 					//other samples are at most extended of an existing cluster => new cluster
-					String newClusterId = sampleRepository.getNextClusterId();
+					String newClusterId = sampleService.getNextClusterId(masterProject);
 					clusters.add(newClusterId);
 					logger.debug("other samples are at most extended of an existing cluster => new cluster: " + newClusterId);
 				} else {
 					//other samples are part of an existing cluster
 					clusters.add(clusterId);
-					sampleRepository.setClusterIdByCode(clusterNodes, clusterId);
+					sampleService.setClusterIdByCode(masterProject, clusterNodes, clusterId);
 					logger.debug("other samples are part of an existing cluster: " + clusterId);
 				}
 			}

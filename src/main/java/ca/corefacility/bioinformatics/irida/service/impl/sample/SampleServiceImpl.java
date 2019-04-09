@@ -250,6 +250,53 @@ public class SampleServiceImpl extends CRUDServiceImpl<Long, Sample> implements 
 		return samplesForProjectShallow;
 	}
 
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public List<Long> getSampleIdsByCodeInProject(Project project, List<String> sampleCodes) {
+		List<Long> sampleIdsByCodeInProject = sampleRepository.getSampleIdsByCodeInProject(project, sampleCodes);
+		return sampleIdsByCodeInProject;
+	}
+
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public String getClusterIdByCodes(Project project, List<String> sampleCodes) {
+		String clusterIdByCodes = sampleRepository.getClusterIdByCodes(project, sampleCodes);
+		return clusterIdByCodes;
+	}
+
+	@Transactional(readOnly = true)
+	@PreAuthorize("permitAll()")
+	@Override
+	public Long getMasterProjectIdByCode(String sampleCode) {
+		Long masterProjectIdByCode = sampleRepository.getMasterProjectIdByCode(sampleCode);
+		return masterProjectIdByCode;
+	}
+
+	@Transactional(readOnly = false)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public void setClusterIdByCode(Project project, List<String> sampleCodes, String clusterId) {
+		sampleRepository.setClusterIdByCode(project, sampleCodes, clusterId);
+	}
+
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public String getNextClusterId(Project project) {
+		String nextClusterId = sampleRepository.getNextClusterId(project);
+		return nextClusterId;
+	}
+
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public List<Sample> getSamplesForClusterShallow(Project project, String sampleCode, String clusterId) {
+		List<Sample> samplesForClusterShallow = sampleRepository.getSamplesForClusterShallow(project, sampleCode, clusterId);
+		return samplesForClusterShallow;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

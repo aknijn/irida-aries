@@ -297,6 +297,28 @@ public class CartController {
 	}
 
 	/**
+	 * Add an entire {@link Cluster} to the cart
+	 * 
+	 * @param sampleCode
+	 *            The sampleCode of a member of the {@link Cluster}
+	 * @return a map stating success
+	 */
+ 	@RequestMapping(value = "/cluster/{sampleCode}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Map<String, Object> addCluster(@PathVariable String sampleCode) {
+		Long projectId = sampleService.getMasterProjectIdByCode(sampleCode);
+		Project project = projectService.read(projectId);
+		ArrayList<String> clusterNodes = new ArrayList<String>();
+		clusterNodes.add(sampleCode);
+		String clusterId = sampleService.getClusterIdByCodes(project, clusterNodes);
+
+		Set<Sample> samples = new HashSet<>(sampleService.getSamplesForClusterShallow(project, sampleCode, clusterId));
+		getSelectedSamplesForProject(project).addAll(samples);
+
+		return ImmutableMap.of("success", true);
+	}
+
+	/**
 	 * Get the {@link Sample}s in a {@link Project} with the given IDs
 	 * 
 	 * @param project

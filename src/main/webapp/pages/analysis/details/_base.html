@@ -107,11 +107,27 @@
               <th:block th:text="#{form.download-files}">Download Files</th:block>
             </button>
           </div>
+        </div>
+      </div>
+      <div th:if="${isCompleted}" class="sidebar">
+        <div class="sidebar__heading">
+          <h2 th:text="#{analysis.sidebar.actions}">__ACTIONS__</h2>
+        </div>
+        <div class="sidebar__body">
           <div th:if="${newick}!=null and ${workflowName}!='PHANtAsTiC Pipeline'" class="sidebar__item">
             <a th:href="@{/analysis/{id}/advanced-phylo(id=${analysisSubmission.getId()})}"
                class="btn btn-success btn-block"
                th:text="#{analysis.details.view-advanced}">_View Advanced Visualization_
             </a>
+          </div>
+          <div th:if="${newick}!=null and ${workflowName}=='PHANtAsTiC Pipeline'" class="sidebar__item">
+<!--			<form method="POST" th:action="@{/cart/cluster/{id}(id=${analysisSubmission.getInputParameters().get('phantt-ec_sample_code')})}">
+				<button type="submit" name="submit" th:value="#{analysis.details.add-cluster-to-cart}" class="btn btn-success btn-block">_Add_Cluster_to_Cart_</button>
+			</form>
+             <a th:href="@{/cart/cluster/{id}(id=${analysisSubmission.getInputParameters().get('phantt-ec_sample_code')})}"
+               class="btn btn-success btn-block"
+               th:text="#{analysis.details.add-cluster-to-cart}">_Add_Cluster_to_Cart_
+            </a> -->
           </div>
         </div>
       </div>
