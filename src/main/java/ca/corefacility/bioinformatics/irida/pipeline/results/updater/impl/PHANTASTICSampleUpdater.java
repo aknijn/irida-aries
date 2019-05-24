@@ -208,6 +208,9 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 	}
 
 	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, Long masterProjectId, AnalysisSubmission analysis ) throws FileNotFoundException {
+		//function that checks the distance matrix and searches for clusters
+		//an ArrayList clusters is returned with the clusterId in the first position and the cluster nodes in all the following
+		//if no cluster is found clusterId equals "-" and the next six positions in the ArrayList contain the names and the distances of the nearest three samples
 		AnalysisOutputFile phantasticDM = analysis.getAnalysis().getAnalysisOutputFile(PHANTASTIC_DM);
 		Path dmPath = phantasticDM.getFile();
 		ArrayList<String> clusterNodes = new ArrayList<String>();
@@ -220,15 +223,32 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		Integer i = 0;
 		List<String> dm_header = new ArrayList<>(Arrays.asList(firstLine.split("\t")));
 
+		Integer dist1 = 1000;
+		Integer dist2 = 1000;
+		Integer dist3 = 1000;
+		String sample1 = "";
+		String sample2 = "";
+		String sample3 = "";
 		while(dm_input.hasNextLine())
 		{
 			Scanner dm_colReader = new Scanner(dm_input.nextLine());
 			String firstCol = dm_colReader.next();
+			//search for the line of the current sample
 			if (sampleCode.equals(firstCol)) {
 				while(dm_colReader.hasNextInt())
 				{
 					i++;
 					int colNextInt = dm_colReader.nextInt();
+					//store the names and distances of the three nearest samples
+					if (colNextInt < dist1 && !sampleCode.equals(dm_header.get(i))) {
+						sample3 = sample2;
+						sample2 = sample1;
+						sample1 = dm_header.get(i);
+						dist3 = dist2;
+						dist2 = dist1;
+						dist1 = colNextInt;
+					}
+					//apply the criterium for a cluster
 					if (colNextInt <= clusterCriterium && !sampleCode.equals(dm_header.get(i))) { clusterNodes.add(dm_header.get(i)); }
 					else { if (colNextInt <= 15 && !sampleCode.equals(dm_header.get(i))) { clusterExtendedNodes.add(dm_header.get(i)); } }
 				}
@@ -243,6 +263,12 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 			if (clusterExtendedNodes.size() == 0) {
 				//no cluster
 				clusters.add("-");
+				clusters.add(sample1);
+				clusters.add(dist1.toString());
+				clusters.add(sample2);
+				clusters.add(dist2.toString());
+				clusters.add(sample3);
+				clusters.add(dist3.toString());
 				logger.debug("no cluster");
 			} else {
 				//sample is extended of an existing cluster (or extended of extended => no cluster)

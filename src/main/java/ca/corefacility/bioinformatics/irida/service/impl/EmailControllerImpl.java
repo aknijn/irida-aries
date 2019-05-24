@@ -274,7 +274,7 @@ public class EmailControllerImpl implements EmailController {
 		ctx.setVariable("ngsEmail", serverEmail);
 		ctx.setVariable("serverURL", serverURL);
 		ctx.setVariable("analysisName", analysisName);
-        if (clusters.length() > 0) {
+        if (!clusterId.equals("-")) {
             msgpriority = 1;
             header = sampleSpeciesShort + ": Cluster!";
        		ctx.setVariable("header", header);
@@ -283,8 +283,10 @@ public class EmailControllerImpl implements EmailController {
 		else {
             msgpriority = 3;
             header = sampleSpeciesShort + ": No cluster";
+			String[] neighbours = clusters.split(",");
+			String strNeighbours = neighbours[0] + " (" + neighbours[1] + "), " + neighbours[2] + " (" + neighbours[3] + "), " + neighbours[4] + " (" + neighbours[5] + ").";
        		ctx.setVariable("header", header);
-            ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster.");
+            ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours);
         }
 		try {
 			final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
