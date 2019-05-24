@@ -281,12 +281,19 @@ public class EmailControllerImpl implements EmailController {
             ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
         }
 		else {
-            msgpriority = 3;
-            header = sampleSpeciesShort + ": No cluster";
+			msgpriority = 3;
 			String[] neighbours = clusters.split(",");
-			String strNeighbours = neighbours[0] + " (" + neighbours[1] + "), " + neighbours[2] + " (" + neighbours[3] + "), " + neighbours[4] + " (" + neighbours[5] + ").";
-       		ctx.setVariable("header", header);
-            ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours);
+			if (!neighbours[0].equals("ERROR")) {
+				String strNeighbours = neighbours[0] + " (" + neighbours[1] + "), " + neighbours[2] + " (" + neighbours[3] + "), " + neighbours[4] + " (" + neighbours[5] + ").";
+				header = sampleSpeciesShort + ": No cluster";
+				ctx.setVariable("header", header);
+				ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours);
+			}
+			else {
+				header = sampleSpeciesShort + ": Error";
+				ctx.setVariable("header", header);
+				ctx.setVariable("clusters", "Errore durante le analisi degli cluster");
+			}
         }
 		try {
 			final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();

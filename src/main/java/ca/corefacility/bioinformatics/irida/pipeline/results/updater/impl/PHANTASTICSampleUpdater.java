@@ -223,12 +223,12 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		Integer i = 0;
 		List<String> dm_header = new ArrayList<>(Arrays.asList(firstLine.split("\t")));
 
-		Integer dist1 = 1000;
-		Integer dist2 = 1000;
-		Integer dist3 = 1000;
-		String sample1 = "";
-		String sample2 = "";
-		String sample3 = "";
+		Integer dist1 = 9999;
+		Integer dist2 = 9999;
+		Integer dist3 = 9999;
+		String sample1 = "ERROR";
+		String sample2 = "ERROR";
+		String sample3 = "ERROR";
 		while(dm_input.hasNextLine())
 		{
 			Scanner dm_colReader = new Scanner(dm_input.nextLine());
