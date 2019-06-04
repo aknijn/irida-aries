@@ -32,7 +32,7 @@ public class SEU {
 			logger.warn("Attempt to load class failed.", ex);
 		}
         //final String connectionUrl = environment.getProperty("seu.cnstr");
-        final String connectionUrl = "jdbc:sqlserver://sql111.iss.it:10111;databaseName=SEU;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
+        final String connectionUrl = "jdbc:sqlserver://sql172.iss.it:10172;databaseName=SEU;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
         try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
             String SQL = "SELECT TOP 1 * FROM ForIRIDAView WHERE Ceppo = '" + strainID + "' ORDER BY idCampioneVTECFeci";
             ResultSet rs = stmt.executeQuery(SQL);
