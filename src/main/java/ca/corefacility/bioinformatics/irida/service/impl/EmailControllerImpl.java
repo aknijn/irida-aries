@@ -275,16 +275,23 @@ public class EmailControllerImpl implements EmailController {
 		ctx.setVariable("serverURL", serverURL);
 		ctx.setVariable("analysisName", analysisName);
         if (!clusterId.equals("-")) {
-            msgpriority = 1;
-            header = sampleSpeciesShort + ": Cluster!";
-       		ctx.setVariable("header", header);
-            ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
+			if (clusterId.contains("_ext")) {
+				msgpriority = 2;
+				header = sampleSpeciesShort + ": Vicino ad un cluster";
+				ctx.setVariable("header", header);
+				ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli dal cluster " + clusterId + ".");
+			} else { 
+				msgpriority = 1;
+				header = sampleSpeciesShort + ": Cluster!";
+				ctx.setVariable("header", header);
+				ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
+			}
         }
 		else {
 			msgpriority = 3;
 			String[] neighbours = clusters.split(",");
 			if (!neighbours[0].equals("ERROR")) {
-				String strNeighbours = neighbours[0] + " (" + neighbours[1] + "), " + neighbours[2] + " (" + neighbours[3] + "), " + neighbours[4] + " (" + neighbours[5] + ").";
+				String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ").";
 				header = sampleSpeciesShort + ": No cluster";
 				ctx.setVariable("header", header);
 				ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours);
