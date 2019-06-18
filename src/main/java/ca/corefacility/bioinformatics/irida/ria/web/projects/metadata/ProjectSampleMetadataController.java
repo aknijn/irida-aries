@@ -39,6 +39,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+
 /**
  * This class is designed to be used for bulk actions on {@link MetadataEntry}
  * within a {@link Project}.
@@ -232,6 +236,7 @@ public class ProjectSampleMetadataController {
 	}
 
 	/**
+     * 20190618: HIJACKED THIS FUNCTION for batch upload new samples
 	 * Save uploaded metadata to the
 	 *
 	 * @param locale
@@ -257,44 +262,55 @@ public class ProjectSampleMetadataController {
 
 		List<Sample> samplesToUpdate = new ArrayList<>();
 
-		List<Map<String, String>> found = stored.getFound();
-		if (found != null) {
+		List<Map<String, String>> newsamples = stored.getMissing();
+		if (newsamples != null) {
 			// Lets try to get a sample
 			String sampleNameColumn = stored.getSampleNameColumn();
 			List<String> errorList = new ArrayList<>();
 			try {
-				for (Map<String, String> row : found) {
+				for (Map<String, String> row : newsamples) {
 
 					String name = row.get(sampleNameColumn);
-					Sample sample = sampleService.getSampleBySampleName(project, name);
+					Sample sample = new Sample();
+					sample.setSampleName(sampleNameColumn);
+					sample.setOrganism(project.getOrganism());
+					projectService.addSampleToProject(project, sample, true);
 					row.remove(sampleNameColumn);
 
 					Map<MetadataTemplateField, MetadataEntry> newData = new HashMap<>();
 
 					// Need to overwrite duplicate keys
 					for (Entry<String, String> entry : row.entrySet()) {
-						MetadataTemplateField key = metadataTemplateService.readMetadataFieldByLabel(entry.getKey());
 
-						if (key == null) {
-							key = metadataTemplateService
-									.saveMetadataField(new MetadataTemplateField(entry.getKey(), "text"));
+						// if the key is found, replace the entry
+						switch (entry.getKey()) {
+							case "Regione":  sample.setGeographicLocationName(entry.getValue());
+									break;
+							case "Provincia":  sample.setGeographicLocationName2(entry.getValue());
+									break;
+							case "Città":  sample.setGeographicLocationName3(entry.getValue());
+									break;
+							case "Ospedale":  sample.setCollectedBy(entry.getValue());
+									break;
+							case "DataSintomi":  DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+									sample.setCollectionDate(df.parse(entry.getValue()));
+									break;
+							case "CondizioneClinica":  sample.setIsolate(entry.getValue());
+									break;
 						}
-
-						newData.put(key, new MetadataEntry(entry.getValue(), "text"));
 					}
 
-					sample.mergeMetadata(newData);
-
 					// Save metadata back to the sample
-
 					samplesToUpdate.add(sample);
-
 				}
 
 				sampleService.updateMultiple(samplesToUpdate);
 			} catch (EntityNotFoundException e) {
 				// This really should not happen, but hey, you never know!
 				errorList.add(messageSource.getMessage("metadata.results.save.sample-not-found",
+						new Object[] { e.getMessage() }, locale));
+			} catch (ParseException e) {
+				errorList.add(messageSource.getMessage("metadata.results.save.date-not-valid",
 						new Object[] { e.getMessage() }, locale));
 			}
 
@@ -307,7 +323,7 @@ public class ProjectSampleMetadataController {
 		}
 		if (errors.size() == 0) {
 			return ImmutableMap.of("success",
-					messageSource.getMessage("metadata.results.save.success", new Object[] { found.size() }, locale));
+					messageSource.getMessage("metadata.results.save.success", new Object[] { newsamples.size() }, locale));
 		}
 		return errors;
 	}

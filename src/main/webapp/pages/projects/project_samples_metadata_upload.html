@@ -90,7 +90,7 @@
         </ul>
         <ui-view></ui-view>
     </script>
-    <script type="text/ng-template" id="results.found.component.tmpl.html">
+    <script type="text/ng-template" id="results.missing.component.tmpl.html">
         <div class="alert alert-success" ng-show="$ctrl.rows.length &gt; 0">
             <strong>
                 <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;
@@ -110,7 +110,7 @@
         </div>
         <table id="found-table" class="table table-striped nowrap" cellspacing="0" width="100%"></table>
     </script>
-    <script type="text/ng-template" id="results.missing.component.tmpl.html">
+    <script type="text/ng-template" id="results.found.component.tmpl.html">
         <div class="alert alert-danger" ng-show="$ctrl.rows.length &gt; 0">
             <strong>
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
