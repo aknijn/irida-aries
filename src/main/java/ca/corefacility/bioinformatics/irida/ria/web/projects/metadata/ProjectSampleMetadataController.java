@@ -39,9 +39,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+// import java.text.DateFormat;
+// import java.text.SimpleDateFormat;
+// import java.util.Date;
+
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This class is designed to be used for bulk actions on {@link MetadataEntry}
@@ -143,7 +147,14 @@ public class ProjectSampleMetadataController {
 							rowMap.put(header, "");
 						} else {
 							cell.setCellType(Cell.CELL_TYPE_STRING);
-							rowMap.put(header, cell.getStringCellValue());
+							if (header.equals("DataSintomi")) {
+								long excelDateLong = Long.parseLong(cell.getStringCellValue());
+								LocalDate dateOfExcel = LocalDate.of(1900, 1, 1);
+								LocalDate javadate = dateOfExcel.plusDays(excelDateLong - 2);
+								rowMap.put(header, javadate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+							} else {
+								rowMap.put(header, cell.getStringCellValue());
+							}
 						}
 					}
 				}
@@ -254,7 +265,6 @@ public class ProjectSampleMetadataController {
 			@PathVariable long projectId) {
 		Map<String, Object> errors = new HashMap<>();
 		Project project = projectService.read(projectId);
-
 		SampleMetadataStorage stored = (SampleMetadataStorage) session.getAttribute("pm-" + projectId);
 		if (stored == null) {
 			errors.put("stored-error", true);
@@ -272,7 +282,7 @@ public class ProjectSampleMetadataController {
 
 					String name = row.get(sampleNameColumn);
 					Sample sample = new Sample();
-					sample.setSampleName(sampleNameColumn);
+					sample.setSampleName(name);
 					sample.setOrganism(project.getOrganism());
 					projectService.addSampleToProject(project, sample, true);
 					row.remove(sampleNameColumn);
@@ -288,12 +298,12 @@ public class ProjectSampleMetadataController {
 									break;
 							case "Provincia":  sample.setGeographicLocationName2(entry.getValue());
 									break;
-							case "Città":  sample.setGeographicLocationName3(entry.getValue());
+							case "Comune":  sample.setGeographicLocationName3(entry.getValue());
 									break;
 							case "Ospedale":  sample.setCollectedBy(entry.getValue());
 									break;
-							case "DataSintomi":  DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-									sample.setCollectionDate(df.parse(entry.getValue()));
+							case "DataSintomi":  LocalDate javaDate = LocalDate.parse(entry.getValue(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+									sample.setCollectionDate(java.sql.Date.valueOf(javaDate));
 									break;
 							case "CondizioneClinica":  sample.setIsolate(entry.getValue());
 									break;
@@ -308,9 +318,6 @@ public class ProjectSampleMetadataController {
 			} catch (EntityNotFoundException e) {
 				// This really should not happen, but hey, you never know!
 				errorList.add(messageSource.getMessage("metadata.results.save.sample-not-found",
-						new Object[] { e.getMessage() }, locale));
-			} catch (ParseException e) {
-				errorList.add(messageSource.getMessage("metadata.results.save.date-not-valid",
 						new Object[] { e.getMessage() }, locale));
 			}
 
