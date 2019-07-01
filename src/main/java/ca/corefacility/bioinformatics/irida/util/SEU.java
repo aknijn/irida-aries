@@ -54,4 +54,30 @@ public class SEU {
             return SEUmap;
         }
     }
+
+	public Map<String, String> getSTECData(String strainID) throws SQLException {
+        Map<String, String> STECmap = new HashMap<String, String>();
+		try { Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
+        } catch ( ClassNotFoundException ex ) {
+			logger.warn("Attempt to load class failed.", ex);
+		}
+        //final String connectionUrl = environment.getProperty("seu.cnstr");
+        final String connectionUrl = "jdbc:sqlserver://sql172.iss.it:10172;databaseName=STEC;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
+        try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
+            String SQL = "SELECT TOP 1 * FROM ForIRIDAView WHERE ISS_ID = '" + strainID + "'";
+            ResultSet rs = stmt.executeQuery(SQL);
+            if (rs.next()) {
+				STECmap.put("DateOfSampling", rs.getString("DateOfSampling"));
+				STECmap.put("Ospedale", rs.getString("Sender"));
+				STECmap.put("sampArea", rs.getString("sampArea"));
+				STECmap.put("sampInfo", rs.getString("sampInfo"));
+			} else {
+				STECmap.put("DataEsordio", null);
+				STECmap.put("Ospedale", null);
+				STECmap.put("sampArea", null);
+				STECmap.put("sampInfo", null);
+			}
+            return STECmap;
+        }
+    }
 }
