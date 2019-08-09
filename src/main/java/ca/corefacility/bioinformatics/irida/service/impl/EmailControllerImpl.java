@@ -277,9 +277,15 @@ public class EmailControllerImpl implements EmailController {
         if (!clusterId.equals("-")) {
 			if (clusterId.contains("_ext")) {
 				msgpriority = 2;
-				header = sampleSpeciesShort + ": Vicino ad un cluster";
-				ctx.setVariable("header", header);
-				ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli dal cluster " + clusterId + ".");
+				if (clusterId.equals("-_ext")) {
+					header = sampleSpeciesShort + ": Vicino ad altri campioni";
+					ctx.setVariable("header", header);
+					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli altri campioni: " + clusters + ".");
+				} else { 
+					header = sampleSpeciesShort + ": Vicino ad un cluster";
+					ctx.setVariable("header", header);
+					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli dal cluster " + clusterId + ".");
+				}
 			} else { 
 				msgpriority = 1;
 				header = sampleSpeciesShort + ": Cluster!";

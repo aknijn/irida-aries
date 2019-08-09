@@ -276,7 +276,12 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				logger.debug("sample is extended of an existing cluster: " + clusterId);
 				if (clusterId.contains("_ext")) { clusterId = "-"; } else { clusterId = clusterId + "_ext"; }
 				clusters.add(clusterId);
-			}
+				clusters.add(sample1);
+				clusters.add(dist1.toString());
+				clusters.add(sample2);
+				clusters.add(dist2.toString());
+				clusters.add(sample3);
+				clusters.add(dist3.toString());			}
 		} else {
 			String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterNodes);
 			if (clusterId.equals("-")) {

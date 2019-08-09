@@ -120,6 +120,12 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 		    //for (Join<Project, Sample> projectForSample : projectsForSample) {
             //    species = projectForSample.getSubject().getOrganism();
             //}
+            List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
+		    for (Join<Project, Sample> projectForSample1 : projectsForSample) {
+                if(projectForSample1.getSubject().getId().equals(93L)) {
+					sample_code = "V_" + sampleForSequencingObject.getId().toString();
+				}
+            }
             species = sampleForSequencingObject.getOrganism();
             String region = "-";
             if(sampleForSequencingObject.getGeographicLocationName() != null) {
@@ -172,7 +178,7 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 				projectService.addSampleToProject(masterProject, sampleForSequencingObject, false);
 			}
             // Share analysis results with the required projects
-            List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
+            //List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
 			for (Join<Project, Sample> projectForSample : projectsForSample) {
 				pasRepository.save(new ProjectAnalysisSubmissionJoin(projectForSample.getSubject(), submission));
 			}
