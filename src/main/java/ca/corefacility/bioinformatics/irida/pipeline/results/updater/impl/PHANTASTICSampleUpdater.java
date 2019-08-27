@@ -172,7 +172,9 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters = getCluster(sampleCodes.get(0), clusterCriterium, masterProjectId, analysis);
 				clusterId = clusters.get(0);
 				clusters.remove(0);
-				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(clusterId, "text", analysis);
+				String metaClusterId = clusterId;
+				if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
+				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
 				stringEntries.put("Cluster_Id", metadataEntry);
 
 				// convert string map into metadata fields

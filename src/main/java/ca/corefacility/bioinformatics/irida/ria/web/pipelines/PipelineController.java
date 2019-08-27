@@ -309,21 +309,11 @@ public class PipelineController extends BaseController {
 						continue;
 					}
                     String pMyValue = p.getDefaultValue();
-					switch (p.getName()) {
-						case "phantvpre_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
-								 break;
-						case "phantv_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
-								 break;
-						case "phantv_species":  pMyValue = sampleOrganism;
-								 break;
-						case "phantwpre_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
-								 break;
-						case "phantw_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
-								 break;
-						case "phantt_token":  pMyValue = "tW9jiEusOSGvsE91qso1";
-								 break;
-						case "phantt_species":  pMyValue = sampleOrganism;
-								 break;
+					if (p.getName().endsWith("_token")) {
+						pMyValue = "tW9jiEusOSGvsE91qso1";
+					}
+					if (p.getName().endsWith("_species")) {
+						pMyValue = sampleOrganism;
 					}
 					defaultParameters.add(ImmutableMap.of(
 							"label",

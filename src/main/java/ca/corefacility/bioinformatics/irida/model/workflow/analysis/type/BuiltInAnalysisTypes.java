@@ -18,6 +18,8 @@ public class BuiltInAnalysisTypes {
 
 	public static final AnalysisType VIRULOTYPER = new AnalysisType("VIRULOTYPER");
 
+	public static final AnalysisType SUMMARY = new AnalysisType("SUMMARY");
+
 	public static final AnalysisType ASSEMBLY_ANNOTATION = new AnalysisType("ASSEMBLY_ANNOTATION");
 
 	public static final AnalysisType BIO_HANSEL = new AnalysisType("BIO_HANSEL");
