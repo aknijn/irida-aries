@@ -185,11 +185,12 @@ public class ProjectSamplesController {
 			//ISS collegamento con SEU
 			try {
 				if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
+					logger.debug("Adding information from SEU database");
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					SEU seu = new SEU();
 					Map<String, String> SEUmap = seu.getData(sample.getSampleName());
 					if (SEUmap.get("DataEsordio") != null) { sample.setCollectionDate(sdf.parse(SEUmap.get("DataEsordio"))); }
-					if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); }
+					if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); logger.debug("Ospedale: " + SEUmap.get("Ospedale"));}
 					if (SEUmap.get("Regione") != null) { sample.setGeographicLocationName(SEUmap.get("Regione")); }
 					if (SEUmap.get("Provincia") != null) { sample.setGeographicLocationName2(SEUmap.get("Provincia")); }
 					if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }

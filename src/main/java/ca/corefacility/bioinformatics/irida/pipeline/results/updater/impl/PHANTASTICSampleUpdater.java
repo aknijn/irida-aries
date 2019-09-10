@@ -264,6 +264,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		if (clusterNodes.size() == 0) {
 			if (clusterExtendedNodes.size() == 0) {
 				//no cluster
+				logger.debug("no cluster");
 				clusters.add("-");
 				clusters.add(sample1);
 				clusters.add(dist1.toString());
@@ -271,7 +272,6 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters.add(dist2.toString());
 				clusters.add(sample3);
 				clusters.add(dist3.toString());
-				logger.debug("no cluster");
 			} else {
 				//sample is extended of an existing cluster (or extended of extended => no cluster)
 				String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterExtendedNodes);
@@ -285,24 +285,26 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters.add(sample3);
 				clusters.add(dist3.toString());			}
 		} else {
+			logger.debug("getClusterIdByCodes");
 			String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterNodes);
+			logger.debug("clusterId: " + clusterId);
 			if (clusterId.equals("-")) {
 				//new cluster
 				String newClusterId = sampleService.getNextClusterId(masterProject);
+				logger.debug("new cluster: " + newClusterId);
 				clusters.add(newClusterId);
 				sampleService.setClusterIdByCode(masterProject, clusterNodes, newClusterId);
-				logger.debug("new cluster: " + newClusterId);
 			} else {
 				if (clusterId.contains("_ext")) {
 					//other samples are at most extended of an existing cluster => new cluster
 					String newClusterId = sampleService.getNextClusterId(masterProject);
-					clusters.add(newClusterId);
 					logger.debug("other samples are at most extended of an existing cluster => new cluster: " + newClusterId);
+					clusters.add(newClusterId);
 				} else {
 					//other samples are part of an existing cluster
+					logger.debug("other samples are part of an existing cluster: " + clusterId);
 					clusters.add(clusterId);
 					sampleService.setClusterIdByCode(masterProject, clusterNodes, clusterId);
-					logger.debug("other samples are part of an existing cluster: " + clusterId);
 				}
 			}
 		}

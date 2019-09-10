@@ -359,16 +359,21 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SEQUENCER') or (hasPermission(#project, 'isProjectOwner'))")
 	public ProjectSampleJoin addSampleToProject(Project project, Sample sample, boolean owner) {
 		logger.trace("Adding sample to project.");
+		boolean isAlreadyInMasterProject = false;
 
 		// Check to ensure a sample with this sequencer id doesn't exist in this
 		// project already
 		if (sampleRepository.getSampleBySampleName(project, sample.getSampleName()) != null) {
-			throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
+			//check if the project is a master project
+			if (project.getId() == 48L || project.getId() == 49L) { isAlreadyInMasterProject = true; }
+			else {
+				throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
 					+ "' already exists in project " + project.getId());
+			}
 		}
 		// Check to ensure a sample with this sequencer id doesn't exist in its
 		// master project already
-		if (!sample.getSampleName().equals("name") && !sample.getSampleName().equals("sample")){
+/* 		if (!sample.getSampleName().equals("name") && !sample.getSampleName().equals("sample")){
 			if (sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")){
 				Project masterProject = super.read(48L);
 				if (sampleRepository.getSampleBySampleName(masterProject, sample.getSampleName()) != null) {
@@ -383,7 +388,7 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 							+ "' already exists in master project " + masterProject.getId());
 				}
 			}
-		}
+		} */
 
 		// the sample hasn't been persisted before, persist it before calling
 		// the relationshipRepository.
@@ -399,13 +404,14 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 		}
 
 		ProjectSampleJoin join = new ProjectSampleJoin(project, sample, owner);
-
-		try {
-			return psjRepository.save(join);
-		} catch (DataIntegrityViolationException e) {
-			throw new EntityExistsException("Sample [" + sample.getId() + "] has already been added to project ["
-					+ project.getId() + "]");
-		}
+		if (!isAlreadyInMasterProject) {
+			try {
+				return psjRepository.save(join);
+			} catch (DataIntegrityViolationException e) {
+				throw new EntityExistsException("Sample [" + sample.getId() + "] has already been added to project ["
+						+ project.getId() + "]");
+			}
+		} else { return join; }
 	}
 
 	/**
