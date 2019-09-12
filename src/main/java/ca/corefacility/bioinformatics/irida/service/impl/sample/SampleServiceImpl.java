@@ -488,9 +488,9 @@ public class SampleServiceImpl extends CRUDServiceImpl<Long, Sample> implements 
 	@Override
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN') or hasPermission(#projects, 'canReadProject')")
 	public Page<ProjectSampleJoin> getFilteredSamplesForProjects(List<Project> projects, List<String> sampleNames, String sampleName, String searchTerm,
-			String organism, Date minDate, Date maxDate, int currentPage, int pageSize, Sort sort) {
+			String description, String organism, Date minDate, Date maxDate, int currentPage, int pageSize, Sort sort) {
 		return psjRepository
-				.findAll(ProjectSampleSpecification.getSamples(projects, sampleNames, sampleName, searchTerm, organism, minDate, maxDate),
+				.findAll(ProjectSampleSpecification.getSamples(projects, sampleNames, sampleName, searchTerm, description, organism, minDate, maxDate),
 						new PageRequest(currentPage, pageSize, sort));
 	}
 
@@ -655,9 +655,10 @@ public class SampleServiceImpl extends CRUDServiceImpl<Long, Sample> implements 
 					final CriteriaBuilder cb) {
 
 				return cb.or(cb.like(root.get("sample").get("sampleName"), "%" + queryString + "%"),
+						cb.like(root.get("sample").get("description"), "%" + queryString + "%"),
 						cb.equal(root.get("sample").get("id").as(String.class), queryString));
 			}
-
+	
 			/**
 			 * This {@link Predicate} filters out {@link Project}s for the
 			 * specific user where they are assigned individually as a member.

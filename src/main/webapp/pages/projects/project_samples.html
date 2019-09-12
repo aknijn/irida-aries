@@ -31,6 +31,7 @@
           chips: {
             name: /*[[#{project.sample.filter-name}]]*/ "Name",
             range: /*[[#{project.sample.filter-date.label}]]*/ "Date Range",
+            description: /*[[#{project.sample.filter-description}]]*/ "Description",
             organism: /*[[#{project.sample.filter-organism}]]*/ "Organism"
           },
           dateFilter: {
@@ -255,6 +256,7 @@
         <tr>
             <th data-orderable="false"></th>
             <th data-data="sampleName" data-name="sample.sampleName" th:text="#{project.samples.table.name}"></th>
+            <th data-data="description" data-name="sample.description" th:text="#{project.samples.table.description}"></th>
             <th data-data="organism" data-name="sample.organism" th:text="#{project.samples.table.organism}"></th>
             <th data-data="projectName" data-name="project.name" th:text="#{project.samples.table.project}"></th>
             <th class="dt-date" data-data="createdDate" th:text="#{project.samples.table.created}"></th>

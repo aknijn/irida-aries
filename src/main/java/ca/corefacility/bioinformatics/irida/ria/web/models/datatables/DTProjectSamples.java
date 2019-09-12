@@ -22,6 +22,7 @@ public class DTProjectSamples implements DataTablesResponseModel, DataTablesExpo
 	private Long id;
 	private Long projectId;
 	private String sampleName;
+	private String description;
 	private String organism;
 	private String projectName;
 	private Date createdDate;
@@ -36,6 +37,7 @@ public class DTProjectSamples implements DataTablesResponseModel, DataTablesExpo
 
 		this.id = sample.getId();
 		this.sampleName = sample.getSampleName();
+		this.description = sample.getDescription();
 		this.organism = sample.getOrganism();
 		this.projectName = project.getName();
 		this.projectId = project.getId();
@@ -54,6 +56,10 @@ public class DTProjectSamples implements DataTablesResponseModel, DataTablesExpo
 		return sampleName;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+	
 	public String getOrganism() {
 		return organism;
 	}
@@ -94,6 +100,7 @@ public class DTProjectSamples implements DataTablesResponseModel, DataTablesExpo
 		List<String> data = new ArrayList<>();
 		data.add(String.valueOf(this.getId()));
 		data.add(this.getSampleName());
+		data.add(this.getDescription());
 		data.add(this.getOrganism());
 		data.add(String.valueOf(this.getProjectId()));
 		data.add(this.getProjectName());
@@ -111,6 +118,7 @@ public class DTProjectSamples implements DataTablesResponseModel, DataTablesExpo
 		List<String> headers = new ArrayList<>();
 		headers.add(messageSource.getMessage("iridaThing.id", new Object[] {}, locale));
 		headers.add(messageSource.getMessage("project.samples.table.name", new Object[] {}, locale));
+		headers.add(messageSource.getMessage("project.samples.table.description", new Object[] {}, locale));
 		headers.add(messageSource.getMessage("project.samples.table.organism", new Object[] {}, locale));
 		headers.add(messageSource.getMessage("project.samples.table.project-id", new Object[] {}, locale));
 		headers.add(messageSource.getMessage("project.samples.table.project", new Object[] {}, locale));

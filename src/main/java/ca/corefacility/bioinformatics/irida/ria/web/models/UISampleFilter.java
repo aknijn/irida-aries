@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 public class UISampleFilter {
 
 	private String name;
+	private String description;
 	private String organism;
 	private String startDate;
 	private String endDate;
@@ -20,6 +21,14 @@ public class UISampleFilter {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return Strings.isNullOrEmpty(description) ? "" : description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getOrganism() {

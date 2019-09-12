@@ -3,6 +3,7 @@ import moment from "moment";
 import "../../../../vendor/plugins/jquery/daterangepicker";
 import { FILTERS, SAMPLE_EVENTS } from "../constants";
 
+const $descriptionFilter = $("#js-description");
 const $organismFilter = $("#js-organism");
 const $nameFilter = $("#js-name");
 const $dateRangeFilter = $("#js-daterange");
@@ -79,6 +80,11 @@ $("#js-do-filter").on("click", function() {
   // Check to see if the name filter needs to be applied.
   if ($nameFilter.val()) {
     filters[FILTERS.FILTER_BY_NAME] = $nameFilter.val();
+  }
+
+  // Check to see if the description filter needs tobe applied.
+  if ($descriptionFilter.val()) {
+    filters[FILTERS.FILTER_BY_DECRIPTION] = $descriptionFilter.val();
   }
 
   // Check to see if the organism filter needs tobe applied.

@@ -111,6 +111,9 @@ public class ProjectSamplesPage extends ProjectPageBase {
 	@FindBy(className = "t-name-filter")
 	private WebElement nameFilterInput;
 
+	@FindBy(className = "t-description-filter")
+	private WebElement descriptionFilterInput;
+
 	@FindBy(className = "filter-modal")
 	private WebElement filterModal;
 
@@ -370,6 +373,17 @@ public class ProjectSamplesPage extends ProjectPageBase {
 
 		nameFilterInput.clear();
 		nameFilterInput.sendKeys(name);
+		applyFiltersBtn.click();
+
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-content")));
+	}
+
+	public void filterByDescription(String description) {
+		openFilterModal();
+
+		descriptionFilterInput.clear();
+		descriptionFilterInput.sendKeys(description);
 		applyFiltersBtn.click();
 
 		WebDriverWait wait = new WebDriverWait(driver, 10);

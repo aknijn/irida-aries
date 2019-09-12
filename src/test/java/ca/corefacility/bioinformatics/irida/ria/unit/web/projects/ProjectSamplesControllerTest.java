@@ -306,7 +306,7 @@ public class ProjectSamplesControllerTest {
 		));
 
 		when(sampleService
-				.getFilteredSamplesForProjects(any(List.class), any(List.class), any(String.class), any(String.class), any(String.class), any(Date.class), any(Date.class),
+				.getFilteredSamplesForProjects(any(List.class), any(List.class), any(String.class), any(String.class), any(String.class), any(String.class), any(Date.class), any(Date.class),
 						any(Integer.class), any(Integer.class), any(
 								Sort.class)))
 				.thenReturn(TestDataFactory.getPageOfProjectSampleJoin());

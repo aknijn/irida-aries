@@ -232,6 +232,8 @@ public interface SampleService extends CRUDService<Long, Sample> {
 	 * 	    {@link String} exact name of a specific {@link Sample}
 	 * @param searchTerm
 	 * 		{@link String} search term to search for.
+	 * @param description
+	 * 		{@link String} description ter to search for.
 	 * @param organism
 	 * 		{@link String} organism ter to search for.
 	 * @param minDate
@@ -248,7 +250,7 @@ public interface SampleService extends CRUDService<Long, Sample> {
 	 * @return a {@link Page} of {@link ProjectSampleJoin} that are filtered and sorted.
 	 */
 	public Page<ProjectSampleJoin> getFilteredSamplesForProjects(List<Project> projects, List<String> sampleNames,
-			String sampleName, String searchTerm, String organism,
+			String sampleName, String searchTerm, String description, String organism,
 			Date minDate, Date maxDate, int currentPage, int pageSize, Sort sort);
 
 	/**

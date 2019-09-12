@@ -508,6 +508,10 @@ $("#js-filter-modal-wrapper").on("show.bs.modal", function() {
     params.name = TABLE_FILTERS.get(FILTERS.FILTER_BY_NAME);
   }
 
+  if (TABLE_FILTERS.has(FILTERS.FILTER_BY_DESCRIPTION)) {
+    params.description = TABLE_FILTERS.get(FILTERS.FILTER_BY_DESCRIPTION);
+  }
+
   if (TABLE_FILTERS.has(FILTERS.FILTER_BY_ORGANISM)) {
     params.organism = TABLE_FILTERS.get(FILTERS.FILTER_BY_ORGANISM);
   }
@@ -600,6 +604,17 @@ function displayFilters(filters) {
       filters.get(FILTERS.FILTER_BY_NAME),
       () => {
         filters.delete(FILTERS.FILTER_BY_NAME);
+        table.ajax.reload();
+      }
+    );
+  }
+
+  if (filters.has(FILTERS.FILTER_BY_DECRIPTION)) {
+    createChip(
+      window.PAGE.i18n.chips.description,
+      filters.get(FILTERS.FILTER_BY_DECRIPTION),
+      () => {
+        filters.delete(FILTERS.FILTER_BY_DECRIPTION);
         table.ajax.reload();
       }
     );

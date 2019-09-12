@@ -181,6 +181,7 @@ public class Sample extends IridaResourceSupport
 		// @formatter:off
 		return "Sample{" + "id=" + id +
 				", sampleName='" + sampleName + '\'' +
+				", description='" + description + '\'' +
 				", organism='" + organism + '\'' +
 				", modifiedDate=" + modifiedDate +
 				", createdDate=" + createdDate +

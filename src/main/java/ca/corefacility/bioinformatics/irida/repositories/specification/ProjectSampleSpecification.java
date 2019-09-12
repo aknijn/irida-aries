@@ -27,13 +27,14 @@ public class ProjectSampleSpecification {
 	 * @param sampleNames {@link List} of {@link String} of Sample names to search
 	 * @param sampleName  A single {@link Sample} name to loosely search
 	 * @param searchTerm  {@link String} search term to search for.
+	 * @param description {@link String} description to search for.
 	 * @param organism    {@link String} organism to search for.
 	 * @param minDate     {@link Date} minimum date the sample was modified.
 	 * @param maxDate     {@link Date} maximum date the sample was modified.
 	 * @return {@link Specification} of {@link ProjectSampleJoin} for criteria to search based on the filtered criteria.
 	 */
 	public static Specification<ProjectSampleJoin> getSamples(List<Project> projects, List<String> sampleNames,
-			String sampleName, String searchTerm, String organism, Date minDate, Date maxDate) {
+			String sampleName, String searchTerm, String description, String organism, Date minDate, Date maxDate) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 
@@ -54,7 +55,11 @@ public class ProjectSampleSpecification {
 			// Check for the table search.
 			// This can be expanded in future to search any attribute on the sample (e.g. description)
 			if (!Strings.isNullOrEmpty(searchTerm)) {
-				predicates.add(criteriaBuilder.like(root.get("sample").get("sampleName"), "%" + searchTerm + "%"));
+				predicates.add(criteriaBuilder.or(criteriaBuilder.like(root.get("sample").get("sampleName"), "%" + searchTerm + "%"),criteriaBuilder.like(root.get("sample").get("description"), "%" + searchTerm + "%")));
+			}
+			// Check for description
+			if (!Strings.isNullOrEmpty(description)) {
+				predicates.add(criteriaBuilder.like(root.get("sample").get("description"), "%" + description + "%"));
 			}
 			// Check for organism
 			if (!Strings.isNullOrEmpty(organism)) {
