@@ -609,12 +609,12 @@ function displayFilters(filters) {
     );
   }
 
-  if (filters.has(FILTERS.FILTER_BY_DECRIPTION)) {
+  if (filters.has(FILTERS.FILTER_BY_DESCRIPTION)) {
     createChip(
       window.PAGE.i18n.chips.description,
-      filters.get(FILTERS.FILTER_BY_DECRIPTION),
+      filters.get(FILTERS.FILTER_BY_DESCRIPTION),
       () => {
-        filters.delete(FILTERS.FILTER_BY_DECRIPTION);
+        filters.delete(FILTERS.FILTER_BY_DESCRIPTION);
         table.ajax.reload();
       }
     );

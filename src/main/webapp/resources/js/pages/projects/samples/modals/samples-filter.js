@@ -82,12 +82,12 @@ $("#js-do-filter").on("click", function() {
     filters[FILTERS.FILTER_BY_NAME] = $nameFilter.val();
   }
 
-  // Check to see if the description filter needs tobe applied.
+  // Check to see if the description filter needs to be applied.
   if ($descriptionFilter.val()) {
-    filters[FILTERS.FILTER_BY_DECRIPTION] = $descriptionFilter.val();
+    filters[FILTERS.FILTER_BY_DESCRIPTION] = $descriptionFilter.val();
   }
 
-  // Check to see if the organism filter needs tobe applied.
+  // Check to see if the organism filter needs to be applied.
   if ($organismFilter.val()) {
     filters[FILTERS.FILTER_BY_ORGANISM] = $organismFilter.val();
   }

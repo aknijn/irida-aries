@@ -79,7 +79,7 @@ const sampleConfig = Object.assign({}, tableConfig, {
       }
     },
     {
-      targets: SAMPLE_COLUMNS.DECRIPTION,
+      targets: SAMPLE_COLUMNS.DESCRIPTION,
       render(data) {
         return wrapCellContents({ text: data });
       }

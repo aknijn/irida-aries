@@ -172,6 +172,10 @@ public class Project extends IridaResourceSupport
 		this.id = id;
 	}
 
+	public boolean isMasterProject(){
+		return (id == 48L || id == 49L);
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Project) {

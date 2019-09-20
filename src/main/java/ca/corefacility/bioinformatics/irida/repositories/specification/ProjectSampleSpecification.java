@@ -55,7 +55,7 @@ public class ProjectSampleSpecification {
 			// Check for the table search.
 			// This can be expanded in future to search any attribute on the sample (e.g. description)
 			if (!Strings.isNullOrEmpty(searchTerm)) {
-				predicates.add(criteriaBuilder.or(criteriaBuilder.like(root.get("sample").get("sampleName"), "%" + searchTerm + "%"),criteriaBuilder.like(root.get("sample").get("description"), "%" + searchTerm + "%")));
+				predicates.add(criteriaBuilder.or(criteriaBuilder.like(root.get("sample").get("sampleName"), "%" + searchTerm + "%")));
 			}
 			// Check for description
 			if (!Strings.isNullOrEmpty(description)) {

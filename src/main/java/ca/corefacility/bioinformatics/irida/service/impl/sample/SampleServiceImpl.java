@@ -655,7 +655,7 @@ public class SampleServiceImpl extends CRUDServiceImpl<Long, Sample> implements 
 					final CriteriaBuilder cb) {
 
 				return cb.or(cb.like(root.get("sample").get("sampleName"), "%" + queryString + "%"),
-						cb.like(root.get("sample").get("description"), "%" + queryString + "%"),
+//						cb.like(root.get("sample").get("description"), "%" + queryString + "%"),
 						cb.equal(root.get("sample").get("id").as(String.class), queryString));
 			}
 	

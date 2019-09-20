@@ -1,8 +1,8 @@
 Arguments: 
-  F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\node.exe F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\bin\yarn.js install
+  D:\Progetti\GitHub\irida-aries\src\main\webapp\node\node.exe D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\bin\yarn.js install
 
 PATH: 
-  F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node;F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\nodejs\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\;C:\Program Files (x86)\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\120\DTS\Binn\;C:\Program Files\Microsoft SQL Server\120\DTS\Binn\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files (x86)\Microsoft SDKs\Azure\CLI\wbin;c:\programmi\gmt5\bin;F:\Progs\apache-maven-3.5.4\bin;C:\Program Files (x86)\Kaspersky Lab\Kaspersky Endpoint Security for Windows\;C:\Program Files\Git\cmd;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NCBI\blast-2.6.0+\bin;C:\Users\knijn_arnold\AppData\Local\Continuum\Anaconda2;C:\Users\knijn_arnold\AppData\Local\Continuum\Anaconda2\Scripts;C:\Users\knijn_arnold\AppData\Local\Continuum\Anaconda2\Library\bin;C:\Users\knijn_arnold\AppData\Roaming\npm;C:\Users\knijn_arnold\AppData\Local\Microsoft\WindowsApps;C:\Users\knijn_arnold\AppData\Roaming\PAUP4\;C:\Users\knijn_arnold\AppData\Local\rodeo\app-2.4.10\bin;F:\Python37\Scripts;C:\Users\knijn_arnold\AppData\Local\GitHubDesktop\bin;%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;;
+  D:\Progetti\GitHub\irida-aries\src\main\webapp\node;D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files\Microsoft MPI\Bin\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\;C:\Program Files (x86)\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files\Git\cmd;D:\Progs\apache-maven-3.6.1\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\nodejs\;C:\Users\knijn_arnold\AppData\Local\Microsoft\WindowsApps;C:\Users\knijn_arnold\AppData\Local\GitHubDesktop\bin;C:\Users\knijn_arnold\AppData\Roaming\npm;
 
 Yarn version: 
   1.12.3
@@ -11,20 +11,20 @@ Node version:
   10.13.0
 
 Platform: 
-  win32 x64
+  win32 ia32
 
 Trace: 
-  Error: EPIPE: broken pipe, write
+  Error: irida-ui@1.0.0: EPIPE: broken pipe, write
       at Socket._write (internal/net.js:58:25)
       at doWrite (_stream_writable.js:410:12)
       at writeOrBuffer (_stream_writable.js:394:5)
       at Socket.Writable.write (_stream_writable.js:294:11)
-      at ConsoleReporter._log (F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:95491:17)
-      at ConsoleReporter._logCategory (F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:95319:10)
-      at ConsoleReporter.success (F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:95495:10)
-      at Install.<anonymous> (F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:6804:23)
+      at ConsoleReporter.warn (D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:95513:17)
+      at warn (D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:50666:23)
+      at module.exports.exports.default (D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:37080:7)
+      at D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:50677:51
       at Generator.next (<anonymous>)
-      at step (F:\Progetti\GitHub\irida-aries\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:304:30)
+      at step (D:\Progetti\GitHub\irida-aries\src\main\webapp\node\yarn\dist\lib\cli.js:304:30)
 
 npm manifest: 
   {

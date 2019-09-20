@@ -328,6 +328,8 @@ public class ProjectSamplesController {
 			@RequestParam(required = false, name = "associated[]", defaultValue = "") List<Long> associated,
 			UISampleFilter filter, Model model) {
 		model.addAttribute("filter", filter);
+		Project thisproject = projectService.read(projectId);
+		model.addAttribute("isMasterProject", thisproject.isMasterProject());
 
 		/*
 		Add the current project to the list of project ids to ensure that we get the organisms

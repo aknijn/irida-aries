@@ -8,7 +8,7 @@
                 <label for="js-name" th:text="#{project.sample.filter-name}">Sample NAME</label>
                 <input type="text" class="form-control t-name-filter" id="js-name" th:value="${filter.getName()}"/>
             </div>
-            <div class="form-group">
+            <div class="form-group" th:if="${!isMasterProject}">
                 <label for="js-description" th:text="#{project.sample.filter-description}">Sample Description</label>
                 <input type="text" class="form-control t-description-filter" id="js-description" th:value="${filter.getDescription()}"/>
             </div>

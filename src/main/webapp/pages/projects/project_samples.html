@@ -11,6 +11,7 @@
     <script th:inline="javascript">
       var PAGE = {
         isRemoteProject: /*[[${project.isRemote()}]]*/ false,
+        isMasterProject: /*[[${project.isMasterProject()}]]*/ false,
         linker: /*[[${linker}]]*/'',
         urls: {
           projects: {
@@ -131,8 +132,8 @@
                             </li>
                             <li role="separator" class="divider"></li>
 
-                            <!-- NEW SAMPLE LINK -->
-                            <li role="menuitem">
+                            <!-- NEW SAMPLE LINK (NOT FOR MASTERPROJECTS)-->
+                            <li role="menuitem" th:if="${!project.isMasterProject()}">
                                 <a href="#"
                                   	class="js-sample-project-tool-btn t-new-sample-btn"
                                 	data:url="@{/projects/{id}/samples/new(id=${project.getId()})}"
@@ -256,7 +257,9 @@
         <tr>
             <th data-orderable="false"></th>
             <th data-data="sampleName" data-name="sample.sampleName" th:text="#{project.samples.table.name}"></th>
-            <th data-data="description" data-name="sample.description" th:text="#{project.samples.table.description}"></th>
+			<dl th:if="${!project.isMasterProject()}">
+                <th data-data="description" data-name="sample.description" th:text="#{project.samples.table.description}"></th>
+			</dl>
             <th data-data="organism" data-name="sample.organism" th:text="#{project.samples.table.organism}"></th>
             <th data-data="projectName" data-name="project.name" th:text="#{project.samples.table.project}"></th>
             <th class="dt-date" data-data="createdDate" th:text="#{project.samples.table.created}"></th>

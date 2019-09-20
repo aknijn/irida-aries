@@ -11,7 +11,7 @@ export const SAMPLE_EVENTS = {
 export const FILTERS = {
   FILTER_BY_FILE: "sampleNames",
   FILTER_BY_NAME: "name",
-  FILTER_BY_DECRIPTION: "description",
+  FILTER_BY_DESCRIPTION: "description",
   FILTER_BY_ORGANISM: "organism",
   FILTER_BY_EARLY_DATE: "startDate",
   FILTER_BY_LATEST_DATE: "endDate"
