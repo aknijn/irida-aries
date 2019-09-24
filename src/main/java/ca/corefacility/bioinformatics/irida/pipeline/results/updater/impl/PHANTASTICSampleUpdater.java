@@ -152,6 +152,8 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
                     PHANTASTIC_FIELDS = PHANTASTIC_LM_FIELDS;
 					clusterCriterium = 7;
 					masterProjectId = 49L;
+					PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry("-", "text", analysis);
+					stringEntries.put("Serotype", metadataEntry);
                 }
 				PHANTASTIC_FIELDS.entrySet().forEach(e -> {
 					if (result.containsKey(e.getKey()) && result.get(e.getKey()) != null) {
