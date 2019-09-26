@@ -279,8 +279,10 @@ public class EmailControllerImpl implements EmailController {
 				msgpriority = 2;
 				if (clusterId.equals("-_ext")) {
 					header = sampleSpeciesShort + ": Vicino ad altri campioni";
+					String[] neighbours = clusters.split(",");
+					String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ").";
 					ctx.setVariable("header", header);
-					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli altri campioni: " + clusters + ".");
+					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista 15 o meno alleli da altri campioni: " + strNeighbours + ".");
 				} else { 
 					header = sampleSpeciesShort + ": Vicino ad un cluster";
 					ctx.setVariable("header", header);

@@ -268,26 +268,24 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				//no cluster
 				logger.debug("no cluster");
 				clusters.add("-");
-				clusters.add(sample1 + ", (" + dist1.toString() + "), " + sample2 + ", (" + dist2.toString() + "), " + sample3 + ", (" + dist3.toString() + ")");
-				// clusters.add(sample1);
-				// clusters.add(dist1.toString());
-				// clusters.add(sample2);
-				// clusters.add(dist2.toString());
-				// clusters.add(sample3);
-				// clusters.add(dist3.toString());
+				clusters.add(sample1);
+				clusters.add(dist1.toString());
+				clusters.add(sample2);
+				clusters.add(dist2.toString());
+				clusters.add(sample3);
+				clusters.add(dist3.toString());
 			} else {
 				//sample is extended of an existing cluster (or extended of extended => no cluster)
 				String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterExtendedNodes);
 				logger.debug("sample is extended of an existing cluster: " + clusterId);
 				if (clusterId.contains("_ext")) { clusterId = "-"; } else { clusterId = clusterId + "_ext"; }
 				clusters.add(clusterId);
-				clusters.add(sample1 + ", (" + dist1.toString() + "), " + sample2 + ", (" + dist2.toString() + "), " + sample3 + ", (" + dist3.toString() + ")");
-				// clusters.add(sample1);
-				// clusters.add(dist1.toString());
-				// clusters.add(sample2);
-				// clusters.add(dist2.toString());
-				// clusters.add(sample3);
-				// clusters.add(dist3.toString());
+				clusters.add(sample1);
+				clusters.add(dist1.toString());
+				clusters.add(sample2);
+				clusters.add(dist2.toString());
+				clusters.add(sample3);
+				clusters.add(dist3.toString());
 			}
 		} else {
 			logger.debug("getClusterIdByCodes");
