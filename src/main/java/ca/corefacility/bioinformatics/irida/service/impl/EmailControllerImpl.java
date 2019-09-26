@@ -253,7 +253,7 @@ public class EmailControllerImpl implements EmailController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException {
+	public void sendEndOfAnalysisEmail(String recipients, String alertRecipients, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException {
 		logger.debug("Sending end-of-analysis email for " + sampleCode + " to " + recipients);
 
 		Locale locale = LocaleContextHolder.getLocale();
@@ -316,6 +316,7 @@ public class EmailControllerImpl implements EmailController {
 			message.setSubject(messageSource.getMessage("email.analysis.subject", null, locale) + " " + header);
 			message.setFrom(serverEmail);
 			message.setTo(InternetAddress.parse(recipients));
+			if (msgpriority == 1 && !alertRecipients.equals("-")) { message.setCc(InternetAddress.parse(alertRecipients)); }
             message.setPriority(msgpriority);
 
 			final String htmlContent = templateEngine.process(ANALYSIS_TEMPLATE, ctx);

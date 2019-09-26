@@ -207,7 +207,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 			throw new PostProcessingException("Workflow is not found", e);
 		}
 		if (emailController.isMailConfigured()) {
-		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), analysisName, sampleCodes.get(0), sampleSpecies.get(0), clusterId, String.join(", ", clusters));
+		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), "-", analysisName, sampleCodes.get(0), sampleSpecies.get(0), clusterId, String.join(", ", clusters));
         }
 	}
 
