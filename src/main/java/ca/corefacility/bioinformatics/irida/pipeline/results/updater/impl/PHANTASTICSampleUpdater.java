@@ -30,6 +30,7 @@ import java.util.*;
 //ISS
 import ca.corefacility.bioinformatics.irida.service.EmailController;
 import ca.corefacility.bioinformatics.irida.model.user.User;
+import ca.corefacility.bioinformatics.irida.model.user.Role;
 import ca.corefacility.bioinformatics.irida.repositories.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,8 +121,8 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 
 		Path filePath = phantasticFile.getFile();
 
-        ArrayList<String> recipients = new ArrayList<String>();
-        ArrayList<String> clusters = new ArrayList<String>();
+        List<String> recipients = new ArrayList<String>();
+		ArrayList<String> clusters = new ArrayList<String>();
 		ArrayList<String> sampleCodes = new ArrayList<String>();
 		String clusterId;
 
@@ -174,6 +175,9 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters = getCluster(sampleCodes.get(0), clusterCriterium, masterProjectId, analysis);
 				clusterId = clusters.get(0);
 				clusters.remove(0);
+				//clusterSampleCodes for sampleService.getRecipientsByCodes to avoid "local variables referenced from a lambda expression must be final or effectively final" error
+				ArrayList<String> clusterSampleCodes = new ArrayList<String>();
+				clusterSampleCodes.addAll(clusters);
 				String metaClusterId = clusterId;
 				if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
@@ -187,15 +191,29 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					s.mergeMetadata(metadataMap);
 					sampleService.updateFields(s.getId(), ImmutableMap.of("metadata", s.getMetadata()));
                     //EMAIL
-					sampleSpecies.add(s.getOrganism());
-                    List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
-        		    for (Join<Project, Sample> projectForSample : projectsForSample) {
-                        List<Join<Project, User>> projectUsers = pujRepository.getUsersForProjectByRole(projectForSample.getSubject(), ProjectRole.PROJECT_OWNER);
-            		    for (Join<Project, User> projectUser : projectUsers) {
-							if (!recipients.contains(projectUser.getObject().getEmail()))
-                                { recipients.add(projectUser.getObject().getEmail());}
-                        }
-                    }
+					List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
+					Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
+					for (Join<Project, Sample> projectForSample : projectsForSample) {
+						Project project = projectForSample.getSubject();
+						if (!project.isMasterProject()) {
+							recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes, isAlert));
+						}
+					}
+					// sampleSpecies.add(s.getOrganism());
+                    // List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
+        		    // for (Join<Project, Sample> projectForSample : projectsForSample) {
+                        // List<Join<Project, User>> projectUsers = pujRepository.getUsersForProjectByRole(projectForSample.getSubject(), ProjectRole.PROJECT_OWNER);
+            		    // for (Join<Project, User> projectUser : projectUsers) {
+							// User thisUser = projectUser.getObject();
+							// if (thisUser.getAuthorities().contains(Role.ROLE_MANAGER)) { //send mail to manager only if a cluster is found
+								// if (!alertRecipients.contains(thisUser.getEmail()) && (!clusterId.equals("-") && !clusterId.contains("_ext")))
+									// { alertRecipients.add(thisUser.getEmail());}
+							// } else {
+								// if (!recipients.contains(thisUser.getEmail()))
+									// { recipients.add(thisUser.getEmail());}
+							// }
+                        // }
+                    // }
 				});
 			} else {
 				throw new PostProcessingException("PHANTASTIC results for file are not correctly formatted");
@@ -207,7 +225,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 			throw new PostProcessingException("Workflow is not found", e);
 		}
 		if (emailController.isMailConfigured()) {
-		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), "-", analysisName, sampleCodes.get(0), sampleSpecies.get(0), clusterId, String.join(", ", clusters));
+		   	emailController.sendEndOfAnalysisEmail(String.join(",", recipients), analysisName, sampleCodes.get(0), sampleSpecies.get(0), clusterId, String.join(", ", clusters));
         }
 	}
 

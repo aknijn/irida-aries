@@ -288,6 +288,14 @@ public class SampleServiceImpl extends CRUDServiceImpl<Long, Sample> implements 
 		String nextClusterId = sampleRepository.getNextClusterId(project);
 		return nextClusterId;
 	}
+	
+	@Transactional(readOnly = true)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")
+	@Override
+	public List<String> getRecipientsByCodes(Project project, List<String> sampleCodes, Boolean isAlert) {
+		List<String> recipientsByCodes = sampleRepository.getRecipientsByCodes(project, sampleCodes, isAlert);
+		return recipientsByCodes;
+	}
 
 	@Transactional(readOnly = true)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#project, 'canReadProject')")

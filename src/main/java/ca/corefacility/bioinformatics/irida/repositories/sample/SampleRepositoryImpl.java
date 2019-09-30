@@ -159,6 +159,37 @@ public class SampleRepositoryImpl implements SampleRepositoryCustom {
 		return "Cluster_" + result;
 	}
 
+	public List<String> getRecipientsByCodes(Project project, List<String> sampleCodes, Boolean isAlert) {
+		NamedParameterJdbcTemplate tmpl = new NamedParameterJdbcTemplate(dataSource);
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		String queryString;
+
+		//query to read samples for a project
+		if (isAlert) {
+			queryString = "select DISTINCT u.email FROM project_sample ps INNER JOIN project_user pu ON pu.project_id=ps.project_id " +
+				"INNER JOIN user u ON u.id=pu.user_id INNER JOIN sample_metadata_entry AS sm ON ps.sample_id=sm.sample_id " +
+				"INNER JOIN metadata_field AS mf ON sm.metadata_KEY =mf.id INNER JOIN metadata_entry AS me ON sm.metadata_id =me.id " +
+				"WHERE mf.label='Sample_Code' AND me.value IN (:sampleCodes)";
+		} else {
+			queryString = "select DISTINCT u.email FROM project_sample ps INNER JOIN project_user pu ON pu.project_id=ps.project_id " +
+				"INNER JOIN user u ON u.id=pu.user_id INNER JOIN sample_metadata_entry AS sm ON ps.sample_id=sm.sample_id " +
+				"INNER JOIN metadata_field AS mf ON sm.metadata_KEY =mf.id INNER JOIN metadata_entry AS me ON sm.metadata_id =me.id " +
+				"WHERE mf.label='Sample_Code' AND u.system_role <>'ROLE_MANAGER' AND me.value IN (:sampleCodes)";
+		}
+		parameters.addValue("sampleCodes", sampleCodes);
+
+		List<String> results = tmpl.query(queryString, parameters, new RowMapper<String>() {
+
+			@Override
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String recipient = rs.getString("u.email");
+				return recipient;
+			}
+		});
+
+		return results;		
+	}
+
 	public List<Sample> getSamplesForClusterShallow(Project project, String sampleCode, String clusterId) {
 		NamedParameterJdbcTemplate tmpl = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource parameters = new MapSqlParameterSource();

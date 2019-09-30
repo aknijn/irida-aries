@@ -49,7 +49,7 @@ public interface EmailController {
 	 * @param analysisName the name of the analysis
 	 * @throws MailSendException if the email failed to send
 	 */
-	public void sendEndOfAnalysisEmail(String recipientEmailAddresses, String alertRecipientEmailAddresses, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException;
+	public void sendEndOfAnalysisEmail(String recipientEmailAddresses, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException;
 
 	/**
 	 * Send an e-mail to the administrative user with an exception when there's

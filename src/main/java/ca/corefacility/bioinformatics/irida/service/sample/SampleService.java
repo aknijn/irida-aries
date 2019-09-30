@@ -82,6 +82,7 @@ public interface SampleService extends CRUDService<Long, Sample> {
 	public Long getMasterProjectIdByCode(String sampleCode);
 	public void setClusterIdByCode(Project project, List<String> sampleCodes, String clusterId);
 	public String getNextClusterId(Project project);
+	public List<String> getRecipientsByCodes(Project project, List<String> sampleCodes, Boolean isAlert);
 	public List<Sample> getSamplesForClusterShallow(Project project, String sampleCode, String clusterId);
 	/**
 	 * Get a list of {@link Sample} in a {@link Project} given some Sample ids.
