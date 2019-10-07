@@ -371,6 +371,7 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 					+ "' already exists in project " + project.getId());
 			}
 		}
+		
 		// Check to ensure a sample with this sequencer id doesn't exist in its
 		// master project already
 /* 		if (!sample.getSampleName().equals("name") && !sample.getSampleName().equals("sample")){

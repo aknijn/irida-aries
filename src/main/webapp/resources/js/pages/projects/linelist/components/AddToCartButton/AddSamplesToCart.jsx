@@ -17,7 +17,7 @@ export function AddSamplesToCartButton(props) {
       disabled={props.selectedCount === 0}
       onClick={() => props.addSamplesToCart()}
     >
-      <i className="fas fa-cart-plus spaced-right__sm" />
+      <i className="fas fa-ambulance spaced-right__sm" />
       {i18n.linelist.addToCart}
     </Button>
   );
