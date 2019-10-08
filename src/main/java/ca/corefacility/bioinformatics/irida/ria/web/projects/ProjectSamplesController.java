@@ -196,7 +196,6 @@ public class ProjectSamplesController {
 					else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
 				}
 				String Regione = getRegione(project.getName());
-				logger.debug("Regione: " + Regione);
 				if (!(Regione.equals('-'))) { sample.setGeographicLocationName(Regione); }
 			} catch (SQLException ex) {
 				logger.warn("Attempt to connect to SQL database failed", ex);

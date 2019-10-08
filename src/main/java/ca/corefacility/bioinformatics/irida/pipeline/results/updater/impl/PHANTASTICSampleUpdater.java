@@ -176,8 +176,9 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusterId = clusters.get(0);
 				clusters.remove(0);
 				//clusterSampleCodes for sampleService.getRecipientsByCodes to avoid "local variables referenced from a lambda expression must be final or effectively final" error
+				Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
 				ArrayList<String> clusterSampleCodes = new ArrayList<String>();
-				clusterSampleCodes.addAll(clusters);
+				if (isAlert) { clusterSampleCodes.addAll(clusters); } else { clusterSampleCodes.add(clusters.get(0)); }
 				String metaClusterId = clusterId;
 				if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
@@ -192,28 +193,15 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					sampleService.updateFields(s.getId(), ImmutableMap.of("metadata", s.getMetadata()));
                     //EMAIL
 					List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
-					Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
+					
+					logger.debug("isAlert: " + isAlert.toString());
 					for (Join<Project, Sample> projectForSample : projectsForSample) {
 						Project project = projectForSample.getSubject();
 						if (!project.isMasterProject()) {
 							recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes, isAlert));
 						}
 					}
-					// sampleSpecies.add(s.getOrganism());
-                    // List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
-        		    // for (Join<Project, Sample> projectForSample : projectsForSample) {
-                        // List<Join<Project, User>> projectUsers = pujRepository.getUsersForProjectByRole(projectForSample.getSubject(), ProjectRole.PROJECT_OWNER);
-            		    // for (Join<Project, User> projectUser : projectUsers) {
-							// User thisUser = projectUser.getObject();
-							// if (thisUser.getAuthorities().contains(Role.ROLE_MANAGER)) { //send mail to manager only if a cluster is found
-								// if (!alertRecipients.contains(thisUser.getEmail()) && (!clusterId.equals("-") && !clusterId.contains("_ext")))
-									// { alertRecipients.add(thisUser.getEmail());}
-							// } else {
-								// if (!recipients.contains(thisUser.getEmail()))
-									// { recipients.add(thisUser.getEmail());}
-							// }
-                        // }
-                    // }
+					sampleSpecies.add(s.getOrganism());
 				});
 			} else {
 				throw new PostProcessingException("PHANTASTIC results for file are not correctly formatted");
