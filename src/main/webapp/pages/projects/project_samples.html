@@ -33,6 +33,7 @@
             name: /*[[#{project.sample.filter-name}]]*/ "Name",
             range: /*[[#{project.sample.filter-date.label}]]*/ "Date Range",
             description: /*[[#{project.sample.filter-description}]]*/ "Description",
+            collectedBy: /*[[#{project.sample.filter-collectedBy}]]*/ "CollectedBy",
             organism: /*[[#{project.sample.filter-organism}]]*/ "Organism"
           },
           dateFilter: {
@@ -259,6 +260,7 @@
             <th data-data="sampleName" data-name="sample.sampleName" th:text="#{project.samples.table.name}"></th>
 			<dl th:if="${!project.isMasterProject()}">
                 <th data-data="description" data-name="sample.description" th:text="#{project.samples.table.description}"></th>
+                <th data-data="collectedBy" data-name="sample.collectedBy" th:text="#{project.samples.table.collectedBy}"></th>
 			</dl>
             <th data-data="organism" data-name="sample.organism" th:text="#{project.samples.table.organism}"></th>
             <th data-data="projectName" data-name="project.name" th:text="#{project.samples.table.project}"></th>

@@ -196,7 +196,7 @@ public class ProjectSamplesController {
 					else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
 				}
 				String Regione = getRegione(project.getName());
-				if (!(Regione.equals('-'))) { sample.setGeographicLocationName(Regione); }
+				if (!Regione.equals("-")) { sample.setGeographicLocationName(Regione); }
 			} catch (SQLException ex) {
 				logger.warn("Attempt to connect to SQL database failed", ex);
 			} catch (ParseException ex) {
@@ -477,7 +477,7 @@ public class ProjectSamplesController {
 		projects.add(projectService.read(projectId));
 
 		final Page<ProjectSampleJoin> page = sampleService.getFilteredSamplesForProjects(projects, sampleNames,
-				filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getOrganism(), filter.getStartDate(),
+				filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getCollectedBy(), filter.getOrganism(), filter.getStartDate(),
 				filter.getEndDate(), params.getCurrentPage(), params.getLength(), params.getSort());
 
 		// Create DataTables representation of the page.
@@ -549,7 +549,7 @@ public class ProjectSamplesController {
 
 		Sort sort = new Sort(Direction.ASC, "id");
 		final Page<ProjectSampleJoin> page = sampleService.getFilteredSamplesForProjects(projects, sampleNames,
-				filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getOrganism(), filter.getStartDate(),
+				filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getCollectedBy(), filter.getOrganism(), filter.getStartDate(),
 				filter.getEndDate(), 0, Integer.MAX_VALUE, params.getSort());
 
 		// Converting everything to a string for consumption by the UI.
@@ -937,7 +937,7 @@ public class ProjectSamplesController {
 		projects.add(project);
 
 		final Page<ProjectSampleJoin> page = sampleService
-				.getFilteredSamplesForProjects(projects, sampleNames, filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getOrganism(), filter.getStartDate(),
+				.getFilteredSamplesForProjects(projects, sampleNames, filter.getName(), params.getSearchValue(), filter.getDescription(), filter.getCollectedBy(), filter.getOrganism(), filter.getStartDate(),
 						filter.getEndDate(), 0, Integer.MAX_VALUE, params.getSort());
 
 		// Create DataTables representation of the page.

@@ -182,6 +182,7 @@ public class Sample extends IridaResourceSupport
 		return "Sample{" + "id=" + id +
 				", sampleName='" + sampleName + '\'' +
 				", description='" + description + '\'' +
+				", collectedBy='" + collectedBy + '\'' +
 				", organism='" + organism + '\'' +
 				", modifiedDate=" + modifiedDate +
 				", createdDate=" + createdDate +

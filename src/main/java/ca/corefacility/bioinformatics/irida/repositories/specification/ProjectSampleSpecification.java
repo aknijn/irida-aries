@@ -28,13 +28,14 @@ public class ProjectSampleSpecification {
 	 * @param sampleName  A single {@link Sample} name to loosely search
 	 * @param searchTerm  {@link String} search term to search for.
 	 * @param description {@link String} description to search for.
+	 * @param collectedBy {@link String} collectedBy to search for.
 	 * @param organism    {@link String} organism to search for.
 	 * @param minDate     {@link Date} minimum date the sample was modified.
 	 * @param maxDate     {@link Date} maximum date the sample was modified.
 	 * @return {@link Specification} of {@link ProjectSampleJoin} for criteria to search based on the filtered criteria.
 	 */
 	public static Specification<ProjectSampleJoin> getSamples(List<Project> projects, List<String> sampleNames,
-			String sampleName, String searchTerm, String description, String organism, Date minDate, Date maxDate) {
+			String sampleName, String searchTerm, String description, String collectedBy, String organism, Date minDate, Date maxDate) {
 		return (root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 
@@ -60,6 +61,10 @@ public class ProjectSampleSpecification {
 			// Check for description
 			if (!Strings.isNullOrEmpty(description)) {
 				predicates.add(criteriaBuilder.like(root.get("sample").get("description"), "%" + description + "%"));
+			}
+			// Check for collectedBy
+			if (!Strings.isNullOrEmpty(collectedBy)) {
+				predicates.add(criteriaBuilder.like(root.get("sample").get("collectedBy"), "%" + collectedBy + "%"));
 			}
 			// Check for organism
 			if (!Strings.isNullOrEmpty(organism)) {

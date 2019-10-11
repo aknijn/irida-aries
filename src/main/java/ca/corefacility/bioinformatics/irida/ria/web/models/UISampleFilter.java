@@ -11,6 +11,7 @@ public class UISampleFilter {
 
 	private String name;
 	private String description;
+	private String collectedBy;
 	private String organism;
 	private String startDate;
 	private String endDate;
@@ -29,6 +30,14 @@ public class UISampleFilter {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCollectedBy() {
+		return Strings.isNullOrEmpty(collectedBy) ? "" : collectedBy;
+	}
+
+	public void setCollectedBy(String collectedBy) {
+		this.collectedBy = collectedBy;
 	}
 
 	public String getOrganism() {

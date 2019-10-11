@@ -4,6 +4,7 @@ import "../../../../vendor/plugins/jquery/daterangepicker";
 import { FILTERS, SAMPLE_EVENTS } from "../constants";
 
 const $descriptionFilter = $("#js-description");
+const $collectedByFilter = $("#js-collectedBy");
 const $organismFilter = $("#js-organism");
 const $nameFilter = $("#js-name");
 const $dateRangeFilter = $("#js-daterange");
@@ -85,6 +86,11 @@ $("#js-do-filter").on("click", function() {
   // Check to see if the description filter needs to be applied.
   if ($descriptionFilter.val()) {
     filters[FILTERS.FILTER_BY_DESCRIPTION] = $descriptionFilter.val();
+  }
+
+  // Check to see if the collectedBy filter needs to be applied.
+  if ($collectedByFilter.val()) {
+    filters[FILTERS.FILTER_BY_COLLECTEDBY] = $collectedByFilter.val();
   }
 
   // Check to see if the organism filter needs to be applied.
