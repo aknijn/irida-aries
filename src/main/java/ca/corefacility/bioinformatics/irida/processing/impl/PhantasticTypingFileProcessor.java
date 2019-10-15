@@ -113,7 +113,7 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
             String species = "Escherichia coli";
             String genomeSize = "5.0";
             String trueConfigFile = "escherichia_coli.config";
-            // H + idSample se progetto locale, altrimenti letto da metadati Sample_code
+            // H_ + idSample se progetto locale, altrimenti letto da metadati Sample_code
             String sample_code = "H_" + sampleForSequencingObject.getId().toString();
             Long masterProjectId = 48L;
             //List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
@@ -122,7 +122,8 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
             //}
             List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
 		    for (Join<Project, Sample> projectForSample1 : projectsForSample) {
-                if(projectForSample1.getSubject().getId().equals(93L)) {
+				// V_ + idSample se progetti non umani
+                if(projectForSample1.getSubject().getId().equals(93L) || projectForSample1.getSubject().getId().equals(96L)) {
 					sample_code = "V_" + sampleForSequencingObject.getId().toString();
 				}
             }
