@@ -111,36 +111,16 @@
                             <i class="fa fa-angle-down spaced-left__sm" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a th:text="#{nav.main.userguide}"
-                                   href="https://irida.corefacility.ca/documentation/user/user" target="_blank">__User
-                                    Guide__
-                                </a>
-                            </li>
-                            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                                <a th:text="#{nav.main.adminguide}"
-                                   href="https://irida.corefacility.ca/documentation/user/administrator"
-                                   target="_blank">
-                                    __Admin Guide__
-                                </a>
-                            </li>
                             <li th:if="#{help.page.title} and #{help.page.url}">
                                 <a href="" th:text="#{help.page.title}" th:href="#{help.page.url}"
                                    target="_blank">
                                     __IRIDA Hub__
                                 </a>
                             </li>
-                            <li role="separator" class="divider"></li>
                             <li th:if="#{help.contact.email}">
                                 <a th:href="'mailto:' + #{help.contact.email}">
                                     <i class="fa fa-envelope-o fa-fw spaced-right__sm" aria-hidden="true"></i>
                                     <th:block th:text="#{generic.irida.contact}"/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="http://www.irida.ca" target="_blank">
-                                    <i class="fas fa-external-link-alt spaced-right__sm"></i>
-                                    <th:block th:text="#{generic.irida.website}"/>
                                 </a>
                             </li>
                             <li role="separator" class="divider"></li>

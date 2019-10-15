@@ -88,9 +88,6 @@
 						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fa fa-chevron-down" aria-hidden="true"></i>
   						</button>
-						<ul class="dropdown-menu">
-    						<li><a href="/projects/new?cart=true" th:href="@{/projects/new?cart=true}" th:text="#{cart.btn.create-project}">_Create project from samples_</a></li>
-						</ul>
 					</div>
 					
 					<a th:if="${galaxyCallback}" id="go-to-galaxy-export-btn" href="#" ng-click="cartCtrl.exportToGalaxy(); cart.show=false"
