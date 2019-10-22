@@ -1109,8 +1109,10 @@ public class AnalysisController {
 
 				valuesMap.put(term, value);
 			}
-            // metadata.put(sample.getLabel(), valuesMap);
+			// metadata.put(sample.getLabel(), valuesMap);
 			// metadata.put(String.valueOf(sample.getId()), valuesMap);
+			// metadata can be linked by sampleName or sampleCode
+			metadata.put(sample.getSampleName(), valuesMap);
 			metadata.put(stringMetadata.get("Sample_code").getValue(), valuesMap);
 		}
 

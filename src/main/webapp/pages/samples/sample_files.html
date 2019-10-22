@@ -109,7 +109,7 @@
 									data:ng-click="${'fileCtrl.deleteFile(' + pair.id + ', &#39;'' + pair.getLabel() +'&#39;')'}">
 									<span class="fa fa-fw fa-trash"></span>
 								</button>
-								<a class="btn btn-default btn-sm"
+								<a  th:if="${canManageSample}" class="btn btn-default btn-sm"
 									th:attr="download=${file.getLabel()}"
 									th:href="@{/sequenceFiles/download/{objectId}/file/{fileId}(objectId=${pair.id}, fileId=${file.getId()})}">
 									<span class="fa fa-fw fa-download"></span>
@@ -123,7 +123,7 @@
 							th:replace="templates/_sequenceFile :: sequenceFileTableLayout (object=${pair},file=${file},icon='reverse',relative='true')"></td>
 						<td>
 							<div class="btn-group btn-group-sm pull-right" role="group">
-								<a class="btn btn-default btn-sm"
+								<a  th:if="${canManageSample}" class="btn btn-default btn-sm"
 									th:attr="download=${file.getLabel()}"
 									th:href="@{/sequenceFiles/download/{objectId}/file/{fileId}(objectId=${pair.id}, fileId=${file.getId()})}">
 									<span class="fa fa-fw fa-download"></span>
