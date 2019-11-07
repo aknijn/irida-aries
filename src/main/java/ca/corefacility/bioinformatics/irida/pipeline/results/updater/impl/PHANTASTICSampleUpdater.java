@@ -191,14 +191,20 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				samples.forEach(s -> {
 					s.mergeMetadata(metadataMap);
 					sampleService.updateFields(s.getId(), ImmutableMap.of("metadata", s.getMetadata()));
-                    //EMAIL
+                    //EMAIL : if cluster send e-mail to all members of projects of coinvolved samples, if not only to members of this sample's project
+					// if isAlert send e-mail also to ROLE_MANAGER members
+					// if project.isInternalProject only to members of this sample's project
 					List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
 					
 					logger.debug("isAlert: " + isAlert.toString());
 					for (Join<Project, Sample> projectForSample : projectsForSample) {
 						Project project = projectForSample.getSubject();
 						if (!project.isMasterProject()) {
-							recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes, isAlert));
+							if (project.isInternalProject()) {
+								recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes.subList(0, 0), isAlert));
+							} else {
+								recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes, isAlert));
+							}
 						}
 					}
 					sampleSpecies.add(s.getOrganism());

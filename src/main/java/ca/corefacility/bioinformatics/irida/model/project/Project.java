@@ -176,6 +176,10 @@ public class Project extends IridaResourceSupport
 		return (id == 48L || id == 49L);
 	}
 
+	public boolean isInternalProject(){
+		return (id == 93L || id == 96L || id == 97L || id == 98L);
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Project) {
