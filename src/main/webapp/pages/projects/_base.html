@@ -27,7 +27,7 @@
             <li th:classappend="${activeNav} == 'metadata' ? 'active'"><a th:href="@{${baseLink} + '/metadata'}" th:text="#{project.nav.metadata}">[Metadata]</a></li>
             <li th:classappend="${activeNav} == 'export' ? 'active'"><a href="" th:href="@{${baseLink} + '/export'}" th:text="#{project.nav.exports}">[Exports]</a></li>
             <li th:classappend="${activeNav} == 'activity' ? 'active'"><a href="" th:if="${canReadProjectSettings}" th:href="@{${baseLink} + '/activity'}" th:text="#{project.nav.activity}">[Recent]</a></li>
-            <li th:classappend="${activeNav} == 'settings' ? 'active'"><a href="" th:if="${isAdmin}" th:href="@{${baseLink} + '/settings'}" th:text="#{project.nav.settings}">[Settings]</a></li>
+            <li th:classappend="${activeNav} == 'settings' ? 'active'"><a href="" th:href="@{${baseLink} + '/settings'}" th:text="#{project.nav.settings}">[Settings]</a></li>
         </ul>
 
         <main layout:fragment="main">

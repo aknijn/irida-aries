@@ -26,6 +26,7 @@ import ca.corefacility.bioinformatics.irida.ria.web.components.datatables.config
 import ca.corefacility.bioinformatics.irida.ria.web.components.datatables.models.DataTablesResponseModel;
 import ca.corefacility.bioinformatics.irida.ria.web.models.datatables.DTProjectGroup;
 import ca.corefacility.bioinformatics.irida.ria.web.models.datatables.DTProjectMember;
+import ca.corefacility.bioinformatics.irida.ria.web.models.datatables.DTProjectContact;
 import ca.corefacility.bioinformatics.irida.service.ProjectService;
 import ca.corefacility.bioinformatics.irida.service.user.UserGroupService;
 import ca.corefacility.bioinformatics.irida.service.user.UserService;
@@ -60,6 +61,31 @@ public class ProjectMembersController {
 		this.userService = userService;
 		this.messageSource = messageSource;
 		this.userGroupService = userGroupService;
+	}
+
+	/**
+	 * Gets the name of the template for the project contacts page. Populates the
+	 * template with standard info.
+	 *
+	 * @param model
+	 *            {@link Model}
+	 * @param principal
+	 *            {@link Principal}
+	 * @param projectId
+	 *            Id for the project to show the users for
+	 * @return The name of the project contacts page.
+	 */
+	@RequestMapping("/{projectId}/settings/contacts")
+	public String getProjectContactsPage(final Model model, final Principal principal, @PathVariable Long projectId) {
+
+		Project project = projectService.read(projectId);
+		model.addAttribute("project", project);
+
+		projectUtils.getProjectTemplateDetails(model, principal, project);
+
+		model.addAttribute(ProjectsController.ACTIVE_NAV, ProjectSettingsController.ACTIVE_NAV_SETTINGS);
+		model.addAttribute("page", "contacts");
+		return "projects/settings/pages/contacts";
 	}
 
 	/**
@@ -306,6 +332,31 @@ public class ProjectMembersController {
 			return ImmutableMap.of("failure", messageSource.getMessage("project.members.edit.role.failure.nomanager",
 					new Object[] { userGroup.getLabel(), roleName }, locale));
 		}
+	}
+
+
+	/**
+	 * Get a page of contacts on the project for display in a DataTable.
+	 *
+	 * @param params
+	 *            the datatables parameters for this DataTable
+	 * @param projectId
+	 *            the id of the project we're looking at
+	 * @return a {@link DataTablesResponseModel} of users on the project
+	 */
+	@RequestMapping(value = "/{projectId}/settings/ajax/contacts")
+	@ResponseBody
+	public DataTablesResponse getProjectContactMembers(@DataTablesRequest DataTablesParams params,
+			final @PathVariable Long projectId) {
+		final Project project = projectService.read(projectId);
+
+		final Page<Join<Project, User>> usersForProject = userService.searchUsersForProject(project,
+				params.getSearchValue(), params.getCurrentPage(), params.getLength(), params.getSort());
+		List<DataTablesResponseModel> modelList = new ArrayList<>();
+		for (Join<Project, User> join : usersForProject) {
+			modelList.add(new DTProjectContact((ProjectUserJoin) join));
+		}
+		return new DataTablesResponse(params, usersForProject, modelList);
 	}
 
 	/**

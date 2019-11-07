@@ -42,7 +42,9 @@ module.exports = {
     "./resources/js/pages/projects/associated-projects/edit.module.js",
   "project-users-groups":
     "./resources/js/pages/projects/project-users-groups.js",
-  "sample-files": "./resources/js/pages/samples/sample-files.js",
+  "project-contacts":
+    "./resources/js/pages/projects/project-contacts.js",
+	"sample-files": "./resources/js/pages/samples/sample-files.js",
   "project-reference-files":
     "./resources/js/pages/projects/project-reference-files.js",
   "analysis-outputs-table":

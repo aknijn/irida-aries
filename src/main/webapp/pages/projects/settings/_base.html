@@ -9,27 +9,32 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group">
-                <a href=""
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'basic') ? 'active' : ''}"
                    th:text="#{project.settings.page.basic}">_Basic Settings_</a>
                 <a href=""
+                   th:href="@{/projects/{id}/settings/contacts(id=${project.getId()})}"
+                   class="list-group-item"
+                   th:classappend="${#strings.equalsIgnoreCase(page, 'contacts') ? 'active' : ''}"
+                   th:text="#{project.settings.page.contacts}">_Contacts_</a>
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/members(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'members') ? 'active' : ''}"
                    th:text="#{project.settings.page.members}">_Members_</a>
-                <a href=""
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/groups(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'groups') ? 'active' : ''}"
                    th:text="#{project.settings.page.groups}">_Groups_</a>
-                <a href=""
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/associated(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'associated') or #strings.equalsIgnoreCase(page, 'associated-edit') ? 'active' : ''}"
                    th:text="#{project.settings.page.associated}">_Associated Projects_</a>
-                <a href=""
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/referenceFiles(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'referenceFiles') ? 'active' : ''}"
@@ -41,14 +46,14 @@
                    th:classappend="${#strings.equalsIgnoreCase(page, 'remote') ? 'active' : ''}"
                    role="presentation"
                    th:text="#{project.settings.page.remote}">_Remote</a>
-                <a href=""
+                <a href="" th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/metadata-templates(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'metadata_templates') ? 'active' : ''}"
                    th:text="#{project.settings.metadata-templates}">
                     _Metadata Templates_
                 </a>
-                <a th:if="${manageMembers} or ${isAdmin}"
+                <a th:if="${isAdmin}"
                    th:href="@{/projects/{id}/settings/delete(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'delete') ? 'active' : ''}"

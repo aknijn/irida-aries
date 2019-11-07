@@ -20,7 +20,7 @@
 </head>
 <body>
 <th:block layout:fragment="settings-content">
-    <div class="row">
+    <div class="row" th:if="${isAdmin}">
         <div class="col-md-12">
             <h2 class="h2-muted" th:text="#{project.settings.automated-pipelines}">_Automated Pipelines_</h2>
             <div class="form-group">
@@ -58,7 +58,7 @@
             <h2 class="h2-muted">Coverage
                 <span>
             <button id="edit-coverage-btn" class="btn btn-xs btn-default edit-coverage" th:text="#{form.btn.edit}"
-                    th:if="${manageMembers}">_Edit_</button>
+                    th:if="${isAdmin}">_Edit_</button>
             <button id="coverage-cancel" class="btn btn-default btn-xs edit-coverage" style="display: none"
                     type="button" th:text="#{form.btn.cancel}">_cancel_</button>
             <button id="coverage-save" class="btn btn-success btn-xs edit-coverage" style="display: none" type="button"
