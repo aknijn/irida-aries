@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group">
-                <a href="" th:if="${isAdmin}"
+                <a href=""
                    th:href="@{/projects/{id}/settings(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'basic') ? 'active' : ''}"

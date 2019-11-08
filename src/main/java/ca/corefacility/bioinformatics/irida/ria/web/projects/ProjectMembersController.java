@@ -80,9 +80,7 @@ public class ProjectMembersController {
 
 		Project project = projectService.read(projectId);
 		model.addAttribute("project", project);
-
 		projectUtils.getProjectTemplateDetails(model, principal, project);
-
 		model.addAttribute(ProjectsController.ACTIVE_NAV, ProjectSettingsController.ACTIVE_NAV_SETTINGS);
 		model.addAttribute("page", "contacts");
 		return "projects/settings/pages/contacts";
@@ -105,9 +103,7 @@ public class ProjectMembersController {
 
 		Project project = projectService.read(projectId);
 		model.addAttribute("project", project);
-
 		projectUtils.getProjectTemplateDetails(model, principal, project);
-
 		model.addAttribute("projectRoles", projectRoles);
 		model.addAttribute(ProjectsController.ACTIVE_NAV, ProjectSettingsController.ACTIVE_NAV_SETTINGS);
 		model.addAttribute("page", "members");
