@@ -208,7 +208,7 @@
 									<span class="fa fa-fw fa-trash"></span>
 								</button>
 
-								<a class="btn btn-default btn-sm"
+								<a class="btn btn-default btn-sm"  th:if="${canManageSample}"
 									th:attr="download=${file.getLabel()}"
 									th:href="@{/sequenceFiles/download/{objectId}/file/{fileId}(objectId=${file.getId()}, fileId=${file.getSequenceFile().getId()})}">
 									<span class="fa fa-fw fa-download"></span>

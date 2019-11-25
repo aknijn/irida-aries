@@ -172,13 +172,13 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					}
 				});
 
+				//no cluster: clusters = (clusterId, sample1, dist1, sample2, dist2, sample3, dist3)
 				clusters = getCluster(sampleCodes.get(0), clusterCriterium, masterProjectId, analysis);
 				clusterId = clusters.get(0);
 				clusters.remove(0);
 				//clusterSampleCodes for sampleService.getRecipientsByCodes to avoid "local variables referenced from a lambda expression must be final or effectively final" error
 				Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
-				ArrayList<String> clusterSampleCodes = new ArrayList<String>();
-				if (isAlert) { clusterSampleCodes.addAll(clusters); } else { clusterSampleCodes.add(clusters.get(0)); }
+				if (isAlert) { sampleCodes.addAll(clusters); }
 				String metaClusterId = clusterId;
 				if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
@@ -191,23 +191,36 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				samples.forEach(s -> {
 					s.mergeMetadata(metadataMap);
 					sampleService.updateFields(s.getId(), ImmutableMap.of("metadata", s.getMetadata()));
-                    //EMAIL : if cluster send e-mail to all members of projects of coinvolved samples, if not only to members of this sample's project
-					// if isAlert send e-mail also to ROLE_MANAGER members
-					// if project.isInternalProject only to members of this sample's project
-					List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);
-					
+				});
+
+				//EMAIL : if cluster send e-mail to all members of projects of coinvolved samples, if not only to members of this sample's project
+				// if isAlert send e-mail also to ROLE_MANAGER members
+				// if project.isInternalProject only to members of this sample's project
+				samples.forEach(s -> {
 					logger.debug("isAlert: " + isAlert.toString());
+					sampleSpecies.add(s.getOrganism());
+					List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(s);					
 					for (Join<Project, Sample> projectForSample : projectsForSample) {
 						Project project = projectForSample.getSubject();
 						if (!project.isMasterProject()) {
 							if (project.isInternalProject()) {
-								recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes.subList(0, 0), isAlert));
+								logger.debug("isInternalProject - sampleCodes: " + String.join(",", sampleCodes.subList(0, 1)));
 							} else {
-								recipients.addAll(sampleService.getRecipientsByCodes(project, clusterSampleCodes, isAlert));
+								logger.debug("Not isInternalProject - sampleCodes: " + String.join(",", sampleCodes));
+								recipients.addAll(sampleService.getRecipientsByCodes(project, sampleCodes, isAlert));
+							}
+							List<Join<Project, User>> projectUsers = pujRepository.getUsersForProject(projectForSample.getSubject());
+							for (Join<Project, User> projectUser : projectUsers) {
+								if (isAlert) {
+									if (!recipients.contains(projectUser.getObject().getEmail()))
+										{ recipients.add(projectUser.getObject().getEmail());}										
+								} else {										
+									if (!recipients.contains(projectUser.getObject().getEmail()) && !projectUser.getObject().getSystemRole().equals(Role.ROLE_MANAGER))
+										{ recipients.add(projectUser.getObject().getEmail());}
+								}
 							}
 						}
 					}
-					sampleSpecies.add(s.getOrganism());
 				});
 			} else {
 				throw new PostProcessingException("PHANTASTIC results for file are not correctly formatted");
@@ -243,16 +256,14 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		Integer dist2 = 9999;
 		Integer dist3 = 9999;
 		String sample1 = "ERROR";
-		String sample2 = "ERROR";
-		String sample3 = "ERROR";
-		while(dm_input.hasNextLine())
-		{
+		String sample2 = "-";
+		String sample3 = "-";
+		while(dm_input.hasNextLine()) {
 			Scanner dm_colReader = new Scanner(dm_input.nextLine());
 			String firstCol = dm_colReader.next();
 			//search for the line of the current sample
 			if (sampleCode.equals(firstCol)) {
-				while(dm_colReader.hasNextInt())
-				{
+				while(dm_colReader.hasNextInt()) {
 					i++;
 					int colNextInt = dm_colReader.nextInt();
 					//store the names and distances of the three nearest samples
@@ -268,6 +279,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					if (colNextInt <= clusterCriterium && !sampleCode.equals(dm_header.get(i))) { clusterNodes.add(dm_header.get(i)); }
 					else { if (colNextInt <= 15 && !sampleCode.equals(dm_header.get(i))) { clusterExtendedNodes.add(dm_header.get(i)); } }
 				}
+				if (sample1.equals("ERROR")) { sample1 = "-"; } //no error, first sample of serotype
 			}
 		}
 

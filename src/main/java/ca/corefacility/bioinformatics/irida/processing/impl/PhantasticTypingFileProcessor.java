@@ -173,15 +173,17 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
 
 			submission = submissionRepository.save(submission);
 
+            // Share analysis results with the required projects (but not the master project)
+            //List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
+			for (Join<Project, Sample> projectForSample : projectsForSample) {
+				if (!projectForSample.getSubject().isMasterProject()) {
+					pasRepository.save(new ProjectAnalysisSubmissionJoin(projectForSample.getSubject(), submission));
+				}
+			}
             // Share samples with the master project
 			if (automatedPHANTASTICSetting.equals(Project.AutomatedPHANTASTICSetting.AUTO_METADATA_MASTER)) {
 				Project masterProject = projectService.read(masterProjectId);
 				projectService.addSampleToProject(masterProject, sampleForSequencingObject, false);
-			}
-            // Share analysis results with the required projects
-            //List<Join<Project, Sample>> projectsForSample = psjRepository.getProjectForSample(sampleForSequencingObject);
-			for (Join<Project, Sample> projectForSample : projectsForSample) {
-				pasRepository.save(new ProjectAnalysisSubmissionJoin(projectForSample.getSubject(), submission));
 			}
 
 			// Associate the submission with the seqobject

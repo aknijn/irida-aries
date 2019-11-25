@@ -41,7 +41,7 @@
                         <dd id="dd-strain"
                             th:text="${sample.getStrain()} ?: #{strain.unknown}"></dd>
                     </dl>
-                    <dl th:if="${#strings.startsWith(sample.label,'ED') and #strings.length(sample.label)==6}">
+                    <dl th:if="${(#strings.startsWith(sample.label,'ED') or #strings.startsWith(sample.label,'EF')) and #strings.length(sample.label)==6}">
                         <dt th:text="#{samples.details.collection}"></dt>
                         <dd id="dd-collection">
 							<a href="test.html" th:href="#{samples.details.collectionlink(${sample.label})}" th:text="${sample.label}"></a>

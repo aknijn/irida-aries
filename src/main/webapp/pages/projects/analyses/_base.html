@@ -21,7 +21,7 @@
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'shared') ? 'active' : ''}"
                    th:text="#{analysis.shared-analyses}">_Shared Output Files_</a>
-                <a href=""
+                <a href="" th:if="${canReadProjectSettings}" 
                    th:href="@{/projects/{id}/analyses/automated-outputs(id=${project.getId()})}"
                    class="list-group-item"
                    th:classappend="${#strings.equalsIgnoreCase(page, 'automated') ? 'active' : ''}"
