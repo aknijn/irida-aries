@@ -274,6 +274,18 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 						dist3 = dist2;
 						dist2 = dist1;
 						dist1 = colNextInt;
+					} else {
+						if (colNextInt <= dist2 && !sampleCode.equals(dm_header.get(i))) {
+							sample3 = sample2;
+							sample2 = dm_header.get(i);
+							dist3 = dist2;
+							dist2 = colNextInt;
+						} else {
+							if (colNextInt < dist3 && !sampleCode.equals(dm_header.get(i))) {
+								sample3 = dm_header.get(i);
+								dist3 = colNextInt;
+							}
+						}					
 					}
 					//apply the criterium for a cluster
 					if (colNextInt <= clusterCriterium && !sampleCode.equals(dm_header.get(i))) { clusterNodes.add(dm_header.get(i)); }
