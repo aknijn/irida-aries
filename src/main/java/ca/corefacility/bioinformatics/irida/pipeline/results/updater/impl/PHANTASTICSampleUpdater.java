@@ -314,7 +314,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				//sample is extended of an existing cluster (or extended of extended => no cluster)
 				String clusterId = sampleService.getClusterIdByCodes(masterProject, clusterExtendedNodes);
 				logger.debug("sample is extended of an existing cluster: " + clusterId);
-				if (clusterId.contains("_ext")) { clusterId = "-"; } else { clusterId = clusterId + "_ext"; }
+				if (clusterId.contains("_ext")) { clusterId = "-_ext"; } else { clusterId = clusterId + "_ext"; }
 				clusters.add(clusterId);
 				clusters.add(sample1);
 				clusters.add(dist1.toString());
