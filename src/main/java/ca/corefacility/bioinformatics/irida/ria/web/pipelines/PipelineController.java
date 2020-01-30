@@ -171,7 +171,8 @@ public class PipelineController extends BaseController {
 				IridaWorkflowDescription description = flow.getWorkflowDescription();
 				String name = type.getType();
                 String minSamples = "1";
-                if (name.substring(name.indexOf(" ")+1).equals("Observer Pipeline")) {minSamples = "3";}
+                if (name.equals("Allele Observer Pipeline")) {minSamples = "3";}
+                if (name.equals("SNP Observer Pipeline")) {minSamples = "4";}
 				String key = "workflow." + name;
 				flows.add(ImmutableMap.of(
 						"name", name,
