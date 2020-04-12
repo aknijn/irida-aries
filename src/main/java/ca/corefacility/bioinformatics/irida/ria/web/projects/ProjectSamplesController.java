@@ -59,7 +59,7 @@ import ca.corefacility.bioinformatics.irida.service.SequencingObjectService;
 import ca.corefacility.bioinformatics.irida.service.sample.SampleService;
 
 //ISS
-import ca.corefacility.bioinformatics.irida.util.SEU;
+//import ca.corefacility.bioinformatics.irida.util.SEU;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.sql.SQLException;
@@ -181,23 +181,23 @@ public class ProjectSamplesController {
 		}
 
         //ISS collegamento con SEU
-		try {
-			if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				SEU seu = new SEU();
-				Map<String, String> SEUmap = seu.getData(sample.getSampleName());
-				if (SEUmap.get("DataEsordio") != null) { sample.setCollectionDate(sdf.parse(SEUmap.get("DataEsordio"))); }
-				if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); }
-				if (SEUmap.get("Regione") != null) { sample.setGeographicLocationName(SEUmap.get("Regione")); }
-				if (SEUmap.get("Provincia") != null) { sample.setGeographicLocationName2(SEUmap.get("Provincia")); }
-				if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }
-				else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
-			}
-		} catch (SQLException ex) {
-			logger.warn("Attempt to connect to SQL database failed", ex);
-		} catch (ParseException ex) {
-			logger.warn("Attempt to parse DataEsordio failed", ex);
-		}
+		//try {
+			//if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
+				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				//SEU seu = new SEU();
+				//Map<String, String> SEUmap = seu.getData(sample.getSampleName());
+				//if (SEUmap.get("DataEsordio") != null) { sample.setCollectionDate(sdf.parse(SEUmap.get("DataEsordio"))); }
+				//if (SEUmap.get("Ospedale") != null) { sample.setCollectedBy(SEUmap.get("Ospedale")); }
+				//if (SEUmap.get("Regione") != null) { sample.setGeographicLocationName(SEUmap.get("Regione")); }
+				//if (SEUmap.get("Provincia") != null) { sample.setGeographicLocationName2(SEUmap.get("Provincia")); }
+				//if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }
+				//else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
+			//}
+		//} catch (SQLException ex) {
+			//logger.warn("Attempt to connect to SQL database failed", ex);
+		//} catch (ParseException ex) {
+			//logger.warn("Attempt to parse DataEsordio failed", ex);
+		//}
 
 		try {
 			Join<Project, Sample> join = projectService.addSampleToProject(project, sample, true);
