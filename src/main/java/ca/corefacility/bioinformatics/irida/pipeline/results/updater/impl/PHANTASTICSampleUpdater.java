@@ -48,7 +48,7 @@ import java.io.FileNotFoundException;
 @Component
 public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
     private static final Logger logger = LoggerFactory.getLogger(PHANTASTICSampleUpdater.class);
-	private static final String PHANTASTIC_FILE = "phantastic_out";
+	private static final String PHANTASTIC_FILE = "phantastic_type";
 	private static final String PHANTASTIC_DM = "phantastic_dm";
 
 	private MetadataTemplateService metadataTemplateService;
@@ -72,6 +72,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		.put("mlst_ST", "MLST_ST")
 		.put("serotype_serogroup", "Serogroup")
 		.put("serotype_amplicons", "Amplicons")
+		.put("sample_genes_mapped", "cgMLST_genes_mapped")
 		.build();
 	// @formatter:on
 	// @formatter:off
@@ -88,6 +89,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		.put("virulotype_stx1", "stx1")
 		.put("virulotype_stx2", "stx2")
 		.put("shigatoxin_subtype", "stx_subtype")
+		.put("sample_genes_mapped", "cgMLST_genes_mapped")
 		.build();
 	// @formatter:on
 
@@ -124,7 +126,8 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
         List<String> recipients = new ArrayList<String>();
 		ArrayList<String> clusters = new ArrayList<String>();
 		ArrayList<String> sampleCodes = new ArrayList<String>();
-		String clusterId;
+		String clusterId = "-";
+		String metaClusterId;
 
 		Map<String, MetadataEntry> stringEntries = new HashMap<>();
 		try {
@@ -145,6 +148,13 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 			if (phantasticResults.size() > 0) {
 				Map<String, Object> result = phantasticResults.get(0);
 
+				Integer clusterExtendedCriterium = 15;
+				if (result.containsKey("relative_reduced_schema_size_%") && result.get("relative_reduced_schema_size_%") != null) {
+					Float fltReduction = Float.parseFloat(result.get("relative_reduced_schema_size_%").toString());
+					logger.debug("fltReduction: " + fltReduction.toString());
+					if (Float.compare(fltReduction, 97.0f) < 0) { clusterExtendedCriterium = 40; }
+				}
+				logger.debug("clusterExtendedCriterium: " + clusterExtendedCriterium.toString());
 				//loop through each of the requested fields and save the entries
                 Map<String, String> PHANTASTIC_FIELDS = PHANTASTIC_EC_FIELDS;
 				Integer clusterCriterium = 10;
@@ -171,16 +181,38 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
                         }
 					}
 				});
-
-				//no cluster: clusters = (clusterId, sample1, dist1, sample2, dist2, sample3, dist3)
-				clusters = getCluster(sampleCodes.get(0), clusterCriterium, masterProjectId, analysis);
-				clusterId = clusters.get(0);
-				clusters.remove(0);
-				//clusterSampleCodes for sampleService.getRecipientsByCodes to avoid "local variables referenced from a lambda expression must be final or effectively final" error
-				Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
-				if (isAlert) { sampleCodes.addAll(clusters); }
-				String metaClusterId = clusterId;
-				if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
+				Float fltRelMapped = 0.0f;
+				if (result.containsKey("sample_genes_mapped") && result.get("sample_genes_mapped") != null) {
+					Float fltMapped = Float.parseFloat(result.get("sample_genes_mapped").toString());
+					logger.debug("fltMapped: " + fltMapped.toString());
+					if (result.containsKey("core_genome_schema_size") && result.get("core_genome_schema_size") != null) {
+						Float fltLoci = Float.parseFloat(result.get("core_genome_schema_size").toString());
+						logger.debug("fltLoci: " + fltLoci.toString());
+						fltRelMapped = fltMapped / fltLoci;
+					}
+				}
+				logger.debug("fltRelMapped: " + fltRelMapped.toString());
+				if (Float.compare(fltRelMapped, 0.8f) < 0) {
+					//less than 80% of loci have been found, no cluster analysis
+					clusters.add("RERUN");
+					clusters.add("-");
+					clusters.add("-");
+					clusters.add("-");
+					clusters.add("-");
+					clusters.add("-");
+					clusterId = "-";
+					metaClusterId = "-";
+				} else {
+					//no cluster: clusters = (clusterId, sample1, dist1, sample2, dist2, sample3, dist3)
+					clusters = getCluster(sampleCodes.get(0), clusterCriterium, clusterExtendedCriterium, masterProjectId, analysis);
+					clusterId = clusters.get(0);
+					clusters.remove(0);
+					//clusterSampleCodes for sampleService.getRecipientsByCodes to avoid "local variables referenced from a lambda expression must be final or effectively final" error
+					Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
+					if (isAlert) { sampleCodes.addAll(clusters); }
+					metaClusterId = clusterId;
+					if (clusterId.equals("-_ext")) { metaClusterId = "-"; }
+				}
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
 				stringEntries.put("Cluster_Id", metadataEntry);
 
@@ -196,6 +228,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				//EMAIL : if cluster send e-mail to all members of projects of coinvolved samples, if not only to members of this sample's project
 				// if isAlert send e-mail also to ROLE_MANAGER members
 				// if project.isInternalProject only to members of this sample's project
+				Boolean isAlert = (!clusterId.equals("-") && !clusterId.contains("_ext"));
 				samples.forEach(s -> {
 					logger.debug("isAlert: " + isAlert.toString());
 					sampleSpecies.add(s.getOrganism());
@@ -236,7 +269,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
         }
 	}
 
-	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, Long masterProjectId, AnalysisSubmission analysis ) throws FileNotFoundException {
+	private ArrayList<String> getCluster(String sampleCode, Integer clusterCriterium, Integer clusterExtendedCriterium, Long masterProjectId, AnalysisSubmission analysis ) throws FileNotFoundException {
 		//function that checks the distance matrix and searches for clusters
 		//an ArrayList clusters is returned with the clusterId in the first position and the cluster nodes in all the following
 		//if no cluster is found clusterId equals "-" and the next six positions in the ArrayList contain the names and the distances of the nearest three samples
@@ -289,7 +322,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 					}
 					//apply the criterium for a cluster
 					if (colNextInt <= clusterCriterium && !sampleCode.equals(dm_header.get(i))) { clusterNodes.add(dm_header.get(i)); }
-					else { if (colNextInt <= 15 && !sampleCode.equals(dm_header.get(i))) { clusterExtendedNodes.add(dm_header.get(i)); } }
+					else { if (colNextInt <= clusterExtendedCriterium && !sampleCode.equals(dm_header.get(i))) { clusterExtendedNodes.add(dm_header.get(i)); } }
 				}
 				if (sample1.equals("ERROR")) { sample1 = "-"; } //no error, first sample of serotype
 			}
@@ -322,6 +355,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters.add(dist2.toString());
 				clusters.add(sample3);
 				clusters.add(dist3.toString());
+				clusters.add(clusterExtendedNodesSize.toString());
 			}
 		} else {
 			logger.debug("getClusterIdByCodes");

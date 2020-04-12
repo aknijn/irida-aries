@@ -10,21 +10,18 @@ import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 public class SEU {
 
-	@Autowired
-    Environment environment;
-
 	private static final Logger logger = LoggerFactory.getLogger(SEU.class);
-
+	private static final String connectionUrl = "jdbc:sqlserver://sql172.iss.it:10172;databaseName=SEU;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
+	
 	public Map<String, String> getData(String strainID) throws SQLException {
         Map<String, String> SEUmap = new HashMap<String, String>();
 		try { Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
@@ -32,7 +29,6 @@ public class SEU {
 			logger.warn("Attempt to load class failed.", ex);
 		}
         //final String connectionUrl = environment.getProperty("seu.cnstr");
-        final String connectionUrl = "jdbc:sqlserver://sql172.iss.it:10172;databaseName=SEU;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
         try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
             String SQL = "SELECT TOP 1 * FROM ForIRIDAView WHERE Ceppo = '" + strainID + "' ORDER BY idCampioneVTECFeci";
             ResultSet rs = stmt.executeQuery(SQL);
@@ -62,7 +58,6 @@ public class SEU {
 			logger.warn("Attempt to load class failed.", ex);
 		}
         //final String connectionUrl = environment.getProperty("seu.cnstr");
-        final String connectionUrl = "jdbc:sqlserver://sql172.iss.it:10172;databaseName=STEC;user=STEC_SEU;password=BzHtEqit8w_chJAQX4UK";
         try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
             String SQL = "SELECT TOP 1 * FROM ForIRIDAView WHERE ISS_ID = '" + strainID + "'";
             ResultSet rs = stmt.executeQuery(SQL);

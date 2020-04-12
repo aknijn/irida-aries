@@ -18,3 +18,4 @@ doc/_site
 src/main/webapp/resources/css
 src/main/webapp/node
 /src/main/webapp/resources/dist
+src/main/java/ca/corefacility/bioinformatics/irida/util/SEU.java

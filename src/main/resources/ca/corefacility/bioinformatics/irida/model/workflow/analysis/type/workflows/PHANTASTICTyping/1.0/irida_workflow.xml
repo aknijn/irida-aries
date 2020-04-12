@@ -25,6 +25,11 @@
 				toolId="phanta"
 				parameterName="genomeSize" />
 		</parameter>
+		<parameter name="phanta_sample_code" defaultValue="sample_code">
+			<toolParameter
+				toolId="phanta"
+				parameterName="input_id" />
+		</parameter>
 		<parameter name="phanta_trueConfigFile" defaultValue="escherichia_coli.config">
 			<toolParameter
 				toolId="phanta"
@@ -119,7 +124,7 @@
 	<outputs>
 		<output name="phantastic_contigs" fileName="phantastic_contigs.fasta" />
         <output name="phantastic_aq" fileName="phantastic_aq.tsv"/>
-        <output name="phantastic_json" fileName="phantastic_json.json"/>
+        <output name="phantastic_type" fileName="phantastic_type.json"/>
         <output name="phantastic_dm" fileName="phantastic_dm.tsv"/>
         <output name="tree" fileName="phantastic_tree.newick"/>
         <output name="allelecalls" fileName="phantastic_ac.tab" />

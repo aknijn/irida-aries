@@ -148,6 +148,7 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
             builder.inputParameter("phanta_token", token);
             builder.inputParameter("phanta_species", species);
             builder.inputParameter("phanta_genomeSize", genomeSize);
+            builder.inputParameter("phanta_sample_code", sample_code);
             builder.inputParameter("phanta_trueConfigFile", trueConfigFile);
             builder.inputParameter("phantt-ec_token", token);
             builder.inputParameter("phantt-ec_sample_code", sample_code);
@@ -165,6 +166,7 @@ public class PhantasticTypingFileProcessor implements FileProcessor {
             builder.inputParameter("phantc-lm_token", token);
             builder.inputParameter("phantc-lm_sample_code", sample_code);
             builder.inputParameter("phantc-lm_species", species);
+            builder.inputParameter("phantj_token", token);
 
 			AnalysisSubmission submission = builder.inputFiles(Sets.newHashSet((SequenceFilePair) sequencingObject))
 					.priority(AnalysisSubmission.Priority.LOW)
