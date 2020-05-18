@@ -1108,15 +1108,10 @@ angular-ui-router@1.0.0-alpha.4:
   resolved "https://registry.yarnpkg.com/angular-ui-router/-/angular-ui-router-1.0.0-alpha.4.tgz#2ef99e114d6af1cc680c9b2dcf2273ba4c5bbb5a"
   integrity sha1-LvmeEU1q8cxoDJstzyJzukxbu1o=
 
-angular@1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.2.tgz#d0b677242ac4bf9ae81424297c6320973af4bb5a"
-  integrity sha1-0LZ3JCrEv5roFCQpfGMglzr0u1o=
-
-angular@>=1.4.0:
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.5.tgz#d1c1c01c6f5dc835638f3f9aa51012857bdac49e"
-  integrity sha512-760183yxtGzni740IBTieNuWLtPNAoMqvmC0Z62UoU0I3nqk+VJuO3JbQAXOyvo3Oy/ZsdNQwrSTh/B0OQZjNw==
+angular@1.7.9, angular@>=1.4.0:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.9.tgz#e52616e8701c17724c3c238cfe4f9446fd570bc4"
+  integrity sha512-5se7ZpcOtu0MBFlzGv5dsM1quQDoDeUTwZrWjGtTNA7O88cD8TEk5IEKCTDa3uECV9XnvKREVUr7du1ACiWGFQ==
 
 ansi-escapes@^3.0.0:
   version "3.1.0"
