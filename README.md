@@ -12,5 +12,3 @@ Important Links
 * Documentation
     * Main: <https://irida.corefacility.ca/documentation/>
     * Download: <https://irida.corefacility.ca/documentation/downloads/index.html>
-
-This code was personalised in order to be able to run pipelines on ARIES using mixed samples of single-end and paired-end reads.
