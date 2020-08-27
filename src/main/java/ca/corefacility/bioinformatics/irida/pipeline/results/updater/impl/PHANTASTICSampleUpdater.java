@@ -355,7 +355,7 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				clusters.add(dist2.toString());
 				clusters.add(sample3);
 				clusters.add(dist3.toString());
-				clusters.add(clusterExtendedNodesSize.toString());
+				clusters.add(clusterExtendedCriterium.toString());
 			}
 		} else {
 			logger.debug("getClusterIdByCodes");
