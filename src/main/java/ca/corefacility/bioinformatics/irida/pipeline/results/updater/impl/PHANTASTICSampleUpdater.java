@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -216,6 +218,25 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 				PipelineProvidedMetadataEntry metadataEntry = new PipelineProvidedMetadataEntry(metaClusterId, "text", analysis);
 				stringEntries.put("Cluster_Id", metadataEntry);
 
+				//ISS: Add cluster information to the PHANTASTIC_FILE json file
+				try {
+					// input the file content to the StringBuffer "input"
+					BufferedReader jsonreader = new BufferedReader(new FileReader(filePath.toFile()));
+					String jsoninputStr = jsonreader.readLine();
+					jsonreader.close();
+					jsoninputStr = jsoninputStr.replace("}]", ", \"Cluster_Id\": \"" + metaClusterId + "\"}]"); 
+					BufferedWriter jsonwriter = new BufferedWriter(new FileWriter(filePath.toFile()));
+                    jsonwriter.write(jsoninputStr);
+					jsonwriter.close();
+					//FileOutputStream jsonfileOut = new FileOutputStream(filePath.toFile());
+					//jsonfileOut.write(jsoninputStr.getBytes());
+					//jsonfileOut.close();
+
+				} catch (Exception e) {
+					System.out.println("Problem reading PHANTASTIC_FILE json file.");
+				}
+				//ISS: Add cluster information to the PHANTASTIC_FILE json file
+				
 				// convert string map into metadata fields
 				Map<MetadataTemplateField, MetadataEntry> metadataMap = metadataTemplateService.getMetadataMap(stringEntries);
 
