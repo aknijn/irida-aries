@@ -72,6 +72,8 @@ public class PHANTASTICSampleUpdater implements AnalysisSampleUpdater {
 		.put("region", "Regione")
 		.put("year", "Anno")
 		.put("mlst_ST", "MLST_ST")
+		.put("mlst_CC", "MLST_CC")
+		.put("mlst_lineage", "MLST_Lineage")
 		.put("serotype_serogroup", "Serogroup")
 		.put("serotype_amplicons", "Amplicons")
 		.put("sample_genes_mapped", "cgMLST_genes_mapped")
