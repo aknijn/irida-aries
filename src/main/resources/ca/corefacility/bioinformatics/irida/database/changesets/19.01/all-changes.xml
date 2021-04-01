@@ -10,4 +10,6 @@
              relativeToChangelogFile="true"/>
     <include file="phantastic.xml"
              relativeToChangelogFile="true"/>
+    <include file="recovery.xml"
+             relativeToChangelogFile="true"/>
 </databaseChangeLog>

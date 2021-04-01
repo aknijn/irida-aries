@@ -176,14 +176,14 @@ public class ProjectSamplesController {
 		Project project = projectService.read(projectId);
 
 		// Need a check to see if the Organism name was actually set.
-		if(sample.getOrganism().equals("")) {
-			sample.setOrganism(null);
+		if (sample.getOrganism().equals("")) {
+			sample.setOrganism(project.getOrganism());
 		}
 
 		try {
 			//ISS collegamento con SEU
 			try {
-				if(sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
+				if (sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")) {
 					logger.debug("Adding information from SEU database");
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					SEU seu = new SEU();
@@ -195,8 +195,6 @@ public class ProjectSamplesController {
 					if (SEUmap.get("Comune") != null) { sample.setGeographicLocationName3(SEUmap.get("Comune")); }
 					else { if (SEUmap.get("Localita") != null) { sample.setGeographicLocationName3(SEUmap.get("Localita")); } }
 				}
-				String Regione = getRegione(project.getName());
-				if (!Regione.equals("-")) { sample.setGeographicLocationName(Regione); }
 			} catch (SQLException ex) {
 				logger.warn("Attempt to connect to SQL database failed", ex);
 			} catch (ParseException ex) {
@@ -990,29 +988,5 @@ public class ProjectSamplesController {
 		}
 		return errors;
 	}
-	
-	private String getRegione(String ProjectName) {
-		String Regione = String.valueOf("-");
-		if (ProjectName.contains("Abruzzo")) { Regione = "Abruzzo"; }
-		if (ProjectName.contains("Basilicata")) { Regione = "Basilicata"; }
-		if (ProjectName.contains("Calabria")) { Regione = "Calabria"; }
-		if (ProjectName.contains("Campania")) { Regione = "Campania"; }
-		if (ProjectName.contains("Emilia-Romagna")) { Regione = "Emilia-Romagna"; }
-		if (ProjectName.contains("Friuli-Venezia Giulia")) { Regione = "Friuli-Venezia Giulia"; }
-		if (ProjectName.contains("Lazio")) { Regione = "Lazio"; }
-		if (ProjectName.contains("Liguria")) { Regione = "Liguria"; }
-		if (ProjectName.contains("Lombardia")) { Regione = "Lombardia"; }
-		if (ProjectName.contains("Marche")) { Regione = "Marche"; }
-		if (ProjectName.contains("Molise")) { Regione = "Molise"; }
-		if (ProjectName.contains("Piemonte")) { Regione = "Piemonte"; }
-		if (ProjectName.contains("Puglia")) { Regione = "Puglia"; }
-		if (ProjectName.contains("Sardegna")) { Regione = "Sardegna"; }
-		if (ProjectName.contains("Sicilia")) { Regione = "Sicilia"; }
-		if (ProjectName.contains("Toscana")) { Regione = "Toscana"; }
-		if (ProjectName.contains("Trentino-Alto Adige")) { Regione = "Trentino-Alto Adige"; }
-		if (ProjectName.contains("Umbria")) { Regione = "Umbria"; }
-		if (ProjectName.contains("Valle d'Aosta")) { Regione = "Valle d'Aosta"; }
-		if (ProjectName.contains("Veneto")) { Regione = "Veneto"; }
-		return Regione;
-	}
+
 }

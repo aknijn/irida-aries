@@ -618,12 +618,15 @@ public class SamplesController extends BaseController {
 /* 		SequenceFile sequenceFile = createSequenceFile(file);
 		sequencingObjectService.createSequencingObjectInSample(new SingleEndSequenceFile(sequenceFile), sample); */
 		SequenceFile sequenceFile = createSequenceFile(file);
+		if (file.getOriginalFilename().endsWith(".fasta")) {
+			sequenceFile.addOptionalProperty("nofastqc","true");
+		}
 		Path temp2 = Files.createTempDirectory(null);
 		Path target2 = temp2.resolve("dummy.fastq");
         Files.createFile(target2);
         Files.write(target2, "dummy".getBytes());
 		SequenceFile dummyFile = new SequenceFile(target2);
-        dummyFile.addOptionalProperty("dummy","true");
+        dummyFile.addOptionalProperty("nofastqc","true");
 		sequencingObjectService.createSequencingObjectInSample(new SequenceFilePair(sequenceFile, dummyFile), sample);
 	}
 	/**

@@ -357,6 +357,39 @@ public class ProjectSettingsController {
 	}
 
 	/**
+	 * Update the project recovery setting for the {@link Project}
+	 *
+	 * @param projectId the ID of a {@link Project}
+	 * @param recovery     Whether or not to do automated recovery typing.
+	 * @param model     Model for the view
+	 * @param locale    Locale of the logged in user
+	 * @return success message if successful
+	 */
+	@RequestMapping(value = "/recovery", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> updateRecoverySetting(@PathVariable Long projectId, @RequestParam
+			Project.AutomatedRECOVERYSetting recovery,
+			final Model model, Locale locale) {
+		Project read = projectService.read(projectId);
+
+		Map<String, Object> updates = new HashMap<>();
+		updates.put("recoveryTypingUploads", recovery);
+
+		projectService.updateProjectSettings(read, updates);
+
+		String message = null;
+		if (recovery.equals(Project.AutomatedRECOVERYSetting.AUTO) || recovery.equals(Project.AutomatedRECOVERYSetting.AUTO_METADATA) || recovery.equals(Project.AutomatedRECOVERYSetting.AUTO_METADATA_MASTER)) {
+			message = messageSource.getMessage("project.settings.notifications.recovery.enabled",
+					new Object[] { read.getLabel() }, locale);
+		} else {
+			message = messageSource.getMessage("project.settings.notifications.recovery.disabled",
+					new Object[] { read.getLabel() }, locale);
+		}
+
+		return ImmutableMap.of("result", message);
+	}
+
+	/**
 	 * Update the coverage QC setting of a {@link Project}
 	 *
 	 * @param projectId

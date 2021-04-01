@@ -127,6 +127,9 @@ public class SampleRepositoryImpl implements SampleRepositoryCustom {
 		if(result.equals("Listeria monocytogenes")){
 			projectId = 49L;
 		}
+		if(result.equals("Coronavirus")){
+			projectId = 101L;
+		}
 		return projectId;
 	}
 

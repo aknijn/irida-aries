@@ -12,6 +12,8 @@ public class BuiltInAnalysisTypes {
 
 	public static final AnalysisType PHANTASTIC_TYPING = new AnalysisType("PHANTASTIC_TYPING");
 
+	public static final AnalysisType RECOVERY_TYPING = new AnalysisType("RECOVERY_TYPING");
+
 	public static final AnalysisType ALLELE_OBSERVER = new AnalysisType("ALLELE_OBSERVER");
 
 	public static final AnalysisType SNP_OBSERVER = new AnalysisType("SNP_OBSERVER");

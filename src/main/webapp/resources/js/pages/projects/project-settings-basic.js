@@ -95,14 +95,16 @@ const projectSettings = (function(page, notifications) {
   $(".js-phantastic-writes").on("change", function(e) {
     var selected = $(e.target).prop("checked");
     if (selected) {
-  	  $(".js-phantastic-shares").removeAttr("disabled");
+      $(".js-phantastic-shares").removeAttr("disabled");
       updatePhantasticSettings(PHANTASTIC_TYPES.autoMetadata);
     } else {
-  	  $(".js-phantastic-shares").removeAttr("checked").attr("disabled", true);
+      $(".js-phantastic-shares")
+        .removeAttr("checked")
+        .attr("disabled", true);
       updatePhantasticSettings(PHANTASTIC_TYPES.auto);
     }
   });
-  
+
   $(".js-phantastic-shares").on("change", function(e) {
     var selected = $(e.target).prop("checked");
     if (selected) {
@@ -119,6 +121,71 @@ const projectSettings = (function(page, notifications) {
       type: "POST",
       data: {
         phantastic
+      },
+      statusCode: {
+        200: function(response) {
+          notifications.show({ text: response.result });
+        }
+      },
+      fail: function() {
+        notifications.show({ text: page.i18n.error, type: "error" });
+      }
+    });
+  }
+
+  // Recovery settings
+  const RECOVERY_TYPES = {
+    off: "OFF",
+    auto: "AUTO",
+    autoMetadata: "AUTO_METADATA",
+    autoMetadataMaster: "AUTO_METADATA_MASTER"
+  };
+
+  $(".js-recovery-checkbox").on("change", function(e) {
+    const selected = $(e.target).prop("checked");
+    if (selected) {
+      $(".js-recovery-writes").removeAttr("disabled");
+      updateRecoverySettings(RECOVERY_TYPES.auto);
+    } else {
+      $(".js-recovery-shares")
+        .removeAttr("checked")
+        .attr("disabled", true);
+      $(".js-recovery-writes")
+        .removeAttr("checked")
+        .attr("disabled", true);
+      updateRecoverySettings(RECOVERY_TYPES.off);
+    }
+  });
+
+  $(".js-recovery-writes").on("change", function(e) {
+    var selected = $(e.target).prop("checked");
+    if (selected) {
+      $(".js-recovery-shares").removeAttr("disabled");
+      updateRecoverySettings(RECOVERY_TYPES.autoMetadata);
+    } else {
+      $(".js-recovery-shares")
+        .removeAttr("checked")
+        .attr("disabled", true);
+      updateRecoverySettings(RECOVERY_TYPES.auto);
+    }
+  });
+
+  $(".js-recovery-shares").on("change", function(e) {
+    var selected = $(e.target).prop("checked");
+    if (selected) {
+      updateRecoverySettings(RECOVERY_TYPES.autoMetadataMaster);
+    } else {
+      updateRecoverySettings(RECOVERY_TYPES.autoMetadata);
+    }
+  });
+
+  function updateRecoverySettings(recovery) {
+    $(".js-recovery-checkbox").val(recovery);
+    $.ajax({
+      url: page.urls.recovery,
+      type: "POST",
+      data: {
+        recovery
       },
       statusCode: {
         200: function(response) {

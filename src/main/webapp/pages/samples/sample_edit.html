@@ -41,6 +41,7 @@
                                        th:value="${organism} != null ? ${organism} : ${sample.getOrganism()}" />
                                     <option value="Shiga toxin-producing Escherichia coli" th:selected="${sample.getOrganism()=='Shiga toxin-producing Escherichia coli'}">Shiga toxin-producing Escherichia coli</option>
                                     <option value="Listeria monocytogenes" th:selected="${sample.getOrganism()=='Listeria monocytogenes'}">Listeria monocytogenes</option>
+                                    <option value="Coronavirus" th:selected="${sample.getOrganism()=='Coronavirus'}">Coronavirus</option>
                                 </select>
                                 <span id="organism-error" th:if="${#maps.containsKey(errors, 'organism')}"
                                       class="help-block" th:text="${errors.organism}"></span>
@@ -57,6 +58,12 @@
                                     <option value="Familiare" th:selected="${sample.getIsolate()=='Familiare'}" th:if="${sample.getOrganism()=='Shiga toxin-producing Escherichia coli'}">Familiare</option>
                                     <option value="Sangue" th:selected="${sample.getIsolate()=='Sangue'}" th:if="${sample.getOrganism()=='Listeria monocytogenes'}">Sangue</option>
                                     <option value="LCR" th:selected="${sample.getIsolate()=='LCR'}" th:if="${sample.getOrganism()=='Listeria monocytogenes'}">LCR</option>
+                                    <option value="BAL" th:selected="${sample.getIsolate()=='BAL'}" th:if="${sample.getOrganism()=='Coronavirus'}">BAL</option>
+                                    <option value="Nasopharyngeal swab" th:selected="${sample.getIsolate()=='Nasopharyngeal swab'}" th:if="${sample.getOrganism()=='Coronavirus'}">Nasopharyngeal swab</option>
+                                    <option value="Ocular swab" th:selected="${sample.getIsolate()=='Ocular swab'}" th:if="${sample.getOrganism()=='Coronavirus'}">Ocular swab</option>
+                                    <option value="Oropharyngeal swab" th:selected="${sample.getIsolate()=='Oropharyngeal swab'}" th:if="${sample.getOrganism()=='Coronavirus'}">Oropharyngeal swab</option>
+                                    <option value="Sputum" th:selected="${sample.getIsolate()=='Sputum'}" th:if="${sample.getOrganism()=='Coronavirus'}">Sputum</option>
+                                    <option value="Tracheal aspirate" th:selected="${sample.getIsolate()=='Tracheal aspirate'}" th:if="${sample.getOrganism()=='Coronavirus'}">Tracheal aspirate</option>
                                 </select>
                                 <span id="isolate-error" th:if="${#maps.containsKey(errors, 'isolate')}"
                                       class="help-block" th:text="${errors.isolate}"></span>

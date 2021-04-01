@@ -77,6 +77,15 @@ function AnalysisService($http) {
   };
 
   /**
+   * Get the results from a RECoVERY analysis to preview in the browser.
+   */
+  svc.getRecoveryResults = function() {
+    return $http.get(window.PAGE.URLS.recovery).then(function(result) {
+      return result.data;
+    });
+  };
+
+  /**
    * Get Galaxy JobError info from server
    * @param vm JobErrorsController object for reporting progress of getting JobError info
    * @returns {PromiseLike<T> | Promise<T> | *}
@@ -315,6 +324,28 @@ function PhantasticController(analysisService) {
   });
 }
 
+function RecoveryController(analysisService) {
+  const vm = this;
+
+  analysisService.getRecoveryResults().then(function(result) {
+    if (result["parse_results_error"]) {
+      vm.parse_results_error = true;
+    } else {
+      const sample_information = {};
+      sample_information["name"] = result["sample_name"];
+      sample_information["qc_status"] = result["qc_status"];
+      sample_information["qc_messages"] = result["qc_messages"].split("|");
+      sample_information["qc_pass"] = result["qc_status"] == "Passed";
+      sample_information["qc_warning"] = result["qc_status"] == "Warning";
+      sample_information["qc_fail"] = result["qc_status"] == "Failed";
+
+      vm.result = result;
+      vm.sample_information = sample_information;
+      vm.parse_results_error = result["parse_results_error"];
+    }
+  });
+}
+
 /**
  * Angular Controller for handling Galaxy job errors
  * @param analysisService Service for retrieving JobError info from server
@@ -435,6 +466,12 @@ const iridaAnalysis = angular
           templateUrl: "phantastic.html",
           controllerAs: "phantasticCtrl",
           controller: ["AnalysisService", PhantasticController]
+        })
+        .state("recovery", {
+          url: "/recovery",
+          templateUrl: "recovery.html",
+          controllerAs: "recoveryCtrl",
+          controller: ["AnalysisService", RecoveryController]
         })
         .state("bio_hansel", {
           url: "/bio_hansel",

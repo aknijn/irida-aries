@@ -158,10 +158,14 @@ function FileUploadController(Upload, $timeout, $window, $uibModal) {
 
     // Check to make sure the files are the right format.
     const fastqregex = /\.fastq(\/gz)?/;
+    const fastaregex = /\.fasta/;
     const goodFiles = [];
     const badFiles = [];
     for (const file of $files) {
-      if (file.name.match(fastqregex) === null) {
+      if (
+        file.name.match(fastqregex) === null &&
+        file.name.match(fastaregex) === null
+      ) {
         badFiles.push(file);
       } else {
         goodFiles.push(file);

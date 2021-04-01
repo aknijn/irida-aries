@@ -37,6 +37,8 @@ import ca.corefacility.bioinformatics.irida.model.user.PasswordReset;
 import ca.corefacility.bioinformatics.irida.model.user.User;
 import ca.corefacility.bioinformatics.irida.service.EmailController;
 
+/* ISS */
+import javax.mail.util.ByteArrayDataSource;
 /**
  * This class is responsible for all email sent to the server that are templated
  * with Thymeleaf.
@@ -253,7 +255,7 @@ public class EmailControllerImpl implements EmailController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters) throws MailSendException {
+	public void sendEndOfAnalysisEmail(String recipients, String analysisName, String sampleCode, String sampleSpecies, String clusterId, String clusters, String jsonstring) throws MailSendException {
 		logger.debug("Sending end-of-analysis email for " + sampleCode + " to " + recipients);
 
 		Locale locale = LocaleContextHolder.getLocale();
@@ -268,69 +270,85 @@ public class EmailControllerImpl implements EmailController {
 			case "Listeria monocytogenes": 
 				 sampleSpeciesShort = "Listeria";
 				 break;
+			case "Coronavirus": 
+				 sampleSpeciesShort = "SARS-CoV-2";
+				 break;
 		}
 
+		analysisName = analysisName.replace(", dummy.fastq", "");
 		final Context ctx = new Context(locale);
 		ctx.setVariable("ngsEmail", serverEmail);
 		ctx.setVariable("serverURL", serverURL);
 		ctx.setVariable("analysisName", analysisName);
-        if (!clusterId.equals("-")) {
-			if (clusterId.contains("_ext")) {
-				msgpriority = 2;
-				String[] neighbours = clusters.split(",");
-				if (clusterId.equals("-_ext")) {
-					header = sampleSpeciesShort + ": Vicino ad altri campioni";
-					String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ")";
-					ctx.setVariable("header", header);
-					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista " + neighbours[6].trim() + " o meno alleli da altri campioni. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours + ".");
-				} else { 
-					header = sampleSpeciesShort + ": Vicino ad un cluster";
-					ctx.setVariable("header", header);
-					ctx.setVariable("clusters", "Il campione " + sampleCode + " dista " + neighbours[6].trim() + " o meno alleli dal cluster " + clusterId + ".");
-				}
-			} else { 
-				msgpriority = 1;
-				header = sampleSpeciesShort + ": Cluster!";
-				ctx.setVariable("header", header);
-				ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
-			}
-        }
+		if (sampleSpecies.equals("Coronavirus")) {
+			msgpriority = 1;
+			header = sampleSpeciesShort + ": " + clusterId;
+			ctx.setVariable("header", header);
+			ctx.setVariable("clusters", "Il campione " + sampleCode + " appartiene al lineage " + clusterId + ". (tra parentesi la probabilità). Le mutazioni nella proteina S sono: " + clusters);
+		}
 		else {
-			msgpriority = 3;
-			String[] neighbours = clusters.split(",");
-			if (neighbours[0].equals("ERROR")) {
-				header = sampleSpeciesShort + ": Errore";
-				ctx.setVariable("header", header);
-				ctx.setVariable("clusters", "Errore durante le analisi dei cluster");
+			if (!clusterId.equals("-")) {
+				if (clusterId.contains("_ext")) {
+					msgpriority = 2;
+					String[] neighbours = clusters.split(",");
+					if (clusterId.equals("-_ext")) {
+						header = sampleSpeciesShort + ": Vicino ad altri campioni";
+						String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ")";
+						ctx.setVariable("header", header);
+						ctx.setVariable("clusters", "Il campione " + sampleCode + " dista " + neighbours[6].trim() + " o meno alleli da altri campioni. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours + ".");
+					} else { 
+						header = sampleSpeciesShort + ": Vicino ad un cluster";
+						ctx.setVariable("header", header);
+						ctx.setVariable("clusters", "Il campione " + sampleCode + " dista " + neighbours[6].trim() + " o meno alleli dal cluster " + clusterId + ".");
+					}
+				} else { 
+					msgpriority = 1;
+					header = sampleSpeciesShort + ": Cluster!";
+					ctx.setVariable("header", header);
+					ctx.setVariable("clusters", "Il campione " + sampleCode + " fa parte del cluster " + clusterId + " insieme ai seguenti campioni: " + clusters + ".");
+				}
 			}
 			else {
-				if (neighbours[0].equals("-")) {
-					header = sampleSpeciesShort + ": Primo campione del sierogruppo";
+				msgpriority = 3;
+				String[] neighbours = clusters.split(",");
+				if (neighbours[0].equals("ERROR")) {
+					header = sampleSpeciesShort + ": Errore";
 					ctx.setVariable("header", header);
-					ctx.setVariable("clusters", "Primo campione del sierogruppo");
+					ctx.setVariable("clusters", "Errore durante le analisi dei cluster");
 				}
 				else {
-					if (neighbours[0].equals("RERUN")) {
-						header = sampleSpeciesShort + ": cgMLST errore mapping";
+					if (neighbours[0].equals("-")) {
+						header = sampleSpeciesShort + ": Primo campione del sierogruppo";
 						ctx.setVariable("header", header);
-						ctx.setVariable("clusters", "cgMLST ha mappato meno del 80% dei loci, il campione non è stato incluso nella cluster analysis");
+						ctx.setVariable("clusters", "Primo campione del sierogruppo");
 					}
 					else {
-						String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ")";
-						header = sampleSpeciesShort + ": No cluster";
-						ctx.setVariable("header", header);
-						ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours + ".");
+						if (neighbours[0].equals("RERUN")) {
+							header = sampleSpeciesShort + ": cgMLST errore mapping";
+							ctx.setVariable("header", header);
+							ctx.setVariable("clusters", "cgMLST ha mappato meno del 80% dei loci, il campione non è stato incluso nella cluster analysis");
+						}
+						else {
+							String strNeighbours = neighbours[0] + " (" + neighbours[1].trim() + "), " + neighbours[2] + " (" + neighbours[3].trim() + "), " + neighbours[4] + " (" + neighbours[5].trim() + ")";
+							header = sampleSpeciesShort + ": No cluster";
+							ctx.setVariable("header", header);
+							ctx.setVariable("clusters", "Il campione " + sampleCode + " non fa parte di nessun cluster. I tre campioni più vicini con il numero di alleli di differenza sono: " + strNeighbours + ".");
+						}
 					}
 				}
 			}
-        }
+		}
 		try {
 			final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
-			final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+			final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 			message.setSubject(messageSource.getMessage("email.analysis.subject", null, locale) + " " + header);
 			message.setFrom(serverEmail);
 			message.setTo(InternetAddress.parse(recipients));
             message.setPriority(msgpriority);
+			if (sampleSpecies.equals("Coronavirus")) {
+				final ByteArrayDataSource attach = new ByteArrayDataSource(jsonstring, "application/json");
+				message.addAttachment("irida-aries_" + sampleCode + ".json", attach);
+			}
 
 			final String htmlContent = templateEngine.process(ANALYSIS_TEMPLATE, ctx);
 			message.setText(htmlContent, true);

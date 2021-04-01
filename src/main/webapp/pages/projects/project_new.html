@@ -115,6 +115,24 @@
                                     <span th:text="#{projects.create.settings.phantastic.AUTO_METADATA_MASTER}">_SHARE_SAMPLE_WITH_MASTER_</span>
                                 </label>
                             </div>
+                            <div class="checkbox">
+                                <label for="recoveryTypingUploads">
+                                    <input type="checkbox" class="js-recovery-checkbox" id="recoveryTypingUploads" name="recoveryTypingUploads" value="OFF">
+                                    <span th:text="#{projects.create.settings.recovery}">_RUN_RECOVERY_</span>
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label style="margin-left: 20px;" for="recoveryWrites">
+                                    <input type="checkbox" class="js-recovery-writes" id="recoveryWrites" disabled>
+                                    <span th:text="#{projects.create.settings.recovery.AUTO_METADATA}">_WRITE_BACK_TO_SAMPLE_METADATA_</span>
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label style="margin-left: 20px;" for="recoveryShares">
+                                    <input type="checkbox" class="js-recovery-shares" id="recoveryShares" disabled>
+                                    <span th:text="#{projects.create.settings.recovery.AUTO_METADATA_MASTER}">_SHARE_SAMPLE_WITH_MASTER_</span>
+                                </label>
+                            </div>
                         </div>                        
                         </div>
                 </div>
@@ -221,6 +239,45 @@
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.autoMetadataMaster);
           } else {
             $(".js-phantastic-checkbox").val(PHANTASTIC_TYPES.autoMetadata);
+          }
+        });
+
+        // Recovery settings
+        var RECOVERY_TYPES = {
+          off: "OFF",
+          auto: "AUTO",
+          autoMetadata: "AUTO_METADATA",
+          autoMetadataMaster: "AUTO_METADATA_MASTER"
+        };
+        $(".js-recovery-checkbox").on("change", function(e) {
+          var selected = $(e.target).prop("checked");
+          if (selected) {
+            $(".js-recovery-writes").removeAttr("disabled");
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.auto);
+          } else {
+            $(".js-recovery-writes").removeAttr("checked").attr("disabled", true);
+            $(".js-recovery-shares").removeAttr("checked").attr("disabled", true);
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.off);
+          }
+        });
+
+        $(".js-recovery-writes").on("change", function(e) {
+          var selected = $(e.target).prop("checked");
+          if (selected) {
+            $(".js-recovery-shares").removeAttr("disabled");
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.autoMetadata);
+          } else {
+            $(".js-recovery-shares").removeAttr("checked").attr("disabled", true);
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.auto);
+          }
+        });
+
+        $(".js-recovery-shares").on("change", function(e) {
+          var selected = $(e.target).prop("checked");
+          if (selected) {
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.autoMetadataMaster);
+          } else {
+            $(".js-recovery-checkbox").val(RECOVERY_TYPES.autoMetadata);
           }
         });
 

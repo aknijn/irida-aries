@@ -80,7 +80,7 @@ public class AnalysisController {
 	// PAGES
 	public static final Map<AnalysisType, String> PREVIEWS = ImmutableMap
 			.of(//BuiltInAnalysisTypes.PHYLOGENOMICS, "tree", //BuiltInAnalysisTypes.SISTR_TYPING, "sistr",
-					BuiltInAnalysisTypes.PHANTASTIC_TYPING, "tree",
+					BuiltInAnalysisTypes.PHANTASTIC_TYPING, "tree", //BuiltInAnalysisTypes.RECOVERY_TYPING, "tree",
                     BuiltInAnalysisTypes.ALLELE_OBSERVER, "tree", BuiltInAnalysisTypes.SNP_OBSERVER, "tree",
 					BuiltInAnalysisTypes.MLST_MENTALIST, "tree");
 	private static final String BASE = "analysis/";
@@ -302,7 +302,7 @@ public class AnalysisController {
 		try {
 			if (submission.getAnalysisState()
 					.equals(AnalysisState.COMPLETED)) {
-				if (analysisType.equals(BuiltInAnalysisTypes.MLST_MENTALIST) || analysisType.equals(BuiltInAnalysisTypes.PHANTASTIC_TYPING) || analysisType.equals(BuiltInAnalysisTypes.ALLELE_OBSERVER) || analysisType.equals(BuiltInAnalysisTypes.SNP_OBSERVER)) {
+				if (analysisType.equals(BuiltInAnalysisTypes.MLST_MENTALIST) || analysisType.equals(BuiltInAnalysisTypes.PHANTASTIC_TYPING) || analysisType.equals(BuiltInAnalysisTypes.RECOVERY_TYPING) || analysisType.equals(BuiltInAnalysisTypes.ALLELE_OBSERVER) || analysisType.equals(BuiltInAnalysisTypes.SNP_OBSERVER)) {
 					tree(submission, model);
 /* 				} else if (analysisType.equals(BuiltInAnalysisTypes.SISTR_TYPING)) {
 					model.addAttribute("sistr", true); */
@@ -909,6 +909,74 @@ public class AnalysisController {
 					}
 				} else {
 					logger.error("PHANTASTIC results for file [" + path + "] are not correctly formatted");
+				}
+			} catch (FileNotFoundException e) {
+				logger.error("File [" + path + "] not found", e);
+			} catch (JsonParseException | JsonMappingException e) {
+				logger.error("Error attempting to parse file [" + path + "] as JSON", e);
+			} catch (IOException e) {
+				logger.error("Error reading file [" + path + "]", e);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Get the recovery analysis information to display
+	 *
+	 * @param id ID of the analysis submission
+	 * @return Json results for the RECOVERY analysis
+	 */
+	@SuppressWarnings("resource")
+	@RequestMapping("/ajax/recovery/{id}")
+	@ResponseBody
+	public Map<String,Object> getRecoveryAnalysis(@PathVariable Long id) {
+		AnalysisSubmission submission = analysisSubmissionService.read(id);
+		Collection<Sample> samples = sampleService.getSamplesForAnalysisSubmission(submission);
+		Map<String, Object> result = ImmutableMap.of("parse_results_error", true);
+
+		final String recoveryFileKey = "recovery_out";
+
+		// Get details about the workflow
+		UUID workflowUUID = submission.getWorkflowId();
+		IridaWorkflow iridaWorkflow;
+		try {
+			iridaWorkflow = workflowsService.getIridaWorkflow(workflowUUID);
+		} catch (IridaWorkflowNotFoundException e) {
+			logger.error("Error finding workflow, ", e);
+			throw new EntityNotFoundException("Couldn't find workflow for submission " + submission.getId(), e);
+		}
+		AnalysisType analysisType = iridaWorkflow.getWorkflowDescription()
+				.getAnalysisType();
+		if (analysisType.equals(BuiltInAnalysisTypes.RECOVERY_TYPING)) {
+			Analysis analysis = submission.getAnalysis();
+			Path path = analysis.getAnalysisOutputFile(recoveryFileKey)
+					.getFile();
+			try {
+				String json = new Scanner(new BufferedReader(new FileReader(path.toFile()))).useDelimiter("\\Z")
+						.next();
+
+				// verify file is proper json file
+				ObjectMapper mapper = new ObjectMapper();
+				List<Map<String, Object>> recoveryResults = mapper.readValue(json,
+						new TypeReference<List<Map<String, Object>>>() {
+						});
+
+				if (recoveryResults.size() > 0) {
+					// should only ever be one sample for these results
+					if (samples.size() == 1) {
+						Sample sample = samples.iterator()
+								.next();
+						result = recoveryResults.get(0);
+
+						result.put("parse_results_error", false);
+
+						result.put("sample_name", sample.getSampleName());
+					} else {
+						logger.error("Invalid number of associated samples for submission " + submission);
+					}
+				} else {
+					logger.error("RECOVERY results for file [" + path + "] are not correctly formatted");
 				}
 			} catch (FileNotFoundException e) {
 				logger.error("File [" + path + "] not found", e);

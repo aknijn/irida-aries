@@ -66,6 +66,7 @@ public class AnalysisTypesServiceImpl implements AnalysisTypesService {
 		allTypesMap.put(BuiltInAnalysisTypes.PHYLOGENOMICS.getType(), BuiltInAnalysisTypes.PHYLOGENOMICS);
 		allTypesMap.put(BuiltInAnalysisTypes.SISTR_TYPING.getType(), BuiltInAnalysisTypes.SISTR_TYPING);
 		allTypesMap.put(BuiltInAnalysisTypes.PHANTASTIC_TYPING.getType(), BuiltInAnalysisTypes.PHANTASTIC_TYPING);
+		allTypesMap.put(BuiltInAnalysisTypes.RECOVERY_TYPING.getType(), BuiltInAnalysisTypes.RECOVERY_TYPING);
 		allTypesMap.put(BuiltInAnalysisTypes.ALLELE_OBSERVER.getType(), BuiltInAnalysisTypes.ALLELE_OBSERVER);
 		allTypesMap.put(BuiltInAnalysisTypes.SNP_OBSERVER.getType(), BuiltInAnalysisTypes.SNP_OBSERVER);
 		allTypesMap.put(BuiltInAnalysisTypes.VIRULOTYPER.getType(), BuiltInAnalysisTypes.VIRULOTYPER);
@@ -82,6 +83,7 @@ public class AnalysisTypesServiceImpl implements AnalysisTypesService {
 		runnableTypesMap.put(BuiltInAnalysisTypes.PHYLOGENOMICS.getType(), BuiltInAnalysisTypes.PHYLOGENOMICS);
 		runnableTypesMap.put(BuiltInAnalysisTypes.SISTR_TYPING.getType(), BuiltInAnalysisTypes.SISTR_TYPING);
 		runnableTypesMap.put(BuiltInAnalysisTypes.PHANTASTIC_TYPING.getType(), BuiltInAnalysisTypes.PHANTASTIC_TYPING);
+		runnableTypesMap.put(BuiltInAnalysisTypes.RECOVERY_TYPING.getType(), BuiltInAnalysisTypes.RECOVERY_TYPING);
 		runnableTypesMap.put(BuiltInAnalysisTypes.ALLELE_OBSERVER.getType(), BuiltInAnalysisTypes.ALLELE_OBSERVER);
 		runnableTypesMap.put(BuiltInAnalysisTypes.SNP_OBSERVER.getType(), BuiltInAnalysisTypes.SNP_OBSERVER);
 		runnableTypesMap.put(BuiltInAnalysisTypes.VIRULOTYPER.getType(), BuiltInAnalysisTypes.VIRULOTYPER);

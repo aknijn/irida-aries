@@ -91,6 +91,11 @@ public class Project extends IridaResourceSupport
 	@Enumerated(EnumType.STRING)
 	private AutomatedPHANTASTICSetting phantasticTypingUploads;
 
+	@NotNull
+	@Column(name="recovery_typing_uploads")
+	@Enumerated(EnumType.STRING)
+	private AutomatedRECOVERYSetting recoveryTypingUploads;
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "project")
 	private List<ProjectUserJoin> users;
 	
@@ -148,6 +153,7 @@ public class Project extends IridaResourceSupport
 		assembleUploads = false;
 		sistrTypingUploads = AutomatedSISTRSetting.OFF;
 		phantasticTypingUploads = AutomatedPHANTASTICSetting.OFF;
+		recoveryTypingUploads = AutomatedRECOVERYSetting.OFF;
 		createdDate = new Date();
 	}
 
@@ -173,7 +179,7 @@ public class Project extends IridaResourceSupport
 	}
 
 	public boolean isMasterProject(){
-		return (id == 48L || id == 49L);
+		return (id == 48L || id == 49L || id == 101L);
 	}
 
 	public boolean isInternalProject(){
@@ -323,6 +329,16 @@ public class Project extends IridaResourceSupport
 		this.phantasticTypingUploads = phantasticTypingUploads;
 	}
 
+	@JsonIgnore
+	public AutomatedRECOVERYSetting getRecoveryTypingUploads() {
+		return recoveryTypingUploads;
+	}
+
+	@JsonIgnore
+	public void setRecoveryTypingUploads(AutomatedRECOVERYSetting recoveryTypingUploads) {
+		this.recoveryTypingUploads = recoveryTypingUploads;
+	}
+
 	/**
 	 * Setting for how to run automated SISTR analyses.
 	 * OFF - Do not run
@@ -335,6 +351,12 @@ public class Project extends IridaResourceSupport
 		AUTO_METADATA
 	}
 	public enum AutomatedPHANTASTICSetting {
+		OFF,
+		AUTO,
+		AUTO_METADATA,
+		AUTO_METADATA_MASTER
+	}
+	public enum AutomatedRECOVERYSetting {
 		OFF,
 		AUTO,
 		AUTO_METADATA,

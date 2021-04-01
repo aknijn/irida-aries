@@ -8,7 +8,13 @@
                 <span th:text="#{project.settings.phantastic.control}">_Automatically type uploads with PHANTASTIC_</span>
             </label>
         </div>
-    </div>
+        <div class="checkbox">
+            <label>
+                <input id="recovery" type="checkbox" value="recovery" th:checked="${project.recoveryTypingUploads}"/>
+                <span th:text="#{project.settings.recovery.control}">_Automatically type uploads with RECOVERY_</span>
+            </label>
+        </div>
+	</div>
 </div>
 <div class="row">
     <div class="col-md-12">

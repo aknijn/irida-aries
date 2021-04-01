@@ -108,6 +108,7 @@ public class RESTSampleSequenceFilesController {
 	public static final String REL_AUTOMATED_ASSEMBLY = "analysis/assembly";
 	public static final String REL_SISTR_TYPING = "analysis/sistr";
 	public static final String REL_PHANTASTIC_TYPING = "analysis/phantastic";
+	public static final String REL_RECOVERY_TYPING = "analysis/recovery";
 
 	/**
 	 * The key used in the request to add an existing {@link SequenceFile} to a
@@ -401,21 +402,24 @@ public class RESTSampleSequenceFilesController {
 		// large files to 1039956336 bytes
 		// target = Files.write(target, file.getBytes());
 		file.transferTo(target1.toFile());
-        Files.createFile(target2);
-        Files.write(target2, "dummy".getBytes());
+		Files.createFile(target2);
+		Files.write(target2, "dummy".getBytes());
 		logger.trace("Wrote temp file to " + target1);
 
 		SequenceFile sf1 = fileResource.getResource();
-        SequenceFileResource fileResource2 = new SequenceFileResource();
+		SequenceFileResource fileResource2 = new SequenceFileResource();
 		SequenceFile sf2 = fileResource2.getResource();
 		sf1.setFile(target1);
+		if (file.getOriginalFilename().endsWith(".fasta")) {
+			sf1.addOptionalProperty("nofastqc","true");
+		}
 		sf2.setFile(target2);
-        sf2.addOptionalProperty("dummy","true");
+		sf2.addOptionalProperty("nofastqc","true");
 		// get the sequencing run
 		SequencingRun sequencingRun = null;
 
 		Long runId = fileResource.getMiseqRunId();
-
+		fileResource2.setMiseqRunId(runId);
 		SequenceFilePair sequenceFilePair = new SequenceFilePair(sf1, sf2);
 
 		if (runId != null) {
@@ -499,6 +503,14 @@ public class RESTSampleSequenceFilesController {
 		SequenceFile sf2 = fileResource2.getResource();
 		sf1.setFile(target1);
 		sf2.setFile(target2);
+		// do not perform fastqc on fasta files or dummy.fastq
+		if (file1.getOriginalFilename().endsWith(".fasta") || file1.getOriginalFilename().endsWith("dummy.fastq")) {
+			sf1.addOptionalProperty("nofastqc","true");
+		}
+		if (file2.getOriginalFilename().endsWith(".fasta") || file2.getOriginalFilename().endsWith("dummy.fastq")) {
+			sf2.addOptionalProperty("nofastqc","true");
+		}
+
 		// get the sequencing run
 		SequencingRun sequencingRun = null;
 
@@ -647,6 +659,13 @@ public class RESTSampleSequenceFilesController {
 			sequencingObject
 					.add(linkTo(methodOn(RESTAnalysisSubmissionController.class).getResource(phantasticTyping.getId()))
 							.withRel(REL_PHANTASTIC_TYPING));
+		}
+		
+		AnalysisSubmission recoveryTyping = sequencingObject.getRecoveryTyping();
+		if (recoveryTyping != null) {
+			sequencingObject
+					.add(linkTo(methodOn(RESTAnalysisSubmissionController.class).getResource(recoveryTyping.getId()))
+							.withRel(REL_RECOVERY_TYPING));
 		}
 		
 		// if it's a pair, add forward/reverse links

@@ -71,7 +71,7 @@ public class FastqcFileProcessor implements FileProcessor {
 	@Transactional
 	public void process(SequencingObject sequencingObject) {
 		for (SequenceFile file : sequencingObject.getFiles()) {
-            String str = file.getOptionalProperty("dummy");
+            String str = file.getOptionalProperty("nofastqc");
             if (str == null || str.length() == 0) {
 			    processSingleFile(file);
             }

@@ -89,7 +89,7 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 
 	// settings that can be updated locally for a remote project
 	public List<String> VALID_LOCAL_SETTINGS = Lists.newArrayList("assembleUploads", "syncFrequency", "remoteStatus",
-			"genomeSize", "minimumCoverage", "maximumCoverage", "sistrTypingUploads", "phantasticTypingUploads");
+			"genomeSize", "minimumCoverage", "maximumCoverage", "sistrTypingUploads", "phantasticTypingUploads", "recoveryTypingUploads");
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
@@ -365,37 +365,26 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 		// project already
 		if (sampleRepository.getSampleBySampleName(project, sample.getSampleName()) != null) {
 			//check if the project is a master project
-			if (project.getId() == 48L || project.getId() == 49L) { isAlreadyInMasterProject = true; }
+			if (project.getId() == 48L || project.getId() == 49L || project.getId() == 101L) { isAlreadyInMasterProject = true; }
 			else {
 				throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
 					+ "' already exists in project " + project.getId());
 			}
 		}
 		
-		// Check to ensure a sample with this sequencer id doesn't exist in its
-		// master project already
-/* 		if (!sample.getSampleName().equals("name") && !sample.getSampleName().equals("sample")){
-			if (sample.getOrganism().equals("Shiga toxin-producing Escherichia coli")){
-				Project masterProject = super.read(48L);
-				if (sampleRepository.getSampleBySampleName(masterProject, sample.getSampleName()) != null) {
-					throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
-							+ "' already exists in master project " + masterProject.getId());
-				}
-			}
-			if (sample.getOrganism().equals("Listeria monocytogenes")){
-				Project masterProject = super.read(49L);
-				if (sampleRepository.getSampleBySampleName(masterProject, sample.getSampleName()) != null) {
-					throw new EntityExistsException("Sample with sequencer id '" + sample.getSampleName()
-							+ "' already exists in master project " + masterProject.getId());
-				}
-			}
-		} */
-
 		// the sample hasn't been persisted before, persist it before calling
 		// the relationshipRepository.
 		if (sample.getId() == null) {
 			logger.trace("Going to validate and persist sample prior to creating relationship.");
 			// validate the sample, then persist it:
+			// ISS: First add metadata if possible
+			if(sample.getOrganism() == null) {
+				sample.setOrganism(project.getOrganism());
+			}
+			logger.debug("QQQQQQQQQQQQQQQQQQQQQQQ" + String.valueOf(sample.getOrganism()==null)); //sample.setOrganism(project.getOrganism()); }		
+			String Regione = getRegione(project.getName());
+			if (!Regione.equals("-")) { sample.setGeographicLocationName(Regione); }
+
 			Set<ConstraintViolation<Sample>> constraintViolations = validator.validate(sample);
 			if (constraintViolations.isEmpty()) {
 				sample = sampleRepository.save(sample);
@@ -961,5 +950,30 @@ public class ProjectServiceImpl extends CRUDServiceImpl<Long, Project> implement
 				}
 			}
 		};
+	}
+	
+	private String getRegione(String ProjectName) {
+		String Regione = String.valueOf("-");
+		if (ProjectName.contains("Abruzzo")) { Regione = "Abruzzo"; }
+		if (ProjectName.contains("Basilicata")) { Regione = "Basilicata"; }
+		if (ProjectName.contains("Calabria")) { Regione = "Calabria"; }
+		if (ProjectName.contains("Campania")) { Regione = "Campania"; }
+		if (ProjectName.contains("Emilia-Romagna")) { Regione = "Emilia-Romagna"; }
+		if (ProjectName.contains("Friuli-Venezia Giulia")) { Regione = "Friuli-Venezia Giulia"; }
+		if (ProjectName.contains("Lazio")) { Regione = "Lazio"; }
+		if (ProjectName.contains("Liguria")) { Regione = "Liguria"; }
+		if (ProjectName.contains("Lombardia")) { Regione = "Lombardia"; }
+		if (ProjectName.contains("Marche")) { Regione = "Marche"; }
+		if (ProjectName.contains("Molise")) { Regione = "Molise"; }
+		if (ProjectName.contains("Piemonte")) { Regione = "Piemonte"; }
+		if (ProjectName.contains("Puglia")) { Regione = "Puglia"; }
+		if (ProjectName.contains("Sardegna")) { Regione = "Sardegna"; }
+		if (ProjectName.contains("Sicilia")) { Regione = "Sicilia"; }
+		if (ProjectName.contains("Toscana")) { Regione = "Toscana"; }
+		if (ProjectName.contains("Trentino-Alto Adige")) { Regione = "Trentino-Alto Adige"; }
+		if (ProjectName.contains("Umbria")) { Regione = "Umbria"; }
+		if (ProjectName.contains("Valle d'Aosta")) { Regione = "Valle d'Aosta"; }
+		if (ProjectName.contains("Veneto")) { Regione = "Veneto"; }
+		return Regione;
 	}
 }
