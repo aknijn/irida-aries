@@ -67,7 +67,7 @@
     "reactour": "^1.9.1",
     "redux": "4.0.1",
     "redux-saga": "^0.16.0",
-    "select2": "4.0.3",
+    "select2": "4.0.6",
     "select2-bootstrap-theme": "0.1.0-beta.10",
     "showdown": "^1.9.1",
     "sortablejs": "^1.5.1",
