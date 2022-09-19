@@ -81,7 +81,7 @@ public class AnalysisController {
 	public static final Map<AnalysisType, String> PREVIEWS = ImmutableMap
 			.of(//BuiltInAnalysisTypes.PHYLOGENOMICS, "tree", //BuiltInAnalysisTypes.SISTR_TYPING, "sistr",
 					BuiltInAnalysisTypes.PHANTASTIC_TYPING, "tree", //BuiltInAnalysisTypes.RECOVERY_TYPING, "tree",
-                    BuiltInAnalysisTypes.ALLELE_OBSERVER, "tree", BuiltInAnalysisTypes.SNP_OBSERVER, "tree",
+                    BuiltInAnalysisTypes.ALLELE_OBSERVER, "tree", BuiltInAnalysisTypes.MST_OBSERVER, "tree", BuiltInAnalysisTypes.SNP_OBSERVER, "tree",
 					BuiltInAnalysisTypes.MLST_MENTALIST, "tree");
 	private static final String BASE = "analysis/";
 	public static final String PAGE_DETAILS_DIRECTORY = BASE + "details/";
@@ -302,7 +302,7 @@ public class AnalysisController {
 		try {
 			if (submission.getAnalysisState()
 					.equals(AnalysisState.COMPLETED)) {
-				if (analysisType.equals(BuiltInAnalysisTypes.MLST_MENTALIST) || analysisType.equals(BuiltInAnalysisTypes.PHANTASTIC_TYPING) || analysisType.equals(BuiltInAnalysisTypes.RECOVERY_TYPING) || analysisType.equals(BuiltInAnalysisTypes.ALLELE_OBSERVER) || analysisType.equals(BuiltInAnalysisTypes.SNP_OBSERVER)) {
+				if (analysisType.equals(BuiltInAnalysisTypes.MLST_MENTALIST) || analysisType.equals(BuiltInAnalysisTypes.PHANTASTIC_TYPING) || analysisType.equals(BuiltInAnalysisTypes.RECOVERY_TYPING) || analysisType.equals(BuiltInAnalysisTypes.ALLELE_OBSERVER) || analysisType.equals(BuiltInAnalysisTypes.MST_OBSERVER) || analysisType.equals(BuiltInAnalysisTypes.SNP_OBSERVER)) {
 					tree(submission, model);
 /* 				} else if (analysisType.equals(BuiltInAnalysisTypes.SISTR_TYPING)) {
 					model.addAttribute("sistr", true); */

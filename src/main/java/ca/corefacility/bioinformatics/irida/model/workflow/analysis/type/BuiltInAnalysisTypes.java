@@ -16,6 +16,8 @@ public class BuiltInAnalysisTypes {
 
 	public static final AnalysisType ALLELE_OBSERVER = new AnalysisType("ALLELE_OBSERVER");
 
+	public static final AnalysisType MST_OBSERVER = new AnalysisType("MST_OBSERVER");
+
 	public static final AnalysisType SNP_OBSERVER = new AnalysisType("SNP_OBSERVER");
 
 	public static final AnalysisType VIRULOTYPER = new AnalysisType("VIRULOTYPER");

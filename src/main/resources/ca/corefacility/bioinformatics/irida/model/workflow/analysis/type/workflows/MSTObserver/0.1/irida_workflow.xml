@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iridaWorkflow>
+	<id>12ca4f8e-1c5c-4954-8514-fc6542bc1975</id>
+	<name>MSTObserver</name>
+	<version>0.1</version>
+	<analysisType>MST_OBSERVER</analysisType>
+	<inputs>
+		<sequenceReadsPaired>input_collection</sequenceReadsPaired>
+		<requiresSingleSample>false</requiresSingleSample>
+	</inputs>
+	<parameters>
+		<parameter name="phantvpre_token" defaultValue="token">
+			<toolParameter
+				toolId="phantv-pre"
+				parameterName="token" />
+		</parameter>
+		<parameter name="phantg_token" defaultValue="token">
+			<toolParameter
+				toolId="phantv"
+				parameterName="token" />
+		</parameter>
+		<parameter name="phantg_species" defaultValue="Escherichia coli">
+			<toolParameter
+				toolId="phantg"
+				parameterName="species" />
+		</parameter>
+	</parameters>
+	<outputs>
+        <output name="mst_am" fileName="mst_am.tsv"/>
+        <output name="mst_metadata" fileName="mst_metadata.tsv"/>
+        <output name="tree" fileName="mst_tree.newick"/>
+        <output name="grapetree" fileName="mst_grapetree.html"/>
+	</outputs>
+	<toolRepositories>
+		<repository>
+		  <name>collapse_collections</name>
+		  <owner>nml</owner>
+		  <url>https://irida.corefacility.ca/galaxy-shed</url>
+		  <revision>7e5a39b5dad3</revision>
+		</repository>
+	</toolRepositories>
+</iridaWorkflow>

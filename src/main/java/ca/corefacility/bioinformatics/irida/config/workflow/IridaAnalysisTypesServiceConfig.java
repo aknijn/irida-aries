@@ -39,7 +39,7 @@ public class IridaAnalysisTypesServiceConfig {
 				BuiltInAnalysisTypes.SISTR_TYPING, 
 				BuiltInAnalysisTypes.PHANTASTIC_TYPING,
 				BuiltInAnalysisTypes.RECOVERY_TYPING,
-                BuiltInAnalysisTypes.ALLELE_OBSERVER, BuiltInAnalysisTypes.SNP_OBSERVER, BuiltInAnalysisTypes.VIRULOTYPER, BuiltInAnalysisTypes.SUMMARY,
+                BuiltInAnalysisTypes.ALLELE_OBSERVER, BuiltInAnalysisTypes.MST_OBSERVER, BuiltInAnalysisTypes.SNP_OBSERVER, BuiltInAnalysisTypes.VIRULOTYPER, BuiltInAnalysisTypes.SUMMARY,
                 BuiltInAnalysisTypes.ASSEMBLY_ANNOTATION,
 				BuiltInAnalysisTypes.BIO_HANSEL, BuiltInAnalysisTypes.ASSEMBLY_ANNOTATION_COLLECTION,
 				BuiltInAnalysisTypes.REFSEQ_MASHER, BuiltInAnalysisTypes.MLST_MENTALIST);

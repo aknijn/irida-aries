@@ -1,0 +1,259 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "",
+    "format-version": "0.1",
+    "name": "MSTObserver 0.1",
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "input_collection"
+                }
+            ],
+            "label": "input_collection",
+            "name": "Input dataset collection",
+            "outputs": [],
+            "position": {
+                "left": 200,
+                "top": 200
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"collection_type\": \"list:paired\"}",
+            "tool_version": null,
+            "type": "data_collection_input",
+            "uuid": "6eb848dc-48aa-4250-aafe-8e76dab54e37",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "399c2379-bddf-4d0c-b5ff-8dbc5f0a9901"
+                }
+            ]
+        },
+        "1": {
+            "annotation": "",
+            "content_id": "phantv-pre",
+            "errors": null,
+            "id": 1,
+            "input_connections": {
+                "input_pc": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool PHANtV-pre",
+                    "name": "input_pc"
+                }
+            ],
+            "label": null,
+            "name": "PHANtV-pre",
+            "outputs": [
+                {
+                    "name": "phantv_filename",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 486.3999938964844,
+                "top": 200
+            },
+            "post_job_actions": {
+                "HideDatasetActionphantv_filename": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "phantv_filename"
+                }
+            },
+            "tool_id": "phantv-pre",
+            "tool_state": "{\"input_pc\": {\"__class__\": \"RuntimeValue\"}, \"token\": \"\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
+            "type": "tool",
+            "uuid": "3f51dfaf-6a99-43a7-b78d-25fc53ac7cab",
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "irida.corefacility.ca/galaxy-shed/repos/nml/collapse_collections/collapse_dataset/1.0",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "input_list": {
+                    "id": 1,
+                    "output_name": "phantv_filename"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Collapse Collection",
+                    "name": "input_list"
+                }
+            ],
+            "label": null,
+            "name": "Collapse Collection",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 772.7999877929688,
+                "top": 200
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output"
+                }
+            },
+            "tool_id": "irida.corefacility.ca/galaxy-shed/repos/nml/collapse_collections/collapse_dataset/1.0",
+            "tool_shed_repository": {
+                "changeset_revision": "7e5a39b5dad3",
+                "name": "collapse_collections",
+                "owner": "nml",
+                "tool_shed": "irida.corefacility.ca/galaxy-shed"
+            },
+            "tool_state": "{\"input_list\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
+            "type": "tool",
+            "uuid": "a50323c2-0072-419a-837b-94e46e62560d",
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "phantg",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "phantg_filenames": {
+                    "id": 2,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "PHANtG",
+            "outputs": [
+                {
+                    "name": "phantg_am",
+                    "type": "tabular"
+                },
+                {
+                    "name": "phantg_metadata",
+                    "type": "tabular"
+                },
+                {
+                    "name": "phantg_tree",
+                    "type": "nwk"
+                },
+                {
+                    "name": "phantg_grapetree",
+                    "type": "html"
+                }
+            ],
+            "position": {
+                "left": 1060.2000122070312,
+                "top": 200
+            },
+            "post_job_actions": {
+                "ChangeDatatypeActionphantg_am": {
+                    "action_arguments": {
+                        "newtype": "tsv"
+                    },
+                    "action_type": "ChangeDatatypeAction",
+                    "output_name": "phantg_am"
+                },
+                "ChangeDatatypeActionphantg_grapetree": {
+                    "action_arguments": {
+                        "newtype": "txt"
+                    },
+                    "action_type": "ChangeDatatypeAction",
+                    "output_name": "phantg_grapetree"
+                },
+                "ChangeDatatypeActionphantg_metadata": {
+                    "action_arguments": {
+                        "newtype": "tsv"
+                    },
+                    "action_type": "ChangeDatatypeAction",
+                    "output_name": "phantg_metadata"
+                },
+                "ChangeDatatypeActionphantg_tree": {
+                    "action_arguments": {
+                        "newtype": "nwk"
+                    },
+                    "action_type": "ChangeDatatypeAction",
+                    "output_name": "phantg_tree"
+                },
+                "RenameDatasetActionphantg_am": {
+                    "action_arguments": {
+                        "newname": "mst_am.tsv"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "phantg_am"
+                },
+                "RenameDatasetActionphantg_grapetree": {
+                    "action_arguments": {
+                        "newname": "mst_grapetree.html"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "phantg_grapetree"
+                },
+                "RenameDatasetActionphantg_metadata": {
+                    "action_arguments": {
+                        "newname": "mst_metadata.tsv"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "phantg_metadata"
+                },
+                "RenameDatasetActionphantg_tree": {
+                    "action_arguments": {
+                        "newname": "mst_tree.newick"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "phantg_tree"
+                }
+            },
+            "tool_id": "phantg",
+            "tool_state": "{\"phantg_filenames\": {\"__class__\": \"ConnectedValue\"}, \"species\": \"\", \"token\": \"\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": null,
+            "type": "tool",
+            "uuid": "2f8dd93b-e4bc-4223-87a1-299e99d1b32d",
+            "workflow_outputs": [
+                {
+                    "label": "PHANtG on input dataset(s): grapetree",
+                    "output_name": "phantg_grapetree",
+                    "uuid": "b65f18c4-c2b6-4dc7-8bbf-1c0d8ffdf95d"
+                },
+                {
+                    "label": "PHANtG on input dataset(s): tree",
+                    "output_name": "phantg_tree",
+                    "uuid": "6d4807bf-03c9-45b5-87c1-499607573208"
+                },
+                {
+                    "label": "PHANtG on input dataset(s): metadati",
+                    "output_name": "phantg_metadata",
+                    "uuid": "c907c637-ee70-4e4e-b9b5-2e48da2a2711"
+                },
+                {
+                    "label": "PHANtG on input dataset(s): allele matrix",
+                    "output_name": "phantg_am",
+                    "uuid": "343f0068-7269-4964-abcd-31b5a9462b1d"
+                }
+            ]
+        }
+    },
+    "tags": [
+        "IRIDA21"
+    ],
+    "uuid": "8920d45c-2d74-4913-8fe0-972a4793d064",
+    "version": 3
+}
